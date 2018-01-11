@@ -1,4 +1,4 @@
-public interface UserDAO{
+public interface UserDao{
     public Group<Group<User>> getAllUsers();
     public User getUser(String nickname);
     public void addUser(User user);

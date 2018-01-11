@@ -1,6 +1,6 @@
 import java.util.Iterator;
 
-public class UserDAOImpl implements UserDAO{
+public class UserDaoImpl implements UserDao{
     private static Group<Group<User>> users;
 
     public Group<Group<User>> getAllUsers(){
