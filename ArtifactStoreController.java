@@ -25,23 +25,22 @@ class ArtifactStoreController{
         float price = artifact.getPrice() / priceDivider;
         Iterator<User> iter = consumers.getIterator();
         int acceptedPaymentCount = 0;
-        while(iter.hasNext()){
-          if(iter.next().getWallet().canAfford()){
-            acceptedPaymentCount++;
-          }
+        //while(iter.hasNext()){
+        // if(iter.next().getWallet().canAfford()){
+          //  acceptedPaymentCount++;
+          //}
+        //}
+        //if(acceptedPaymentCount == consumers.size()){
+          //while(iter.hasNext()){
+           // iter.next().getWallet().withdraw(price);
+            //return artifact;
+          //}
+        //}
+        //else{
+          //System.out.println(view.insufficientFunds);
+        return null;
         }
-        if(acceptedPaymentCount == consumers.size()){
-          while(iter.hasNext()){
-            iter.next().getWallet().withdraw(price);
-            return artifact;
-          }
-        }
-        else{
-          System.out.println(view.insufficientFunds);
-          return null;
-        }
-    }
-
+    
     public void editArtifact(){
         ArtifactStoreView view = new ArtifactStoreView();
         ArtifactDaoImpl dao = new ArtifactDaoImpl();
