@@ -19,4 +19,9 @@ public class MentorController {
         view.printLine("User already in database.");
       }
     }
+    public void assignCodecoolerToGroup() {
+      
+    }
+
+
 }
