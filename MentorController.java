@@ -36,4 +36,22 @@ public class MentorController {
       userDao.addUserAdherence(user, groupName);
     }
 
+    // public void markCodecoolerQuestCompletion() {
+    //   UserDaoImpl userDao = new UserDaoImpl();
+    //   QuestDaoImpl questDao = new QuestDaoImpl();
+    //
+    //   String nickname = view.getStringFromUserInput(view.userNicknameQuestion);
+    //   String questname = view.getStringFromUserInput(view.markQuestNameQuestion);
+    //
+    //   User user = userDao.getUser(nickname);
+    //   Quest questname = questDao.getQuest(questname);
+    //
+    //
+    //
+    // }
+    //
+    // public void markCodecoolerArtifactUsage() {
+    //   // mark that codecooler's artifact has been use and disable it's usage.
+    // }
+
 }
