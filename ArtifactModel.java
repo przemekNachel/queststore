@@ -4,6 +4,11 @@ public class ArtifactModel {
     private Float price;
     private boolean hesBeenUsed;
 
+    public ArtifactModel(String name, String description, float price){
+        this.name = name;
+        this.description = description;
+        this.price = price;
+    }
     public String toString(){
         return this.name + "\n" + this.description;
     }

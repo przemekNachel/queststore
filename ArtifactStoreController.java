@@ -1,56 +1,61 @@
+import java.util.Iterator;
+
 class ArtifactStoreController{
     public void addNewArtifact(){
         ArtifactStoreView view = new ArtifactStoreView();
         String name = view.getStringFromUserInput(view.artifactNameQuestion);
         String description = view.getStringFromUserInput(view.artifactDescriptionQuestion);
         String priceStr = view.getStringFromUserInput(view.artifactPriceQuestion);
-        float price = priceStr.parsefloat();
-        ArtifactModel artifact = new ArtifactModel(name, price, description);
-        ArtiffactDaoImpl dao = new ArtiffactDaoImpl();
+        float price = 2f;
+        ArtifactModel artifact = new ArtifactModel(name, description, price);
+        ArtifactDaoImpl dao = new ArtifactDaoImpl();
         Group<String> group = dao.getArtifactGroupNames();
         Iterator<String> iter = group.getIterator();
         while(iter.hasNext()){
           System.out.println(iter.next());
         }
-        assignArtifactToCategory();
+        assignArtifactToCategory(artifact);
     }
 
-    public void buyArtifact(String name, Group<User> consumers){
-        ArtiffactDaoImpl dao = new ArtiffactDaoImpl();
+    public ArtifactModel buyArtifact(String name, Group<User> consumers){
+        ArtifactStoreView view = new ArtifactStoreView();
+        ArtifactDaoImpl dao = new ArtifactDaoImpl();
         ArtifactModel artifact = dao.getArtifact(name);
         float priceDivider = consumers.size();
         float price = artifact.getPrice() / priceDivider;
         Iterator<User> iter = consumers.getIterator();
         int acceptedPaymentCount = 0;
-        while(iter.hasNext()){
-          if(iter.next().getWallet().canAfford()){
-            acceptedPaymentCount++;
-          }
+        //while(iter.hasNext()){
+        // if(iter.next().getWallet().canAfford()){
+          //  acceptedPaymentCount++;
+          //}
+        //}
+        //if(acceptedPaymentCount == consumers.size()){
+          //while(iter.hasNext()){
+           // iter.next().getWallet().withdraw(price);
+            //return artifact;
+          //}
+        //}
+        //else{
+          //System.out.println(view.insufficientFunds);
+        return null;
         }
-        if(acceptedPaymentCount == consumers.size()){
-          while(iter.hasNext()){
-            iter.next.getWallet().withdraw(price);
-          }
-        }
-        else{
-          system.out.println(view.insufficientFunds);
-        }
-    }
-
+    
     public void editArtifact(){
-        ArtiffactDaoImpl dao = new ArtiffactDaoImpl();
-        String name = view.getStringFromUserInput(view.artifactNameQuestion);
-        ArtifactModel artifact = dao.getArtifact();
+        ArtifactStoreView view = new ArtifactStoreView();
+        ArtifactDaoImpl dao = new ArtifactDaoImpl();
+        String artName = view.getStringFromUserInput(view.artifactNameQuestion);
+        ArtifactModel artifact = dao.getArtifact(artName);
         String choice = view.getStringFromUserInput(view.artifactEditChoice);
-        if (choice == "1"){
+        if (choice.equals("1")){
           String name = view.getStringFromUserInput(view.artifactNameQuestion);
           artifact.setName(name);
         }
-        else if(choice == "2"){
+        else if(choice.equals("2")){
           String description = view.getStringFromUserInput(view.artifactDescriptionQuestion);
           artifact.setDescription(description);
         }
-        else if(choice == "3"){
+        else if(choice.equals("3")){
           String priceStr = view.getStringFromUserInput(view.artifactPriceQuestion);
           float price = Float.parseFloat(priceStr);
           artifact.setPrice(price);
