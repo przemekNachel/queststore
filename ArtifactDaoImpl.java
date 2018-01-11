@@ -22,17 +22,23 @@ public class ArtifactDaoImpl implements ArtifactDao{
     }
 
     public void addArtifact(ArtifactModel artifact, String groupName){
+        boolean artifactAdded = false;
         Iterator<Group<ArtifactModel>> allGroupsIterator = ArtifactDaoImpl.artifacts.getIterator();
         while(allGroupsIterator.hasNext()){
             Group<ArtifactModel> artifactGroup = allGroupsIterator.next();
             String artifactGroupName = artifactGroup.getName();
             if(artifactGroupName.equals(groupName)){
                 artifactGroup.add(artifact); //zakładamy że dodawany
-                                                 //bedzie element tylko
-                                                 //wtedy gdy nie znajduje
-                                                 //się już w danym zbiorze
+                artifactAdded = true;        //bedzie element tylko
+                                             //wtedy gdy nie znajduje
+                                             //się już w danym zbiorze
                 }
+            }if(!artifactAdded){
+                Group<ArtifactModel> tmp = new Group<>(groupName);
+                tmp.add(artifact);
+                artifacts.add(tmp);
             }
+            artifactAdded = false;
         }
 
     public void updateArtifact(ArtifactModel artifact){
@@ -50,7 +56,8 @@ public class ArtifactDaoImpl implements ArtifactDao{
         }
     }
 
-    public void remove(ArtifactModel artifact){
+    public boolean remove(ArtifactModel artifact){
+        boolean artifactRemoved = false;
         Iterator<Group<ArtifactModel>> artifactGroupIterator = ArtifactDaoImpl.artifacts.getIterator();
         while(artifactGroupIterator.hasNext()){
             Group<ArtifactModel> artifactGroup = artifactGroupIterator.next();
@@ -59,9 +66,11 @@ public class ArtifactDaoImpl implements ArtifactDao{
                 ArtifactModel currentArtifact = artifactIterator.next();
                 if(currentArtifact.getName().equals(artifact.getName())){
                     artifactGroup.remove(currentArtifact);
+                    artifactRemoved = true;
                 }
             }
         }
+        return artifactRemoved;
     }
 
     public Group<String> getArtifactGroupNames(){
@@ -71,6 +80,17 @@ public class ArtifactDaoImpl implements ArtifactDao{
             groupsNames.add(groupIterator.next().getName());
         }
         return groupsNames;
+    }
+
+    public boolean addArtifactAdherence(ArtifactModel artifact, String groupName){
+        Iterator<Group<ArtifactModel>> artifactGroupsIterator = ArtifactDaoImpl.artifacts.getIterator();
+        while(artifactGroupsIterator.hasNext()){
+            Group<ArtifactModel> artifactGroup = artifactGroupsIterator.next();
+            if(artifactGroup.getName().equals(groupName)){
+                return artifactGroup.add(artifact);
+            }
+        }
+        return false;
     }
 
     public void tmpSetArtifacts(Group<Group<ArtifactModel>> artifacts){
