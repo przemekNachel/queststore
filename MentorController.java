@@ -20,7 +20,7 @@ public class MentorController {
       CodecoolerModel codecooler = new CodecoolerModel(nickname, email, password, wallet, studentsGroup); // TODO add level to the object -- next sprint
 
       // If user getter doesn't find given user, return null
-      if (userDao.getUser(codecooler) == null) {
+      if (userDao.getUser(nickname) == null) {
         userDao.addUser(codecooler);
       }
       else {
@@ -28,9 +28,13 @@ public class MentorController {
       }
     }
     public void assignCodecoolerToGroup() {
-
       UserDaoImpl userDao = new UserDaoImpl();
 
+      String nickname = view.getStringFromUserInput(view.userNicknameQUestion);
+      String groupName = view.getStringFromUserInput(view.userGroupQuestion);
+
+      User user = userDao.getUser(nickname);
+      userDao.addUserAdherence(user, groupName);
     }
 
 }
