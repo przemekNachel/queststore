@@ -7,6 +7,8 @@ public class CodecoolerController {
   }
 
   public void buyArtifact(String name) {
+    UserDaoImpl userDao = new UserDaoImpl();
+    ArtifactStoreController store = new ArtifactStoreController();
 
   }
 
