@@ -3,4 +3,11 @@ public class CodecoolerModel extends User {
   public WalletService wallet;
   public Level level;
   public Group<Artifact> artifacts;
+
+  @Override
+  public String getRole() {
+    return role;
+  }
+
+
 }
