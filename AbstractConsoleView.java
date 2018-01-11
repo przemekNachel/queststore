@@ -11,6 +11,11 @@ public abstract class AbstractConsoleView {
     scanner = new Scanner(System.in);
   }
 
+  public void clearScreen(){
+      System.out.print("\033[H\033[2J");
+      System.out.flush();
+  }
+
   public void printLine(String message) {
 
     System.out.println(message);
@@ -23,7 +28,7 @@ public abstract class AbstractConsoleView {
   }
 
   public void printMenu(Menu menu) {
-
+    
     printLine(menu.toString());
   }
 

@@ -10,6 +10,7 @@ class AdminController{
         new MenuOption("4", "Edit mentor"),
         new MenuOption("5", "View mentor's details")
         );
+
     view = new AdminView(adminMenu);
   }
 
@@ -26,10 +27,10 @@ class AdminController{
 
     boolean requestedExit = false;
     do {
-
       MenuOption userOption = view.getMenuOptionFromUserInput(" Please choose option: ");
       if (userOption.getId().equals("0")) {
         requestedExit = true;
+        view.clearScreen();
       } else {
 
         String chosenOption = userOption.getId();
