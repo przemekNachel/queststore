@@ -5,6 +5,10 @@ public class User {
   protected Group<Group<User>> associatedGroups;
 
   public String getName() {
-    return this.nickname;
+    return nickname;
+  }
+
+  public void setName(String nickname) {
+    this.nickname = nickname;
   }
 }
