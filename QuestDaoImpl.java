@@ -4,7 +4,7 @@ public class QuestDaoImpl implements QuestDao {
   private static Group<Group<QuestModel>> quests;
 
   public Group<Group<Quest>> getAllQuests() {
-
+    return quests;
   }
 
   public QuestModel getQuest(String name) {
@@ -19,6 +19,6 @@ public class QuestDaoImpl implements QuestDao {
   }
 
   public void deleteQuest(QuestModel quest) {
-    
+
   }
 }
