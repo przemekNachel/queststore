@@ -1,15 +1,10 @@
-import ArtifactModel;
-import ArtifactStoreView;
-import ArtifactStoreModel;
-import ArtifactDaoImpl;
-
 class ArtifactStoreController{
-    public void addNewArtifact(String name, Float price, String description){
+    public void addNewArtifact(){
         ArtifactStoreView view = new ArtifactStoreView();
         String name = view.getStringFromUserInput(view.artifactNameQuestion);
         String description = view.getStringFromUserInput(view.artifactDescriptionQuestion);
-        String priceStr = view.getStringFromUserInput(view.artifactPriceQuestion)
-        float price = float.parsefloat(priceStr);
+        String priceStr = view.getStringFromUserInput(view.artifactPriceQuestion);
+        float price = priceStr.parsefloat();
         ArtifactModel artifact = new ArtifactModel(name, price, description);
         ArtiffactDaoImpl dao = new ArtiffactDaoImpl();
         Group<String> group = dao.getArtifactGroupNames();
@@ -38,7 +33,7 @@ class ArtifactStoreController{
           }
         }
         else{
-          system.out.println(view.insufficientFunds)
+          system.out.println(view.insufficientFunds);
         }
     }
 
@@ -61,7 +56,7 @@ class ArtifactStoreController{
           artifact.setPrice(price);
         }
         else{
-          System.out.println(view.noSuchOption)
+          System.out.println(view.noSuchOption);
         }
     }
 

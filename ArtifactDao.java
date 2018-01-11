@@ -5,5 +5,6 @@ public interface ArtifactDao{
     public Group<String> getArtifactGroupNames();
     public void addArtifact(ArtifactModel artifact, String groupName);
     public void updateArtifact(ArtifactModel artifact);
-    public void remove(ArtifactModel artifact);
+    public boolean remove(ArtifactModel artifact);
+    public boolean addArtifactAdherence(ArtifactModel artifact, String groupName);
 }

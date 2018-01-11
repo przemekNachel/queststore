@@ -5,16 +5,15 @@ class WalletService{
     if(this.balance >= amount){
       return true;
     }
-    return false
+    return false;
   }
 
   public void withdraw(float amount){
-      balance -= amount;
+      this.balance -= amount;
     }
-  }
 
   public void payIn(float amount){
-    balance += amount;
+    this.balance += amount;
   }
 
   public String toString(){

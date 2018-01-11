@@ -10,4 +10,5 @@ class ArtifactStoreView extends AbstractConsoleView{
     public String insufficientFunds = "Insufficient funds";
     public String artifactEditChoice = "Which attribute do you want to edit: \n 1. Name \n 2. Description \n 3. Price";
     public String noSuchOption = "No such option";
+    public String chooseCategory = "Choose category by index: \n";
 }

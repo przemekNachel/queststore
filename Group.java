@@ -26,14 +26,19 @@ public class Group<T> {
     this.name = name;
   }
 
-  public void add(T elem) {
+  public boolean add(T elem) {
 
-    group.add(elem);
+    if (group.contains(elem)) {
+
+      return false;
+    }
+
+    return group.add(elem);
   }
 
-  public void remove(T elem) {
+  public boolean remove(T elem) {
 
-    group.remove(elem);
+    return group.remove(elem);
   }
 
   public T get(int index) {
