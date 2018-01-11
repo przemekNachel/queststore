@@ -1,8 +1,8 @@
-public class CodecoolController {
+public class CodecoolerController {
   public CodecoolerView view = new CodecoolerModel();
   public CodecoolerModel currentUser = new CodecoolerModel();
 
-  public CodecoolerController(Codecooler codecooler) {
+  public CodecoolerController(CodecoolerModel codecooler) {
 
   }
 
@@ -11,6 +11,6 @@ public class CodecoolController {
   }
 
   public void useArtifact(Artifact artifact) {
-    
+
   }
 }
