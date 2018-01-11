@@ -52,19 +52,29 @@ public class CodecoolerModel extends User {
     return names;
   }
 
-  public void getStatisticsDisplay() { //String
+  public String getStatisticsDisplay() {
+    String statistics = "";
+    String walletBalance = "Wallet balance: ";
+    String artifactsOwned = "Owned artifacts:";
 
+    walletBalance = wallet.toString() + "\n";
+
+    Iterator<ArtifactModel> iter = artifacts.getIterator();
+    while(iter.hasNext()) {
+      artifactsOwned += "\n" + iter.next().getName();
+    }
+    statistics = walletBalance + artifactsOwned;
+
+    return statistics;
   }
 
-  public void getCodecoolerGroupDisplay() { //String
 
-  }
 
   public WalletService getWallet() {
     return wallet;
   }
 
-  // public String toString() {
-  //
-  // }
+  public String toString() {
+    return "Blank lol";
+  }
 }
