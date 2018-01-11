@@ -3,14 +3,17 @@ public class MentorController {
 
     public void createCodecooler() {
       UserDaoImpl userDao = new UserDaoImpl();
-      WalletService wallet = new WalletService();
 
 
       String nickname = view.getStringFromUserInput(view.userNicknameQUestion);
       String email = view.getStringFromUserInput(view.userEmailQuestion);
       String password = view.getStringFromUserInput(view.userPasswordQuestion);
+      Float walletBalance = 0.0f;
+      // TODO Default level 0 -- next sprint
 
-      CodecoolerModel codecooler = new CodecoolerModel("codecooler", nickname, email, password);
+      // TODO Level object -- next sprint
+      WalletService wallet = new WalletService(walletBalance);
+      CodecoolerModel codecooler = new CodecoolerModel("codecooler", nickname, email, password, wallet); // TODO add level to the object -- next sprint
 
       // If user getter doesn't find given user, it returns null
       if (userDao.getUser(codecooler) == null) {
