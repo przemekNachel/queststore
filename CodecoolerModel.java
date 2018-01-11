@@ -30,7 +30,7 @@ public class CodecoolerModel extends User {
   }
 
   public void addArtifact(ArtifactModel artifact) {
-
+    artifacts.add(artifact);
   }
 
   public void getArtifact(String name) { //ArtifactModel
