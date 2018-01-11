@@ -5,7 +5,7 @@ public class MentorController {
       UserDaoImpl userDao = new UserDaoImpl();
 
 
-      String nickname = view.getStringFromUserInput(view.userNicknameQUestion);
+      String nickname = view.getStringFromUserInput(view.userNicknameQuestion);
       String email = view.getStringFromUserInput(view.userEmailQuestion);
       String password = view.getStringFromUserInput(view.userPasswordQuestion);
       Float walletBalance = 0.0f;
@@ -13,7 +13,7 @@ public class MentorController {
       // TODO Default level 0 -- next sprint
       // TODO Level object -- next sprint
 
-      Group<User> studentsGroup = userDao.getUserGroup("students");
+      Group<User> studentsGroup = userDao.getUserGroups("students");
 
 
       WalletService wallet = new WalletService(walletBalance);
@@ -30,7 +30,7 @@ public class MentorController {
     public void assignCodecoolerToGroup() {
       UserDaoImpl userDao = new UserDaoImpl();
 
-      String nickname = view.getStringFromUserInput(view.userNicknameQUestion);
+      String nickname = view.getStringFromUserInput(view.userNicknameQuestion);
       String groupName = view.getStringFromUserInput(view.userGroupQuestion);
 
       User user = userDao.getUser(nickname);
