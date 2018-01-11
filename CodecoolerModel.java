@@ -1,8 +1,8 @@
 public class CodecoolerModel extends User {
   public String role = "codecooler";
   public WalletService wallet;
-  public Level level;
-  public Group<Artifact> artifacts;
+  // public Level level;
+  public Group<ArtifactModel> artifacts;
 
   public CodecoolerModel(String nickname, String email, String password, Group<User> studentGroup) {
     this.nickname = nickname;
@@ -11,7 +11,7 @@ public class CodecoolerModel extends User {
 
 
     associatedGroups = new Group<Group<User>>();
-    associatedGroups.add(student);
+    associatedGroups.add(studentGroup);
   }
 
   @Override
@@ -24,7 +24,7 @@ public class CodecoolerModel extends User {
     this.role = role;
   }
 
-  public void addArtifact(Artifact artifact) {
+  public void addArtifact(ArtifactModel artifact) {
 
   }
 }
