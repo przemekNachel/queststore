@@ -7,5 +7,4 @@ public interface ArtifactDao{
     public void addArtifact(ArtifactModel artifact, String groupName);
     public void updateArtifact(ArtifactModel artifact);
     public boolean deleteArtifact(ArtifactModel artifact);
-    public boolean addArtifactAdherence(ArtifactModel artifact, String groupName);
 }

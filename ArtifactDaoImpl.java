@@ -82,17 +82,6 @@ public class ArtifactDaoImpl implements ArtifactDao{
         return groupsNames;
     }
 
-    public boolean addArtifactAdherence(ArtifactModel artifact, String groupName){
-        Iterator<Group<ArtifactModel>> artifactGroupsIterator = ArtifactDaoImpl.artifacts.getIterator();
-        while(artifactGroupsIterator.hasNext()){
-            Group<ArtifactModel> artifactGroup = artifactGroupsIterator.next();
-            if(artifactGroup.getName().equals(groupName)){
-                return artifactGroup.add(artifact);
-            }
-        }
-        return false;
-    }
-
     public Group<ArtifactModel> getArtifactGroup(String groupName){
         Iterator<Group<ArtifactModel>> groupIterator = ArtifactDaoImpl.artifacts.getIterator();
         while(groupIterator.hasNext()){

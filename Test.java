@@ -3,6 +3,8 @@ import java.util.Iterator;
 public class Test{
     Group<Group<User>> school;
     Iterator<Group<User>> schoolIter;
+    Group<Group<ArtifactModel>> artifacts;
+    Iterator<Group<ArtifactModel>> artIter;
 
     private void fillTheGroup(){
         school = new Group<Group<User>>("school");
@@ -24,15 +26,33 @@ public class Test{
 
     }
 
+    private void fillArtifacts(){
+        artifacts = new Group<Group<ArtifactModel>>("school");
+        artifacts.add(new Group<ArtifactModel>("basic"));
+        ArtifactModel art1 = new ArtifactModel("dildo", "aa", 5);
+        ArtifactModel art2 = new ArtifactModel("wibrator", "bb", 7);
+        ArtifactModel art3 = new ArtifactModel("korek", "mm", 3);
+
+        artIter = artifacts.getIterator();
+
+        while(artIter.hasNext()){
+            Group<ArtifactModel> group = artIter.next();
+            if(group.getName().equals("basic")){
+                group.add(art1);
+                group.add(art2);
+                group.add(art3);
+            }
+        }
+    }
+
     public static void main(String []args){
         Test test = new Test();
-        UserDaoImpl userDao;
-        test.fillTheGroup();
-        userDao = new UserDaoImpl();
-        userDao.tmpSetUsers(test.school);
 
         //userDao tests
-        System.out.println("UserDaoTests:\n");
+        UserDaoImpl userDao = new UserDaoImpl();
+        test.fillTheGroup();
+        userDao.tmpSetUsers(test.school);
+        System.out.println("\nUserDaoTests:\n");
         test.testGetUser();
         test.testAddUser();
         test.testUpdateUser();
@@ -43,29 +63,106 @@ public class Test{
         userDao = null;
         //koniec testów userDao
 
+        //artifactDao tests
+        ArtifactDaoImpl atDao = new ArtifactDaoImpl();
+        test.fillArtifacts();
+        atDao.tmpSetArtifacts(test.artifacts);
+        System.out.println("\nArtifactDaoTests:\n");
+        test.testGetArtifact();
+        test.testAddArtifact();
+        test.testUpdateArtifact();
+        test.testRemoveArtifact();
+        test.testGetArtifactGroupNames();
+        test.testGetArtifactGroup();
+        atDao = null;
+        //koniec testów tests
 
     }
 
 
+    //ArtifactDaoTests
+    private void testGetArtifact(){
+        ArtifactDaoImpl atDao = new ArtifactDaoImpl();
+        ArtifactModel testArt = atDao.getArtifact("dildo");
+        System.out.println("TestGetArtif: " +
+            assertNotNull(testArt));
+        testArt = null;
+    }
 
+    private void testAddArtifact(){
+        ArtifactDaoImpl atDao = new ArtifactDaoImpl();
 
+        String testDesc = "gg";
+        String testName = "gumki";
+        float testPrice = 4;
 
+        ArtifactModel testArt = new ArtifactModel(testName, testDesc, testPrice);
 
+        atDao.addArtifact(testArt, "magic");
+        System.out.println("TestAddArt: " +
+            assertEquals(testArt, atDao.getArtifact(testName)));
+        testArt = null;
+    }
 
+    private void testUpdateArtifact(){
+        ArtifactDaoImpl atDao = new ArtifactDaoImpl();
+        String testDesc = "gg";
+        String testName = "gumki";
+        float testPrice = 4;
+        float testPriceUpdated = 4.5f;
 
+        ArtifactModel testArt = new ArtifactModel(testName, testDesc, testPrice);
 
+        testArt.setPrice(testPriceUpdated);
+        atDao.updateArtifact(testArt);
+        System.out.println("TestUpdateArt: " +
+        assertNotNull(atDao.getArtifact(testName)));
+    }
 
+    private void testRemoveArtifact(){
+        ArtifactDaoImpl atDao = new ArtifactDaoImpl();
+        String testName = "dildo";
+        ArtifactModel testArt = atDao.getArtifact(testName);
 
+        System.out.println("TestRemoveUser: " +
+            assertTrue(atDao.deleteArtifact(testArt)));
+    }
 
+    private void testGetArtifactGroupNames(){
+        int elementsNumber = 2;
+        int emptyGroupSize = 0;
+        ArtifactDaoImpl atDao = new ArtifactDaoImpl();
 
+        Group<String> names = atDao.getArtifactGroupNames();
+        System.out.println("TestGetArtGroupNames: " +
+            assertTrue(names.size() == elementsNumber));
+        Group<Group<ArtifactModel>> clear = new Group<Group<ArtifactModel>>("clear");
+        atDao.tmpSetArtifacts(clear);
+        Group<String> namesEmpty = atDao.getArtifactGroupNames();
+        System.out.println("TestGetEmptyNames: " +
+            assertTrue(namesEmpty.size() == emptyGroupSize));
+        atDao.tmpSetArtifacts(this.artifacts);
+    }
 
+    private void testGetArtifactGroup(){
+        ArtifactDaoImpl atDao = new ArtifactDaoImpl();
 
-
-
-
-
-
-
+        String testDesc = "gg";
+        String testName = "gumki";
+        float testPrice = 4;
+        String testGroup = "basic";
+        Group<ArtifactModel> atGroup = atDao.getArtifactGroup(testGroup);
+        System.out.println("TestGetArtGroup: " +
+            assertEquals(testGroup, atGroup.getName()));
+        Iterator<ArtifactModel> iter = atGroup.getIterator();
+        ArtifactModel artM = new ArtifactModel(testName, testDesc, testPrice);
+        atDao.addArtifact(artM, testGroup);
+        while(iter.hasNext()){
+            artM = iter.next();
+        }
+        System.out.println("TestGetGroup2: " +
+            assertEquals(testName, artM.getName()));
+    }
 
 
     // UserDaoTests
@@ -111,9 +208,8 @@ public class Test{
         String testName = "test Mentor Updated";
         User testMentor = userDao.getUser(testName);
 
-        System.out.println("TestRemoveUser: " + assertTrue(userDao.deleteUser(testMentor)));
-
-
+        System.out.println("TestRemoveUser: " +
+            assertTrue(userDao.deleteUser(testMentor)));
     }
 
     private void testGetUserGroupNames(){
