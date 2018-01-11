@@ -1,4 +1,5 @@
 public abstract class User {
+  protected Role role;
   protected String nickname;
   protected String password;
   protected String email;
@@ -36,8 +37,8 @@ public abstract class User {
     this.associatedGroups = associatedGroups;
   }
 
-  public abstract String getRole();
-  public abstract void setRole(String role);
+  public abstract Role getRole();
+  public abstract void setRole(Role role);
 
   public String toString() {
     return nickname + "|" + email  + "|" + password + "|" + associatedGroups  + "|";
