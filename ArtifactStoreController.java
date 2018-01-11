@@ -6,34 +6,34 @@ class ArtifactStoreController{
         String name = view.getStringFromUserInput(view.artifactNameQuestion);
         String description = view.getStringFromUserInput(view.artifactDescriptionQuestion);
         String priceStr = view.getStringFromUserInput(view.artifactPriceQuestion);
-        float price = 2f;
+        float price = Float.parseFloat(priceStr);
         ArtifactModel artifact = new ArtifactModel(name, description, price);
         assignArtifactToCategory(artifact);
     }
 
-    public ArtifactModel buyArtifact(String name, Group<User> consumers){
+    public ArtifactModel buyArtifact(String name, Group<CodecoolerModel> consumers) {
         ArtifactStoreView view = new ArtifactStoreView();
         ArtifactDaoImpl dao = new ArtifactDaoImpl();
         ArtifactModel artifact = dao.getArtifact(name);
         float priceDivider = consumers.size();
         float price = artifact.getPrice() / priceDivider;
-        Iterator<User> iter = consumers.getIterator();
+        Iterator<CodecoolerModel> iter = consumers.getIterator();
         int acceptedPaymentCount = 0;
-        //while(iter.hasNext()){
-        // if(iter.next().getWallet().canAfford()){
-          //  acceptedPaymentCount++;
-          //}
-        //}
-        //if(acceptedPaymentCount == consumers.size()){
-          //while(iter.hasNext()){
-           // iter.next().getWallet().withdraw(price);
-            //return artifact;
-          //}
-        //}
-        //else{
-          //System.out.println(view.insufficientFunds);
-        return null;
+        while (iter.hasNext()) {
+            if (iter.next().getWallet().canAfford()) {
+                acceptedPaymentCount++;
+            }
         }
+        if (acceptedPaymentCount == consumers.size()) {
+            while (iter.hasNext()) {
+                iter.next().getWallet().withdraw(price);
+                return artifact;
+            }
+        } else {
+            System.out.println(view.insufficientFunds);
+            return null;
+        }
+    }
 
     public void editArtifact(){
         ArtifactStoreView view = new ArtifactStoreView();
@@ -60,7 +60,10 @@ class ArtifactStoreController{
     }
 
     public void createArtifactCategory(){
-
+        ArtifactStoreView view = new ArtifactStoreView();
+        ArtifactDaoImpl artDao = new ArtifactDaoImpl();
+        String categoryName = view.getStringFromUserInput(view.artifactCategoryQuestion);
+        artDao.createArtifactCategory(categoryName);
     }
 
     public void assignArtifactToCategory(ArtifactModel artifact){
