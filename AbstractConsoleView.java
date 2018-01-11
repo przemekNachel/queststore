@@ -30,7 +30,9 @@ public abstract class AbstractConsoleView {
   public String getStringFromUserInput(String prompt) {
 
     print(prompt);
-    return scanner.next();
+    String result = scanner.nextLine();
+    System.out.flush();
+    return result;
   }
 
   public char getCharacterFromUserInput(String prompt) {

@@ -7,9 +7,12 @@ public class AuxiliaryStorage {
       Group<Group<User>> school = new Group<>("school");
 
       school.add(new Group<User>("mentors"));
+      school.add(new Group<User>("admin"));
+
       MentorModel mentor1 = new MentorModel("mentor1", "mentor1@cc.com", "aaaa", null);
       MentorModel mentor2 = new MentorModel("mentor2", "mentor2@cc.com", "aaaa", null);
       MentorModel mentor3 = new MentorModel("mentor3", "mentor3@cc.com", "aaaa", null);
+      AdminModel admin = new AdminModel("admin", "aaaa");
 
       Iterator<Group<User>>schoolIter = school.getIterator();
 
@@ -19,6 +22,9 @@ public class AuxiliaryStorage {
               group.add(mentor1);
               group.add(mentor2);
               group.add(mentor3);
+          }
+          if(group.getName().equals("admin")){
+              group.add(admin);
           }
       }
       return school;
