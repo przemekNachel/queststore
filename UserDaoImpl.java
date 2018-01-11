@@ -82,13 +82,24 @@ public class UserDaoImpl implements UserDao{
         return userRemoved;
     }
 
-    public Group<String> getUserGroups(){
+    public Group<String> getUserGroupNames(){
         Group<String> groupsNames = new Group<>("Group names");
         Iterator<Group<User>> groupIterator = UserDaoImpl.users.getIterator();
         while(groupIterator.hasNext()){
             groupsNames.add(groupIterator.next().getName());
         }
         return groupsNames;
+    }
+
+    public Group<User> getUserGroup(String groupName){
+        Iterator<Group<User>> groupIterator = UserDaoImpl.users.getIterator();
+        while(groupIterator.hasNext()){
+            Group<User> userGroup = groupIterator.next();
+            if(userGroup.getName().equals(groupName)){
+                return userGroup;
+            }
+        }
+        return null;
     }
 
     public boolean addUserAdherence(User user, String groupName){
