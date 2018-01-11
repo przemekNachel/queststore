@@ -33,6 +33,7 @@ class ArtifactStoreController{
             System.out.println(view.insufficientFunds);
             return null;
         }
+        return null;
     }
 
     public void editArtifact(){
