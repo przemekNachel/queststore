@@ -1,5 +1,3 @@
-import MentorModel;
-
 class AdminController{
   AdminView view = new AdinView();
 
