@@ -1,7 +1,7 @@
 class ArtifactStoreModel{
-    private Group<Group<Artifact>> artiffacts;
+    private Group<Group<ArtifactModel>> artiffacts;
 
-    public Artifact getStockArtifact(String name){
+    public ArtifactModel getStockArtifact(String name){
 
     }
 
