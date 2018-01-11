@@ -38,4 +38,8 @@ public abstract class User {
 
   public abstract String getRole();
   public abstract String setRole();
+
+  public String toString() {
+    return nickname + "|" + email  + "|" + password + "|" + associatedGroups  + "|";
+  }
 }
