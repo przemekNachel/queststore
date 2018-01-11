@@ -17,7 +17,7 @@ class ArtifactStoreController{
         assignArtifactToCategory(artifact);
     }
 
-    public void buyArtifact(String name, Group<User> consumers){
+    public ArtifactModel buyArtifact(String name, Group<User> consumers){
         ArtifactStoreView view = new ArtifactStoreView();
         ArtifactDaoImpl dao = new ArtifactDaoImpl();
         ArtifactModel artifact = dao.getArtifact(name);
@@ -33,10 +33,12 @@ class ArtifactStoreController{
         if(acceptedPaymentCount == consumers.size()){
           while(iter.hasNext()){
             iter.next().getWallet().withdraw(price);
+            return artifact;
           }
         }
         else{
           System.out.println(view.insufficientFunds);
+          return null;
         }
     }
 
