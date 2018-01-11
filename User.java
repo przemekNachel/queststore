@@ -1,4 +1,4 @@
-public class User {
+public abstract class User {
   protected String nickname;
   protected String password;
   protected String email;
@@ -34,5 +34,5 @@ public class User {
 
   public void setAssociatedGroups(Group<Group<User>> groups) {
     this.associatedGroups = associatedGroups;
-  }
+  }  
 }
