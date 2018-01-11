@@ -46,6 +46,11 @@ public class Group<T> {
     return group.get(index);
   }
 
+  public boolean contains(T elem) {
+
+    return group.contains(elem);
+  }
+
   public ArrayList<T> getGroup() {
 
     return group;
