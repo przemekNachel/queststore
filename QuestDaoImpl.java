@@ -39,7 +39,18 @@ public class QuestDaoImpl implements QuestDao {
     questAdded = false;
   }
   public void updateQuest(QuestModel quest) {
-    
+    Iterator<Group<QuestModel>> questGroupIterator = QuestDaoImpl.artifact.getIterator();
+    while(questGroupIterator.hasNext()) {
+      Group<QuestModel> questGroup = questGroupIterator.next();
+      Iterator<QuestModel> questIterator = questGroup.getIterator();
+      while(questIterator.hasNext()) {
+        QuestModel currentQuest = questIterator.next();
+        if(currentQuest.getName().equals(quest.getName())) {
+          questGroup.remove(currentQuest);
+          questGroup.add(quest);
+        }
+      }
+    }
 
   }
 
