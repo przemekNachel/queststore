@@ -8,12 +8,6 @@ class ArtifactStoreController{
         String priceStr = view.getStringFromUserInput(view.artifactPriceQuestion);
         float price = 2f;
         ArtifactModel artifact = new ArtifactModel(name, description, price);
-        ArtifactDaoImpl dao = new ArtifactDaoImpl();
-        Group<String> group = dao.getArtifactGroupNames();
-        Iterator<String> iter = group.getIterator();
-        while(iter.hasNext()){
-          System.out.println(iter.next());
-        }
         assignArtifactToCategory(artifact);
     }
 
@@ -40,7 +34,7 @@ class ArtifactStoreController{
           //System.out.println(view.insufficientFunds);
         return null;
         }
-    
+
     public void editArtifact(){
         ArtifactStoreView view = new ArtifactStoreView();
         ArtifactDaoImpl dao = new ArtifactDaoImpl();
@@ -70,6 +64,20 @@ class ArtifactStoreController{
     }
 
     public void assignArtifactToCategory(ArtifactModel artifact){
+        ArtifactStoreView view = new ArtifactStoreView();
+        ArtifactDaoImpl dao = new ArtifactDaoImpl();
+        Group<String> group = dao.getArtifactGroupNames();
+        Iterator<String> iter = group.getIterator();
+        String groups = "Choose group: \n";
+        int index = 0;
+        while(iter.hasNext()){
+            groups += Integer.toString(index) + iter.next() + "\n";
+            index++;
+        }
+        String chosenIndex = view.getStringFromUserInput(view.artifactNameQuestion);
+        String chosenGroupName = dao.getArtifactGroupNames().get(Integer.parseInt(chosenIndex));
+        dao.addArtifact(artifact, chosenGroupName);
+
 
     }
 }
