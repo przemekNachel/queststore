@@ -23,7 +23,7 @@ class AdminController{
   public void createGroup(){
       UserDaoImpl userDao = new UserDaoImpl();
       String groupName = view.getStringFromUserInput(view.groupNameQuestion);
-      userDao.createUserGroup(groupName);
+      //userDao.createUserGroup(groupName);
   }
 
   public void editMentor(){

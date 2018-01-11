@@ -20,7 +20,7 @@ class ArtifactStoreController{
         Iterator<CodecoolerModel> iter = consumers.getIterator();
         int acceptedPaymentCount = 0;
         while (iter.hasNext()) {
-            if (iter.next().getWallet().canAfford()) {
+            if (iter.next().getWallet().canAfford(price)) {
                 acceptedPaymentCount++;
             }
         }
@@ -63,7 +63,7 @@ class ArtifactStoreController{
         ArtifactStoreView view = new ArtifactStoreView();
         ArtifactDaoImpl artDao = new ArtifactDaoImpl();
         String categoryName = view.getStringFromUserInput(view.artifactCategoryQuestion);
-        artDao.createArtifactCategory(categoryName);
+        //artDao.createArtifactCategory(categoryName);
     }
 
     public void assignArtifactToCategory(ArtifactModel artifact){
