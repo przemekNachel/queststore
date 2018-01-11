@@ -18,7 +18,7 @@ public class CodecoolerController {
 
   }
 
-  public void useArtifact(Artifact artifact) {
+  public void useArtifact(ArtifactModel artifact) {
 
   }
 }
