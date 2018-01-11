@@ -11,4 +11,8 @@ public class User {
   public void setName(String nickname) {
     this.nickname = nickname;
   }
+
+  public String getPassword() {
+    return password;
+  }
 }
