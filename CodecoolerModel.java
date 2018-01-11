@@ -35,8 +35,9 @@ public class CodecoolerModel extends User {
     artifacts.add(artifact);
   }
 
-  public void getArtifact(String name) { //ArtifactModel
-
+  public ArtifactModel getArtifact(String name) {
+    ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
+    return artifactDao.getArtifact(name);
   }
 
   public Group<String> getGroupNames() {
