@@ -8,13 +8,10 @@ public class UserDaoImpl implements UserDao{
     }
 
     public User getUser(String nickname){
-        System.out.println("In getUser()");
         Iterator<Group<User>> userGroupIterator = UserDaoImpl.users.getIterator();
         while(userGroupIterator.hasNext()){
-            System.out.println("In getUser().while1{}");
             Iterator<User> usersIterator = userGroupIterator.next().getIterator();
             while(usersIterator.hasNext()){
-                System.out.println("In getUser().while2{}");
                 User currentUser = usersIterator.next();
                 System.out.println(currentUser.getName());
                 if(currentUser.getName().equals(nickname)){
@@ -26,58 +23,38 @@ public class UserDaoImpl implements UserDao{
     }
 
     public void addUser(User user){
-        boolean userAdded = false;
         Group<Group<User>> userGroups = user.getAssociatedGroups();
         Iterator<Group<User>> userGroupIterator = userGroups.getIterator();
-        Iterator<Group<User>> allGroupsIterator = UserDaoImpl.users.getIterator();
         while(userGroupIterator.hasNext()){
-            Group<User> userGroup = userGroupIterator.next();
-            String userGroupName = userGroup.getName();
-            while(allGroupsIterator.hasNext()){
-                Group<User> allUsersGroups = allGroupsIterator.next();
-                String allUsersGroupsName = allUsersGroups.getName();
-                if(userGroupName.equals(allUsersGroupsName)){
-                    allUsersGroups.add(user); //zakładamy że dodawany
-                    userAdded = true;         //bedzie element tylko
-                                              //wtedy gdy nie znajduje
-                                              //się już w danym zbiorze
-                }
+            String userGroupName = userGroupIterator.next().getName();
+            if(contains(userGroupName)){
+                getUserGroup(userGroupName).add(user);
+            }else{
+                UserDaoImpl.users.add(new Group<User>(userGroupName));
             }
-            if(!userAdded){
-                users.add(userGroup);
-            }
-            userAdded = false;
         }
     }
 
     public void updateUser(User user){
-        Iterator<Group<User>> userGroupIterator = UserDaoImpl.users.getIterator();
+        Iterator<Group<User>> userGroupIterator = user.getAssociatedGroups().getIterator();
         while(userGroupIterator.hasNext()){
-            Group<User> userGroup = userGroupIterator.next();
-            Iterator<User> usersIterator = userGroup.getIterator();
-            while(usersIterator.hasNext()){
-                User currentUser = usersIterator.next();
-                if(currentUser.getName().equals(user.getName())){
-                    userGroup.remove(currentUser);
-                    userGroup.add(user);
-                }
-            }
+            String tmpName = userGroupIterator.next().getName();
+            Group<User> userGroup = getUserGroup(tmpName);
+            User currentUser = getUser(user.getName());
+            userGroup.remove(currentUser);
+            userGroup.add(user);
         }
     }
 
     public boolean deleteUser(User user){
         boolean userRemoved = false;
-        Iterator<Group<User>> userGroupIterator = UserDaoImpl.users.getIterator();
+        Iterator<Group<User>> userGroupIterator = user.getAssociatedGroups().getIterator();
         while(userGroupIterator.hasNext()){
-            Group<User> userGroup = userGroupIterator.next();
-            Iterator<User> usersIterator = userGroup.getIterator();
-            while(usersIterator.hasNext()){
-                User currentUser = usersIterator.next();
-                if(currentUser.getName().equals(user.getName())){
-                    userGroup.remove(currentUser);
-                    userRemoved = true;
-                }
-            }
+            String tmpName = userGroupIterator.next().getName();
+            Group<User> userGroup = getUserGroup(tmpName);
+            User currentUser = getUser(user.getName());
+            userGroup.remove(currentUser);
+            userRemoved = true;
         }
         return userRemoved;
     }
@@ -115,14 +92,34 @@ public class UserDaoImpl implements UserDao{
 
     public void tmpSetUsers(Group<Group<User>> users){
         this.users = users;
-        int size = 0;
-        System.out.println("In SetUser()");
-        Iterator<Group<User>> userGroupIterator = UserDaoImpl.users.getIterator();
-        while(userGroupIterator.hasNext()){
-            System.out.println("In SetUser().while1{}");
-            userGroupIterator.next();
-            size++;
+        size();
+    }
+
+    private boolean contains(String name){
+        // iterates through all groups
+        Iterator<Group<User>> tmpIter = UserDaoImpl.users.getIterator();
+        while(tmpIter.hasNext()){
+            String tmpName = tmpIter.next().getName();
+            if(tmpName.equals(name)){
+                return true;
+            }
         }
-        System.out.println(size);
+        return false;
+    }
+
+    private boolean contains(String name, Group<User> userGroup ){
+        // iterates through given Group
+        Iterator<User> tmpIter = userGroup.getIterator();
+        while(tmpIter.hasNext()){
+            String tmpName = tmpIter.next().getName();
+            if(tmpName.equals(name)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void size(){
+        System.out.println("Size of 'users': " + this.users.size());
     }
 }
