@@ -31,4 +31,8 @@ public class User {
   public Group<Group<User>> getAssociatedGroups() {
     return associatedGroups;
   }
+
+  public void setAssociatedGroups(Group<Group<User>> groups) {
+    this.associatedGroups = associatedGroups;
+  }
 }
