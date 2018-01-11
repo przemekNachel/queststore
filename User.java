@@ -34,5 +34,8 @@ public abstract class User {
 
   public void setAssociatedGroups(Group<Group<User>> groups) {
     this.associatedGroups = associatedGroups;
-  }  
+  }
+
+  public abstract String getRole();
+  
 }
