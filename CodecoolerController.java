@@ -3,7 +3,7 @@ public class CodecoolerController {
   public CodecoolerModel currentUser = new CodecoolerModel();
 
   public CodecoolerController(CodecoolerModel codecooler) {
-
+    this.currentUser = codecooler;
   }
 
   public void buyArtifact(String name) {
