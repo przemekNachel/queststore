@@ -8,6 +8,10 @@ public class CodecoolerController {
     this.currentUser = codecooler;
   }
 
+  public void start() {
+    view.printLine("From Codecooler");
+  }
+
   public void buyArtifact() {
     UserDaoImpl userDao = new UserDaoImpl();
     ArtifactStoreController store = new ArtifactStoreController();

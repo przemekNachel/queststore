@@ -10,6 +10,10 @@ class AdminController{
       new MentorModel(name, email, password, mentorsGroup);
   }
 
+  public void start() {
+    view.printLine("From Admin");
+  }
+
   public void assignMentorToGroup(){
       UserDaoImpl userDao = new UserDaoImpl();
 

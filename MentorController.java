@@ -26,6 +26,11 @@ public class MentorController {
         view.printLine("User already in database.");
       }
     }
+
+    public void start() {
+      view.printLine("From Mentor");
+    }
+
     public void assignCodecoolerToGroup() {
       UserDaoImpl userDao = new UserDaoImpl();
 
