@@ -3,7 +3,7 @@ import java.util.Iterator;
 public class QuestDaoImpl implements QuestDao {
   private static Group<Group<QuestModel>> quests;
 
-  public Group<Group<Quest>> getAllQuests() {
+  public Group<Group<QuestModel>> getAllQuests() {
     return quests;
   }
 
@@ -26,7 +26,7 @@ public class QuestDaoImpl implements QuestDao {
     Iterator<Group<QuestModel>> allGroupsIterator = QuestDaoImpl.quests.getIterator();
     while(allGroupsIterator.hasNext()) {
       Group<QuestModel> questGroup = allGroupsIterator.next();
-      String questGroupname = questGroup.getName();
+      String questGroupName = questGroup.getName();
       if(questGroupName.equals(groupName)) {
         questGroup.add(quest);
         questAdded = true;
@@ -39,7 +39,7 @@ public class QuestDaoImpl implements QuestDao {
     questAdded = false;
   }
   public void updateQuest(QuestModel quest) {
-    Iterator<Group<QuestModel>> questGroupIterator = QuestDaoImpl.artifact.getIterator();
+    Iterator<Group<QuestModel>> questGroupIterator = QuestDaoImpl.quests.getIterator();
     while(questGroupIterator.hasNext()) {
       Group<QuestModel> questGroup = questGroupIterator.next();
       Iterator<QuestModel> questIterator = questGroup.getIterator();
