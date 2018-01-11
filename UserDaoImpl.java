@@ -70,6 +70,15 @@ public class UserDaoImpl implements UserDao{
         }
     }
 
+    public Group<String> getUserGroups(){
+        Group<String> groupsNames = new Group<>("Group names");
+        Iterator<Group<User>> groupIterator = users.getIterator();
+        while(groupIterator.hasNext()){
+            groupsNames.add(groupIterator.next().getName());
+        }
+        return groupsNames;
+    }
+
     public void tmpSetUsers(Group<Group<User>> users){
         this.users = users;
     }

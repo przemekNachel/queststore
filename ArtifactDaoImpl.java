@@ -20,6 +20,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
         }
         return null;
     }
+
     public void addArtifact(ArtifactModel artifact, String groupName){
         Iterator<Group<ArtifactModel>> allGroupsIterator = ArtifactDaoImpl.artifacts.getIterator();
         while(allGroupsIterator.hasNext()){
@@ -61,6 +62,15 @@ public class ArtifactDaoImpl implements ArtifactDao{
                 }
             }
         }
+    }
+
+    public Group<String> getArtifactGroupNames(){
+        Group<String> groupsNames = new Group<>("Group names");
+        Iterator<Group<ArtifactModel>> groupIterator = ArtifactDaoImpl.artifacts.getIterator();
+        while(groupIterator.hasNext()){
+            groupsNames.add(groupIterator.next().getName());
+        }
+        return groupsNames;
     }
 
     public void tmpSetArtifacts(Group<Group<ArtifactModel>> artifacts){
