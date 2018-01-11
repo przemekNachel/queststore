@@ -1,6 +1,6 @@
 import java.util.Iterator;
 
-public class IteratorImpl<T> implements Iterator {
+public class IteratorImpl<T> implements Iterator<T> {
 
   private int index;
   private Group<T> group;
