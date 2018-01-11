@@ -1,5 +1,5 @@
 public class CodecoolerController {
-  public CodecoolerView view = new CodecoolerModel();
+  public CodecoolerView view = new CodecoolerView();
   public CodecoolerModel currentUser = new CodecoolerModel();
 
   public CodecoolerController(CodecoolerModel codecooler) {
@@ -13,12 +13,15 @@ public class CodecoolerController {
     String artifactName = view.getStringFromUserInput(view.artifactNameQuestion);
     Group<User> consumers = userDao.getUserGroup("students");
 
-    currentUser.addArtifact(store.buyArtifact(artifactName, consumers));
+    ArtifactModel boughtArtifact = store.buyArtifact(artifactName, consumers);
+    currentUser.addArtifact(boughtArtifact);
     userDao.updateUser(currentUser);
 
   }
 
-  public void useArtifact(ArtifactModel artifact) {
-
+  public void useArtifact() {
+    String artifactName = view.getStringFromUserInput(view.artifactNameQuestion);
+    currentUser.getArtifact(artifactName);
+    view.printLine("Artifact has been used!");
   }
 }
