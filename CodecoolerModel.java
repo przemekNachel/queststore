@@ -1,3 +1,5 @@
+import java.util.Iterator;
+
 public class CodecoolerModel extends User {
   public String role = "codecooler";
   public WalletService wallet;
@@ -33,12 +35,21 @@ public class CodecoolerModel extends User {
     artifacts.add(artifact);
   }
 
-  public void getArtifact(String name) { //ArtifactModel
-
+  public ArtifactModel getArtifact(String name) {
+    ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
+    return artifactDao.getArtifact(name);
   }
 
-  public void getGroupNames() { //Group<String>
+  public Group<String> getGroupNames() {
+    Group<String> names = new Group<String>("Group Names");
 
+    Group<Group<User>> groups = getAssociatedGroups();
+    Iterator<Group<User>> iter = groups.getIterator();
+    while(iter.hasNext()) {
+      names.add(iter.next().getName());
+    }
+
+    return names;
   }
 
   public void getStatisticsDisplay() { //String
