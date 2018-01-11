@@ -4,8 +4,8 @@ public class ArtifactModel {
     private Float price;
     private boolean hesBeenUsed;
 
-    public String toString();{
-        
+    public String toString(){
+        return this.name + "\n" + this.description;
     }
 
     public String getName() {
