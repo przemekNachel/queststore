@@ -32,7 +32,7 @@ public abstract class User {
     return associatedGroups;
   }
 
-  public void setAssociatedGroups(Group<Group<User>> groups) {
+  public void setAssociatedGroups(Group<Group<User>> associatedGroups) {
     this.associatedGroups = associatedGroups;
   }
 
