@@ -8,12 +8,13 @@ public class UserDaoImpl implements UserDao{
     }
 
     public User getUser(String nickname){
+
         Iterator<Group<User>> userGroupIterator = UserDaoImpl.users.getIterator();
         while(userGroupIterator.hasNext()){
-            Iterator<User> usersIterator = userGroupIterator.next().getIterator();
+            Group<User> userGroup = userGroupIterator.next();
+            Iterator<User> usersIterator = userGroup.getIterator();
             while(usersIterator.hasNext()){
                 User currentUser = usersIterator.next();
-                System.out.println(currentUser.getName());
                 if(currentUser.getName().equals(nickname)){
                     return currentUser;
                 }
@@ -31,6 +32,7 @@ public class UserDaoImpl implements UserDao{
                 getUserGroup(userGroupName).add(user);
             }else{
                 UserDaoImpl.users.add(new Group<User>(userGroupName));
+                getUserGroup(userGroupName).add(user);
             }
         }
     }
@@ -92,7 +94,6 @@ public class UserDaoImpl implements UserDao{
 
     public void tmpSetUsers(Group<Group<User>> users){
         this.users = users;
-        size();
     }
 
     private boolean contains(String name){
