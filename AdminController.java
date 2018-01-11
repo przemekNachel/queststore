@@ -21,7 +21,9 @@ class AdminController{
   }
 
   public void createGroup(){
-
+      UserDaoImpl userDao = new UserDaoImpl();
+      String groupName = view.getStringFromUserInput(view.groupNameQuestion);
+      userDao.createUserGroup(groupName);
   }
 
   public void editMentor(){
@@ -47,8 +49,11 @@ class AdminController{
   }
 
 
-  public void getMentorDisplay(){
-
+  public String getMentorDisplay(){
+      UserDaoImpl dao = new UserDaoImpl();
+      String mentorName = view.getStringFromUserInput(view.mentorNameQuestion);
+      User mentor = dao.getUser(mentorName);
+      return mentor.toString();
   }
-  
+
 }
