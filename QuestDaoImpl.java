@@ -21,10 +21,25 @@ public class QuestDaoImpl implements QuestDao {
     return null;
   }
 
-  public void addQuest(QuestModel quest) {
-
+  public void addQuest(QuestModel quest, String groupName) {
+    boolean questAdded = false;
+    Iterator<Group<QuestModel>> allGroupsIterator = QuestDaoImpl.quests.getIterator();
+    while(allGroupsIterator.hasNext()) {
+      Group<QuestModel> questGroup = allGroupsIterator.next();
+      String questGroupname = questGroup.getName();
+      if(questGroupName.equals(groupName)) {
+        questGroup.add(quest);
+        questAdded = true;
+      }
+    }if(!questAdded) {
+      Group<QuestModel> tmp = new Group<>(groupName);
+      tmp.add(quest);
+      quests.add(tmp);
+    }
+    questAdded = false;
   }
   public void updateQuest(QuestModel quest) {
+    
 
   }
 
