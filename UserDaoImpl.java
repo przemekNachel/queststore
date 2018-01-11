@@ -8,9 +8,9 @@ public class UserDAOImpl implements UserDAO{
     }
 
     public User getUser(String nickname){
-        Iterator userGroupIterator = users.getIterator();
+        Iterator<Group<User>> userGroupIterator = users.getIterator();
         while(userGroupIterator.hasNext()){
-            Iterator usersIterator = userGroupIterator.next().getIterator();
+            Iterator<User> usersIterator = userGroupIterator.next().getIterator();
             while(usersIterator.hasNext()){
                 User currentUser = usersIterator.next();
                 if(currentUser.getName().equals(nickname)){
@@ -23,8 +23,8 @@ public class UserDAOImpl implements UserDAO{
 
     public void addUser(User user){
         Group<Group<User>> userGroups = user.getAssociatedGroups();
-        Iterator userGroupIterator = userGroups.getIterator();
-        Iterator allGroupsIterator = users.getIterator();
+        Iterator<Group<User>> userGroupIterator = userGroups.getIterator();
+        Iterator<Group<User>> allGroupsIterator = users.getIterator();
         while(userGroupIterator.hasNext()){
             Group<User> userGroup = userGroupIterator.next();
             String userGroupName = userGroup.getName();
@@ -42,10 +42,10 @@ public class UserDAOImpl implements UserDAO{
     }
 
     public void updateUser(User user){
-        Iterator userGroupIterator = users.getIterator();
+        Iterator<Group<User>> userGroupIterator = users.getIterator();
         while(userGroupIterator.hasNext()){
             Group<User> userGroup = userGroupIterator.next();
-            Iterator usersIterator = userGroup.getIterator();
+            Iterator<User> usersIterator = userGroup.getIterator();
             while(usersIterator.hasNext()){
                 User currentUser = usersIterator.next();
                 if(currentUser.getName().equals(user.getName())){
@@ -57,10 +57,10 @@ public class UserDAOImpl implements UserDAO{
     }
 
     public void deleteUser(User user){
-        Iterator userGroupIterator = users.getIterator();
+        Iterator<Group<User>> userGroupIterator = users.getIterator();
         while(userGroupIterator.hasNext()){
             Group<User> userGroup = userGroupIterator.next();
-            Iterator usersIterator = userGroup.getIterator();
+            Iterator<User> usersIterator = userGroup.getIterator();
             while(usersIterator.hasNext()){
                 User currentUser = usersIterator.next();
                 if(currentUser.getName().equals(user.getName())){
