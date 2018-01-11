@@ -29,6 +29,7 @@ public abstract class AbstractConsoleView {
 
   public String getStringFromUserInput(String prompt) {
 
+    print(prompt);
     return scanner.next();
   }
 
