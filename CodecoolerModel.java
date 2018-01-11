@@ -68,7 +68,17 @@ public class CodecoolerModel extends User {
     return statistics;
   }
 
+  public String getCodecoolerGroupDisplay() {
+    String groupNamesString = "";
 
+    Group<Group<User>> groups = getAssociatedGroups();
+    Iterator<Group<User>> iter = groups.getIterator();
+    while(iter.hasNext()) {
+      groupNamesString += "|" + iter.next().getName();
+    }
+
+    return groupNamesString;
+  }
 
   public WalletService getWallet() {
     return wallet;
