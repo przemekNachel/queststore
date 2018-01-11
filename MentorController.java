@@ -3,9 +3,9 @@ public class MentorController {
 
     public void createCodecooler() {
 
-      String nickname = view.getStringFromUserInput("provide user nickname");
-      String email = view.getStringFromUserInput("provide user mail");
-      String password = view.getStringFromUserInput("provide user password");
+      String nickname = view.getStringFromUserInput(view.userNicknameQUestion);
+      String email = view.getStringFromUserInput(view.userEmailQuestion);
+      String password = view.getStringFromUserInput(view.userPasswordQuestion);
 
       CodecoolerModel codecooler = new CodecoolerModel("codecooler", nickname, email, password);
       UserDaoImpl userDao = new UserDaoImpl();
@@ -16,15 +16,7 @@ public class MentorController {
       }
 
       else {
-        view.printLine("User already in database.")
+        view.printLine("User already in database.");
       }
-
-
-      // instantiate userDaoImpl object
-      // implement adding codecooler
     }
-    // Using userDaoImpl, call addUser() method with has the user passed
-    // check through day if such user already exists
-    // by dao method getUser()
-    // if returns null -- create new user, else, throw error
 }
