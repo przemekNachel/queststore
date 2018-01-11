@@ -14,4 +14,9 @@ class WalletService{
     }
   }
 
+  public void payIn(float amount){
+    balance += amount;
+  }
+
+
 }
