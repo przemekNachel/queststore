@@ -1,16 +1,21 @@
 public class CodecoolerModel extends User {
   public String role = "codecooler";
   public WalletService wallet;
-  // public Level level;
   public Group<ArtifactModel> artifacts;
+  // public Level level;
 
-  public CodecoolerModel(String nickname, String email, String password, Group<User> studentGroup) {
+  public CodecoolerModel() {
+
+  }
+
+  public CodecoolerModel(String nickname, String email, String password, WalletService wallet, Group<User> studentGroup) {
     this.nickname = nickname;
     this.email = email;
     this.password = password;
+    this.wallet = wallet;
 
 
-    associatedGroups = new Group<Group<User>>();
+    associatedGroups = new Group<Group<User>>("Groups to which adheres");
     associatedGroups.add(studentGroup);
   }
 
@@ -44,11 +49,11 @@ public class CodecoolerModel extends User {
 
   }
 
-  public void getWallet() { //WalletService
-
+  public WalletService getWallet() {
+    return wallet;
   }
 
-  // public String toString() { 
+  // public String toString() {
   //
   // }
 }
