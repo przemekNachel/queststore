@@ -18,5 +18,7 @@ class WalletService{
     balance += amount;
   }
 
-
+  public String toString(){
+    return String.valueOf(this.balance);
+  }
 }
