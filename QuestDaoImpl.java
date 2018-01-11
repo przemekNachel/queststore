@@ -54,7 +54,19 @@ public class QuestDaoImpl implements QuestDao {
 
   }
 
-  public void deleteQuest(QuestModel quest) {
-
+  public boolean deleteQuest(QuestModel quest) {
+    boolean questRemoved = false;
+    Iterator<Group<QuestModel>> questGroupIterator = QuestDaoImpl.quests.getIterator();
+    while(questGroupIterator.hasNext()) {
+      Group<QuestModel> questGroup = questGroupIterator.next();
+      Iterator<QuestModel> questIterator = questGroup.getIterator();
+      while(questIterator.hasNext()) {
+        QuestModel currentQuest = questIterator.next();
+        if(currentQuest.getName().equals(quest.getName())) {
+          questGroup.remove(currentQuest);
+          questRemoved = true;
+        }
+      }
+    } return questRemoved;
   }
 }
