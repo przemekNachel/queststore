@@ -23,7 +23,23 @@ class ArtifactStoreController{
     public void buyArtifact(String name, Group<User> consumers){
         ArtiffactDaoImpl dao = new ArtiffactDaoImpl();
         ArtifactModel artifact = dao.getArtifact(name);
-
+        float priceDivider = consumers.size();
+        float price = artifact.getPrice() / priceDivider;
+        Iterator<User> iter = consumers.getIterator();
+        int acceptedPaymentCount = 0;
+        while(iter.hasNext()){
+          if(iter.next().getWallet().canAfford()){
+            acceptedPaymentCount++;
+          }
+        }
+        if(acceptedPaymentCount == consumers.size()){
+          while(iter.hasNext()){
+            iter.next.getWallet().withdraw(price);
+          }
+        }
+        else{
+          system.out.println(view.insufficientFunds)
+        }
     }
 
     public void editArtifact(){

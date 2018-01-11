@@ -9,7 +9,6 @@ class WalletService{
   }
 
   public void withdraw(float amount){
-    if(this.canAfford(amount)){
       balance -= amount;
     }
   }
