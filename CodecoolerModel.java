@@ -4,6 +4,16 @@ public class CodecoolerModel extends User {
   public Level level;
   public Group<Artifact> artifacts;
 
+  public CodecoolerModel(String nickname, String email, String password, Group<User> studentGroup) {
+    this.nickname = nickname;
+    this.email = email;
+    this.password = password;
+
+
+    associatedGroups = new Group<Group<User>>();
+    associatedGroups.add(student);
+  }
+
   @Override
   public String getRole() {
     return role;
@@ -12,5 +22,9 @@ public class CodecoolerModel extends User {
   @Override
   public void setRole(String role) {
     this.role = role;
+  }
+
+  public void addArtifact(Artifact artifact) {
+
   }
 }
