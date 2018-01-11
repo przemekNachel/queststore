@@ -8,7 +8,17 @@ public class QuestDaoImpl implements QuestDao {
   }
 
   public QuestModel getQuest(String name) {
-
+    Iterator<Group<QuestModel>> questGroupIterator = QuestDaoImpl.quests.getIterator();
+    while(questGroupIterator.hasNext()) {
+      Iterator<QuestModel> questsIterator = questGroupIterator.next().getIterator();
+      while(questsIterator.hasNext()) {
+        QuestModel currentQuest = questsIterator.next();
+        if(currentQuest.getName().equals(name)) {
+          return currentQuest;
+        }
+      }
+    }
+    return null;
   }
 
   public void addQuest(QuestModel quest) {
