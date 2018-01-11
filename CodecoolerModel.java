@@ -27,4 +27,28 @@ public class CodecoolerModel extends User {
   public void addArtifact(ArtifactModel artifact) {
 
   }
+
+  public void getArtifact(String name) { //ArtifactModel
+
+  }
+
+  public void getGroupNames() { //Group<String>
+
+  }
+
+  public void getStatisticsDisplay() { //String
+
+  }
+
+  public void getCodecoolerGroupDisplay() { //String
+
+  }
+
+  public void getWallet() { //WalletService
+
+  }
+
+  // public String toString() { 
+  //
+  // }
 }
