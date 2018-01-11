@@ -11,5 +11,8 @@ public class MentorModel extends User {
     this.role = role;
   }
 
-
+  @Override
+  public String toString() {
+    return role + "|" + nickname + "|" + email  + "|" + password + "|" + associatedGroups  + "|";
+  }
 }
