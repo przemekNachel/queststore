@@ -1,5 +1,5 @@
 class AdminController{
-  AdminView view = new AdinView();
+  AdminView view = new AdminView();
 
   public void createMentor(){
   }
