@@ -1,3 +1,5 @@
+import java.util.Iterator;
+
 public class CodecoolerController {
   public CodecoolerView view = new CodecoolerView();
   public CodecoolerModel currentUser = new CodecoolerModel();
@@ -13,7 +15,13 @@ public class CodecoolerController {
     String artifactName = view.getStringFromUserInput(view.artifactNameQuestion);
     Group<User> consumers = userDao.getUserGroup("students");
 
-    ArtifactModel boughtArtifact = store.buyArtifact(artifactName, consumers);
+    Group<CodecoolerModel> converted = new Group<>("Codecooler");
+    Iterator<User> iter = consumers.getIterator();
+    while (iter.hasNext()) {
+      converted.add((CodecoolerModel)iter.next());
+    }
+
+    ArtifactModel boughtArtifact = store.buyArtifact(artifactName, converted);
     currentUser.addArtifact(boughtArtifact);
     userDao.updateUser(currentUser);
 
