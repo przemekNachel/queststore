@@ -51,7 +51,7 @@ public abstract class User {
       strGroups += iter.next().getName() + ";";
     }
     strGroups = removeLastChar(strGroups);
-    return nickname + "|" + email  + "|" + password + "|" + strGroups  + "|";
+    return role + "|" + nickname + "|" + email  + "|" + password + "|" + strGroups  + "|";
   }
 
   private String removeLastChar(String str) {

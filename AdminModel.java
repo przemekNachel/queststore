@@ -4,6 +4,7 @@ public class AdminModel extends User {
     this.role = Role.ADMIN;
     this.nickname = nickname;
     this.password = password;
+    this.email = "127.0.0.1";
   }
 
   @Override
@@ -16,8 +17,4 @@ public class AdminModel extends User {
     this.role = role;
   }
 
-  @Override
-  public String toString() {
-    return role + "|" + nickname + "|" + password;
-  }
 }

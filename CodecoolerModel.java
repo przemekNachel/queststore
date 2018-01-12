@@ -83,8 +83,4 @@ public class CodecoolerModel extends User {
   public WalletService getWallet() {
     return wallet;
   }
-
-  public String toString() {
-    return "Blank lol";
-  }
 }
