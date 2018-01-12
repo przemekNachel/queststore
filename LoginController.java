@@ -18,7 +18,7 @@ public class LoginController {
 
     String nickname = "";
     String password = "";
-
+    view.clearScreen();
     view.printLine(view.welcomeMessage);
     boolean wantToQuit = false;
     do {
