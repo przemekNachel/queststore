@@ -64,7 +64,11 @@ public class MentorController {
       // TODO Level object -- next sprint
 
       Group<User> studentsGroup = userDao.getUserGroup("students");
+      if (studentsGroup == null) {
 
+        Group<User> newStudentsGroup = new Group<>("students");
+        userDao.addUserCategory(newStudentsGroup);
+      }
 
       WalletService wallet = new WalletService();
       CodecoolerModel codecooler = new CodecoolerModel(nickname, email, password, wallet, studentsGroup); // TODO add level to the object -- next sprint
