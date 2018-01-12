@@ -1,3 +1,5 @@
+import java.util.Iterator;
+
 class AdminController{
   AdminView view;
 
@@ -8,7 +10,8 @@ class AdminController{
         new MenuOption("2", "Assign a mentor to a group"),
         new MenuOption("3", "Create user group"),
         new MenuOption("4", "Edit mentor"),
-        new MenuOption("5", "View mentor's details")
+        new MenuOption("5", "View mentor's details"),
+        new MenuOption("6", "View groups")
         );
 
     view = new AdminView(adminMenu);
@@ -62,6 +65,10 @@ class AdminController{
       case "5":
         view.printLine(getMentorDisplay());
         break;
+      // view all existing groups
+      case "6":
+        view.printLine(getGroupsDisplay());
+        break;
     }
   }
 
@@ -72,13 +79,23 @@ class AdminController{
       String groupName = view.getStringFromUserInput(view.groupNameQuestion);
 
       User user = userDao.getUser(name);
-      userDao.addUserAdherence(user, groupName);
+      if(!userDao.addUserAdherence(user, groupName)){
+          view.printLine(view.assignMentorToFroupError);
+      }else{
+
+          Group<Group<User>> assGroups = user
+            .getAssociatedGroups();
+          assGroups.add(userDao.getUserGroup(groupName));
+          user.setAssociatedGroups(assGroups);
+      }
+
   }
 
   public void createGroup(){
       UserDaoImpl userDao = new UserDaoImpl();
       String groupName = view.getStringFromUserInput(view.groupNameQuestion);
-      //userDao.createUserGroup(groupName);
+      Group<User> tmp = new Group<>(groupName);
+      userDao.addUserGroup(tmp);
   }
 
   public void editMentor(){
@@ -103,6 +120,17 @@ class AdminController{
       }
   }
 
+  public String getGroupsDisplay(){
+      UserDaoImpl dao = new UserDaoImpl();
+      Group<String> groupNames = dao.getUserGroupNames();
+      Iterator<String> iter = groupNames.getIterator();
+      System.out.println(groupNames.size());
+      String groupsFormatted = "";
+      while(iter.hasNext()){
+          groupsFormatted += iter.next() + " | ";
+      }
+      return groupsFormatted;
+  }
 
   public String getMentorDisplay(){
       UserDaoImpl dao = new UserDaoImpl();

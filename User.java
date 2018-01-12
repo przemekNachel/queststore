@@ -47,8 +47,8 @@ public abstract class User {
     String strGroups = "";
     Iterator<Group<User>> iter = associatedGroups.getIterator();
     while (iter.hasNext()) {
-
-      strGroups += iter.next().getName() + ";";
+      Group<User> tmp = iter.next();
+      strGroups += tmp.getName() + ";";
     }
     strGroups = removeLastChar(strGroups);
     return role + "|" + nickname + "|" + email  + "|" + password + "|" + strGroups  + "|";

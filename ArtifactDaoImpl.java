@@ -93,6 +93,10 @@ public class ArtifactDaoImpl implements ArtifactDao{
         return null;
     }
 
+    public void createArtifactGroup(Group<ArtifactModel> group){
+        artifacts.add(group);
+    }
+
     public void tmpSetArtifacts(Group<Group<ArtifactModel>> artifacts){
         this.artifacts = artifacts;
     }

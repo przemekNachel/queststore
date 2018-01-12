@@ -91,6 +91,9 @@ public class UserDaoImpl implements UserDao{
         }
         return false;
     }
+    public void addUserGroup(Group<User> group){
+        users.add(group);
+    }
 
     public void tmpSetUsers(Group<Group<User>> users){
         this.users = users;

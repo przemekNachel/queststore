@@ -11,26 +11,70 @@ class ArtifactStoreController{
         assignArtifactToCategory(artifact);
     }
 
+    public void buyProductProcess(CodecoolerModel user){
+        ArtifactStoreView view = new ArtifactStoreView();
+        ArtifactDaoImpl dao = new ArtifactDaoImpl();
+        UserDaoImpl userDao = new UserDaoImpl();
+        Group<String> names = dao.getArtifactGroupNames();
+        Iterator<String> iter = names.getIterator();
+        String groupsFormatted = "";
+        while(iter.hasNext()){
+            String group = iter.next();
+            Group<ArtifactModel> arts  = dao.getArtifactGroup(group);
+            groupsFormatted += iter.next() + " :\n";
+            Iterator<ArtifactModel> iterArtifact = arts.getIterator();
+            while(iterArtifact.hasNext()){
+                groupsFormatted += "*" + iterArtifact.next() + "\n";
+            }
+        }
+        view.printLine(view.productsMessage);
+        view.printLine(groupsFormatted);
+
+        String artifactName = view.getStringFromUserInput(view.artifactNameQuestion);
+        Group<User> consumers = userDao.getUserGroup("students");
+
+        Group<CodecoolerModel> converted = new Group<>("Codecoolers");
+        Iterator<User> iterUser = consumers.getIterator();
+        while (iterUser.hasNext()) {
+          converted.add((CodecoolerModel)iterUser.next());
+        }
+
+        ArtifactModel boughtArtifact = buyArtifact(artifactName, converted);
+        if (boughtArtifact == null){
+            view.printLine(view.artifactNotFoundError);
+            return;
+        }
+        user.addArtifact(boughtArtifact);
+        userDao.updateUser(user);
+
+    }
+
     public ArtifactModel buyArtifact(String name, Group<CodecoolerModel> consumers) {
+
         ArtifactStoreView view = new ArtifactStoreView();
         ArtifactDaoImpl dao = new ArtifactDaoImpl();
         ArtifactModel artifact = dao.getArtifact(name);
+        if(artifact == null){
+            return null;
+        }
         float priceDivider = consumers.size();
         float price = artifact.getPrice() / priceDivider;
         Iterator<CodecoolerModel> iter = consumers.getIterator();
         int acceptedPaymentCount = 0;
+        // check if all consumers can pay
         while (iter.hasNext()) {
             if (iter.next().getWallet().canAfford(price)) {
                 acceptedPaymentCount++;
             }
         }
+
         if (acceptedPaymentCount == consumers.size()) {
             while (iter.hasNext()) {
                 iter.next().getWallet().withdraw(price);
                 return artifact;
             }
         } else {
-            System.out.println(view.insufficientFunds);
+            view.printLine(view.insufficientFunds);
             return null;
         }
         return null;
@@ -39,24 +83,35 @@ class ArtifactStoreController{
     public void editArtifact(){
         ArtifactStoreView view = new ArtifactStoreView();
         ArtifactDaoImpl dao = new ArtifactDaoImpl();
+
         String artName = view.getStringFromUserInput(view.artifactNameQuestion);
         ArtifactModel artifact = dao.getArtifact(artName);
-        String choice = view.getStringFromUserInput(view.artifactEditChoice);
-        if (choice.equals("1")){
-          String name = view.getStringFromUserInput(view.artifactNameQuestion);
-          artifact.setName(name);
+
+        if(artifact == null){
+            view.printLine(view.artifactNotFoundError);
+            return;
         }
-        else if(choice.equals("2")){
-          String description = view.getStringFromUserInput(view.artifactDescriptionQuestion);
-          artifact.setDescription(description);
-        }
-        else if(choice.equals("3")){
-          String priceStr = view.getStringFromUserInput(view.artifactPriceQuestion);
-          float price = Float.parseFloat(priceStr);
-          artifact.setPrice(price);
-        }
-        else{
-          System.out.println(view.noSuchOption);
+        String choice = view.getStringFromUserInput(view.artifactEditChoice); //make menu from this
+
+
+        switch(choice){
+            case "1":
+                String name = view.getStringFromUserInput(view.artifactNameQuestion);
+                artifact.setName(name);
+                break;
+            case "2":
+                String description = view.getStringFromUserInput(view
+                                                        .artifactDescriptionQuestion);
+                artifact.setDescription(description);
+                break;
+            case "3":
+                String priceStr = view.getStringFromUserInput(view
+                                                            .artifactPriceQuestion);
+                float price = Float.parseFloat(priceStr);
+                artifact.setPrice(price);
+                break;
+            default :
+                view.printLine(view.noSuchOption);
         }
     }
 
@@ -64,7 +119,9 @@ class ArtifactStoreController{
         ArtifactStoreView view = new ArtifactStoreView();
         ArtifactDaoImpl artDao = new ArtifactDaoImpl();
         String categoryName = view.getStringFromUserInput(view.artifactCategoryQuestion);
-        //artDao.createArtifactCategory(categoryName);
+
+        Group<ArtifactModel> tmp = new Group<>(categoryName);
+        artDao.createArtifactGroup(tmp);
     }
 
     public void assignArtifactToCategory(ArtifactModel artifact){
@@ -72,16 +129,17 @@ class ArtifactStoreController{
         ArtifactDaoImpl dao = new ArtifactDaoImpl();
         Group<String> group = dao.getArtifactGroupNames();
         Iterator<String> iter = group.getIterator();
-        String groups = "Choose group: \n";
+        view.printLine(view.chooseGroup);
+        String groups = "";
         int index = 0;
         while(iter.hasNext()){
             groups += Integer.toString(index) + iter.next() + "\n";
             index++;
         }
-        String chosenIndex = view.getStringFromUserInput(view.artifactNameQuestion);
-        String chosenGroupName = dao.getArtifactGroupNames().get(Integer.parseInt(chosenIndex));
-        dao.addArtifact(artifact, chosenGroupName);
-
+        view.printLine(groups);
+        String groupName = view.getStringFromUserInput(view.artifactNameQuestion);
+        dao.addArtifact(artifact, groupName); // adds artifact to category
+                                              // even if category doesnt exist
 
     }
 }
