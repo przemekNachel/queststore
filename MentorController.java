@@ -68,6 +68,7 @@ public class MentorController {
 
         Group<User> newStudentsGroup = new Group<>("students");
         userDao.addUserGroup(newStudentsGroup);
+        studentsGroup = newStudentsGroup;
       }
 
       WalletService wallet = new WalletService();
