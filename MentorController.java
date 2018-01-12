@@ -42,7 +42,7 @@ public class MentorController {
           break;
         // mark quest completion
         case "3":
-          // TODO
+          // TODO markCodecoolerArtifactUsage();
           break;
         // mark artifact usage
         case "4":
@@ -116,7 +116,7 @@ public class MentorController {
     // }
     //
     // public void markCodecoolerArtifactUsage() {
-    //   // mark that codecooler's artifact has been use and disable it's usage.
-    // }
+    //    // mark that codecooler's artifact has been use and disable it's usage.
+     // }
 
 }
