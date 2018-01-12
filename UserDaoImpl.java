@@ -16,7 +16,6 @@ public class UserDaoImpl implements UserDao{
 
             while(usersIterator.hasNext()){
                 User currentUser = usersIterator.next();
-                System.out.println(currentUser);
                 if(currentUser.getName().equals(nickname)){
                     return currentUser;
                 }
