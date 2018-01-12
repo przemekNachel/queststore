@@ -4,16 +4,22 @@ import java.util.Iterator;
 public abstract class AbstractConsoleView {
 
   protected Menu menu;
-  private Scanner scanner;
+  private static final String ESCAPE_SEQ_CLEAR_SCREEN = "\033[H\033[2J";
+  public static Scanner scanner;
 
   public AbstractConsoleView() {
 
     scanner = new Scanner(System.in);
   }
 
-  public void clearScreen(){
-      System.out.print("\033[H\033[2J");
-      System.out.flush();
+  public static void closeScanner() {
+
+    AbstractConsoleView.scanner.close();
+  }
+
+  public void clearScreen() {
+
+      print(AbstractConsoleView.ESCAPE_SEQ_CLEAR_SCREEN);
   }
 
   public void printLine(String message) {
@@ -28,16 +34,14 @@ public abstract class AbstractConsoleView {
   }
 
   public void printMenu(Menu menu) {
-    
+
     printLine(menu.toString());
   }
 
   public String getStringFromUserInput(String prompt) {
 
     print(prompt);
-    String result = scanner.nextLine();
-    System.out.flush();
-    return result;
+    return scanner.nextLine();
   }
 
   public char getCharacterFromUserInput(String prompt) {

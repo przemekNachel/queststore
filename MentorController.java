@@ -1,5 +1,56 @@
 public class MentorController {
-    public MentorView view = new MentorView();
+    public MentorView view;
+
+    public MentorController() {
+      Menu mentorMenu = new Menu(
+          new MenuOption("0", "Exit"),
+          new MenuOption("1", "Create a Codecooler"),
+          new MenuOption("2", "Assign a Codecooler to a group"),
+          new MenuOption("3", "Mark Codecooler's quest completion"),
+          new MenuOption("4", "Mark Codecooler's artifact usage")
+          );
+
+      view = new MentorView(mentorMenu);
+    }
+
+    public void start() {
+
+      boolean requestedExit = false;
+      do {
+        MenuOption userOption = view.getMenuOptionFromUserInput(" Please choose option: ");
+        if (userOption.getId().equals("0")) {
+          requestedExit = true;
+          view.clearScreen();
+        } else {
+
+          String chosenOption = userOption.getId();
+          handleUserChoice(chosenOption);
+        }
+      } while (!requestedExit);
+    }
+
+    private void handleUserChoice(String userChoice) {
+
+      switch (userChoice) {
+        // codecooler creation
+        case "1":
+          createCodecooler();
+          break;
+        // assigning codecooler to a group
+        case "2":
+          assignCodecoolerToGroup();
+          break;
+        // mark quest completion
+        case "3":
+          // TODO
+          break;
+        // mark artifact usage
+        case "4":
+          // TODO
+          break;
+      }
+    }
+
 
     public void createCodecooler() {
       UserDaoImpl userDao = new UserDaoImpl();
@@ -13,7 +64,11 @@ public class MentorController {
       // TODO Level object -- next sprint
 
       Group<User> studentsGroup = userDao.getUserGroup("students");
+      if (studentsGroup == null) {
 
+        Group<User> newStudentsGroup = new Group<>("students");
+        userDao.addUserCategory(newStudentsGroup);
+      }
 
       WalletService wallet = new WalletService();
       CodecoolerModel codecooler = new CodecoolerModel(nickname, email, password, wallet, studentsGroup); // TODO add level to the object -- next sprint
@@ -27,10 +82,6 @@ public class MentorController {
       }
     }
 
-    public void start() {
-      view.printLine("From Mentor");
-    }
-
     public void assignCodecoolerToGroup() {
       UserDaoImpl userDao = new UserDaoImpl();
 
@@ -38,7 +89,15 @@ public class MentorController {
       String groupName = view.getStringFromUserInput(view.userGroupQuestion);
 
       User user = userDao.getUser(nickname);
-      userDao.addUserAdherence(user, groupName);
+      if(!userDao.addUserAdherence(user, groupName)) {
+
+        view.printLine(view.codecoolerAlreadyInGroupOrGroupAbsent);
+      } else {
+
+        Group<Group<User>> associatedGroups = user.getAssociatedGroups();
+        associatedGroups.add(userDao.getUserGroup(groupName));
+        user.setAssociatedGroups(associatedGroups);
+      }
     }
 
     // public void markCodecoolerQuestCompletion() {
