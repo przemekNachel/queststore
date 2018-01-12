@@ -1,3 +1,5 @@
+import java.util.Iterator;
+
 public abstract class User {
   protected Role role;
   protected String nickname;
@@ -41,6 +43,23 @@ public abstract class User {
   public abstract void setRole(Role role);
 
   public String toString() {
-    return nickname + "|" + email  + "|" + password + "|" + associatedGroups  + "|";
+
+    String strGroups = "";
+    Iterator<Group<User>> iter = associatedGroups.getIterator();
+    while (iter.hasNext()) {
+
+      strGroups += iter.next().getName() + ";";
+    }
+    strGroups = removeLastChar(strGroups);
+    return nickname + "|" + email  + "|" + password + "|" + strGroups  + "|";
   }
+
+  private String removeLastChar(String str) {
+      if (str == null || str.length() == 0) {
+          return str;
+      }
+      return str.substring(0, str.length()-1);
+  }
+
+
 }
