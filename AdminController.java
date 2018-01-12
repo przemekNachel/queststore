@@ -116,7 +116,7 @@ class AdminController{
           mentor.setPassword(password);
       }
       else{
-          System.out.println(view.noSuchOption);
+          view.printLine(view.noSuchOption);
       }
   }
 
@@ -136,7 +136,11 @@ class AdminController{
       UserDaoImpl dao = new UserDaoImpl();
       String mentorName = view.getStringFromUserInput(view.mentorNameQuestion);
       User mentor = dao.getUser(mentorName);
-      return mentor.toString();
+      if (mentor != null && mentor.getRole() == Role.MENTOR) {
+
+        return mentor.toString();
+      }
+      return view.noMentorOfSuchName;
   }
 
 }

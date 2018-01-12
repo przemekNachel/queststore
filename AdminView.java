@@ -14,4 +14,5 @@ class AdminView extends AbstractConsoleView {
   public String levelTresholdQuestion = "Provide lvl's treshold";
   public String noSuchOption = "No such option!";
   public String assignMentorToFroupError = "Given group does not exist or mentor is already in group!";
+  public String noMentorOfSuchName = "There is no mentor of given name.";
 }
