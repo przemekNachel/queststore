@@ -60,4 +60,15 @@ public class Group<T> {
 
     return group.size();
   }
+
+  public String toString() {
+
+    String result = "";
+    IteratorImpl<T> iter = getIterator();
+    while (iter.hasNext()) {
+
+      result += "\n  " + this.name + ": " + iter.next().toString();
+    }
+    return result;
+  }
 }
