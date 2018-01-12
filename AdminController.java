@@ -79,7 +79,8 @@ class AdminController{
       String groupName = view.getStringFromUserInput(view.groupNameQuestion);
 
       User user = userDao.getUser(name);
-      if(!userDao.addUserAdherence(user, groupName)){
+
+      if(!(userDao.addUserAdherence(user, groupName)) || user == null){
           view.printLine(view.assignMentorToFroupError);
       }else{
 

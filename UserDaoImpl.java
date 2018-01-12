@@ -13,8 +13,10 @@ public class UserDaoImpl implements UserDao{
         while(userGroupIterator.hasNext()){
             Group<User> userGroup = userGroupIterator.next();
             Iterator<User> usersIterator = userGroup.getIterator();
+
             while(usersIterator.hasNext()){
                 User currentUser = usersIterator.next();
+                System.out.println(currentUser);
                 if(currentUser.getName().equals(nickname)){
                     return currentUser;
                 }
