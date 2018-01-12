@@ -17,6 +17,8 @@ public class MentorController {
 
       boolean requestedExit = false;
       do {
+        UserDao userDao = new UserDaoImpl();
+        view.printLine(userDao.getAllUsers().toString());
         MenuOption userOption = view.getMenuOptionFromUserInput(" Please choose option: ");
         if (userOption.getId().equals("0")) {
           requestedExit = true;
