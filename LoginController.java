@@ -43,6 +43,7 @@ public class LoginController {
 
     } while(!wantToQuit);
     view.printLine(view.goodbyeMessage);
+    AbstractConsoleView.closeScanner();
   }
 
   public void engageAppropriateController(User user) {
