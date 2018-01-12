@@ -14,4 +14,5 @@ class ArtifactStoreView extends AbstractConsoleView{
     public String productsMessage = "Categories:";
     public String artifactNotFoundError = "No such artifact found!";
     public String chooseGroup = "Choose group: ";
+    public String shopMaintenanceMsg = "Shop under maintenance. Come back later!";
 }

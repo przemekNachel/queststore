@@ -12,12 +12,18 @@ class ArtifactStoreController{
     }
 
     public void buyProductProcess(CodecoolerModel user){
+        boolean shopUpdated = true;
         ArtifactStoreView view = new ArtifactStoreView();
         ArtifactDaoImpl dao = new ArtifactDaoImpl();
         UserDaoImpl userDao = new UserDaoImpl();
+        if (shopUpdated){
+            view.printLine(view.shopMaintenanceMsg);
+            return;
+        }
         Group<String> names = dao.getArtifactGroupNames();
         Iterator<String> iter = names.getIterator();
         String groupsFormatted = "";
+
         while(iter.hasNext()){
             String group = iter.next();
             Group<ArtifactModel> arts  = dao.getArtifactGroup(group);
