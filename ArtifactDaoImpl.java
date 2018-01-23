@@ -1,5 +1,4 @@
 import java.sql.*;
-import java.util.Iterator;
 import java.util.Objects;
 
 public class ArtifactDaoImpl implements ArtifactDao{
@@ -30,7 +29,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
 
             String artName = rs.getString("name");
-            String artDesc = rs.getString("desc");
+            String artDesc = rs.getString("descr");
             float artPrice = rs.getFloat("price");
 
             stmt.close();
@@ -55,7 +54,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
             Objects.requireNonNull(con).setAutoCommit(false);
             Statement stmt = con.createStatement();
 
-            String sql = ("INSERT INTO artifact_store (name, desc, price)" +
+            String sql = ("INSERT INTO artifact_store (name, descr, price)" +
                     "VALUES('"+ artName + "', '" + artDesc + "', '" + artPrice + "');");
             stmt.executeUpdate(sql);
 
@@ -82,7 +81,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
             Statement stmt = con.createStatement();
 
             String sql = ("UPDATE artifact_store SET " +
-                    "desc='" + artDesc + "', " +
+                    "descr='" + artDesc + "', " +
                     "price='" + artPrice + "' " +
                     "WHERE name='" + artName+ "';");
 
@@ -144,14 +143,41 @@ public class ArtifactDaoImpl implements ArtifactDao{
     }
 
     public Group<ArtifactModel> getArtifactGroup(String groupName){
-        Iterator<Group<ArtifactModel>> groupIterator = ArtifactDaoImpl.artifacts.getIterator();
-        while(groupIterator.hasNext()){
-            Group<ArtifactModel> artifactGroup = groupIterator.next();
-            if(artifactGroup.getName().equals(groupName)){
-                return artifactGroup;
+        Group<ArtifactModel> group = new Group<>("Artifact group");
+
+        try {
+            Connection con = connectToDatabase();
+            Statement stmt = Objects.requireNonNull(con).createStatement();
+
+            String sql = "SELECT\n" +
+                    "  artifact_store.artifact_id, name, descr, price, group_names.group_name\n" +
+                    "FROM\n" +
+                    "  artifact_store\n" +
+                    "  INNER JOIN artifact_associations ON artifact_associations.association_id = artifact_store.artifact_id\n" +
+                    "  INNER JOIN group_names ON group_names.group_id = artifact_associations.group_id\n" +
+                    " WHERE group_name='" + groupName + "';";
+
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while(rs.next()) {
+                String name = rs.getString("name");
+                String descr = rs.getString("descr");
+                float price = rs.getFloat("price");
+                group.add(new ArtifactModel(name, descr, price));
             }
+
+            stmt.close();
+            rs.close();
+            con.close();
+
+            System.out.println(group);
+
+            return group;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable to fetch artifact group " + e.getMessage());
         }
-        return null;
+
     }
 
     public void createArtifactGroup(Group<ArtifactModel> group){
