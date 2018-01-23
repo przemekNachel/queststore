@@ -20,25 +20,25 @@ public class ArtifactDaoImpl implements ArtifactDao{
         return artifacts;
     }
 
-        public ArtifactModel getArtifact(String name){
-            try {
-                Connection con = connectToDatabase();
-                Statement stmt = Objects.requireNonNull(con).createStatement();
+    public ArtifactModel getArtifact(String name){
+        try {
+            Connection con = connectToDatabase();
+            Statement stmt = Objects.requireNonNull(con).createStatement();
 
-                String sql = ("SELECT * FROM artifact_store WHERE name='" + name + "';");
-                ResultSet rs = stmt.executeQuery(sql);
+            String sql = ("SELECT * FROM artifact_store WHERE name='" + name + "';");
+            ResultSet rs = stmt.executeQuery(sql);
 
 
-                String art_name = rs.getString("name");
-                String art_desc = rs.getString("desc");
-                float art_price = rs.getFloat("price");
+            String artName = rs.getString("name");
+            String artDesc = rs.getString("desc");
+            float artPrice = rs.getFloat("price");
 
-                return new ArtifactModel(art_name, art_desc, art_price);
+            return new ArtifactModel(artName, artDesc, artPrice);
 
-            } catch (SQLException e) {
-                throw new RuntimeException("Unable to fetch the artifact: " + e.getMessage());
-            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable to fetch the artifact: " + e.getMessage());
         }
+    }
 
     public void addArtifact(ArtifactModel artifact, String groupName){
         String artName = artifact.getName();
@@ -59,23 +59,36 @@ public class ArtifactDaoImpl implements ArtifactDao{
             con.commit();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Unable to add artifact to the database." + e.getMessage()); }
+            throw new RuntimeException("Unable to add artifact to the database." + e.getMessage());
+            }
 
     }
 
     public void updateArtifact(ArtifactModel artifact){
-        Iterator<Group<ArtifactModel>> artifactGroupIterator = ArtifactDaoImpl.artifacts.getIterator();
-        while(artifactGroupIterator.hasNext()){
-            Group<ArtifactModel> artifactGroup = artifactGroupIterator.next();
-            Iterator<ArtifactModel> artifactIterator = artifactGroup.getIterator();
-            while(artifactIterator.hasNext()){
-                ArtifactModel currentArtifact = artifactIterator.next();
-                if(currentArtifact.getName().equals(artifact.getName())){
-                    artifactGroup.remove(currentArtifact);
-                    artifactGroup.add(artifact);
-                }
+        String artName = artifact.getName();
+        String artDesc = artifact.getDescription();
+        float artPrice = artifact.getPrice();
+
+        try {
+            Connection con = connectToDatabase();
+            Objects.requireNonNull(con).setAutoCommit(false);
+            Statement stmt = con.createStatement();
+
+            String sql = ("UPDATE artifact_store SET " +
+                    "desc='" + artDesc + "', " +
+                    "price='" + artPrice + "' " +
+                    "WHERE name='" + artName+ "';");
+
+            stmt.executeUpdate(sql);
+            con.commit();
+
+            stmt.close();
+            con.close();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable to update artifact: " + e.getMessage()) ;
             }
-        }
+
     }
 
     public boolean deleteArtifact(ArtifactModel artifact){
