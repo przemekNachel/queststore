@@ -1,6 +1,6 @@
 public class AdminModel extends User {
 
-  public AdminModel(String nickname, String password, Group<Group<User>> associatedGroups) {
+  public AdminModel(String nickname, String password, Group<User> associatedGroups) {
     this.role = Role.ADMIN;
     this.nickname = nickname;
     this.password = password;
