@@ -1,6 +1,16 @@
 import java.sql.*;
 import java.util.Objects;
 
+/*
+TODO: - getAllArtifacts: --- figure out whether it needs to return a Group<Group<ArtifactModeL>>, since
+TODO:   it does not seem to be used anywhere (yet) - look at the UML and figure it out.
+TODO:   SQL just needs to select ALL artifacts from artifact_store (SELECT name, descr, price FROM artifact_store)
+
+TODO: - Figure out the question asked on slack regarding createArtifactGroup
+TODO: - Figure out what tmpSetArtifacts is supposed to do.
+*/
+
+
 public class ArtifactDaoImpl implements ArtifactDao{
     private static Group<Group<ArtifactModel>> artifacts;
 
@@ -169,8 +179,6 @@ public class ArtifactDaoImpl implements ArtifactDao{
             stmt.close();
             rs.close();
             con.close();
-
-            System.out.println(group);
 
             return group;
 
