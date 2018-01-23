@@ -1,5 +1,5 @@
 CREATE TABLE `artifact_associations` ( `association_id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, `artifact_id` INTEGER, `group_id` INTEGER );
-CREATE TABLE `artifact_store` ( `artifact_id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, `name`TEXT, `desc` TEXT, `price` INTEGER );
+CREATE TABLE `artifact_store` ( `artifact_id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, `name`TEXT UNIQUE, `desc` TEXT, `price` INTEGER );
 CREATE TABLE `group_names` ( `group_id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, `group_name` TEXT UNIQUE );
 CREATE TABLE `predefined_levels` ( `threshold` INTEGER NOT NULL UNIQUE, `level_name` TEXT UNIQUE, PRIMARY KEY(`threshold`) );
 CREATE TABLE `quest_associations` ( `association_id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, `quest_id` INTEGER, `group_id` INTEGER );
