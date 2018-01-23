@@ -1,18 +1,21 @@
 class WalletService{
-  private float balance = 0;
+  private int balance = 0;
 
-  public boolean canAfford(float amount){
-    if(this.balance >= amount){
-      return true;
-    }
-    return false;
+  public WalletService(int initialBalance) {
+
+    this.balance = initialBalance;
   }
 
-  public void withdraw(float amount){
+  public boolean canAfford(int amount){
+
+    return this.balance >= amount;
+  }
+
+  public void withdraw(int amount){
       this.balance -= amount;
     }
 
-  public void payIn(float amount){
+  public void payIn(int amount){
     this.balance += amount;
   }
 
