@@ -15,7 +15,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
             return DriverManager.getConnection(db_path);
 
         } catch (SQLException e) {
-            throw new RuntimeException("Unable to connect to the database.");
+            throw new RuntimeException("Unable to connect to the database." + e.getMessage());
         }
     }
 
@@ -55,37 +55,10 @@ public class ArtifactDaoImpl implements ArtifactDao{
             stmt.close();
             con.commit();
 
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable to add artifact to the database." + e.getMessage()); }
 
-        } catch (Exception e) {
-            System.out.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
-        }
-
-
-        /*
-        1. Insert to artifact_store:  name (string), desc (string), price (integer)
-
-         */
-
-
-        boolean artifactAdded = false;
-        Iterator<Group<ArtifactModel>> allGroupsIterator = ArtifactDaoImpl.artifacts.getIterator();
-        while(allGroupsIterator.hasNext()){
-            Group<ArtifactModel> artifactGroup = allGroupsIterator.next();
-            String artifactGroupName = artifactGroup.getName();
-            if(artifactGroupName.equals(groupName)){
-                artifactGroup.add(artifact); //if group exists dont add group to group_names
-                artifactAdded = true;
-
-
-                }
-            }if(!artifactAdded){
-                Group<ArtifactModel> tmp = new Group<>(groupName);
-                tmp.add(artifact);
-                artifacts.add(tmp); // if group doesnt exists, create new group in group name
-            }
-            artifactAdded = false;
-        }
+    }
 
     public void updateArtifact(ArtifactModel artifact){
         Iterator<Group<ArtifactModel>> artifactGroupIterator = ArtifactDaoImpl.artifacts.getIterator();
