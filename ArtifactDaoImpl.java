@@ -33,7 +33,6 @@ public class ArtifactDaoImpl implements ArtifactDao{
         String db_path = "jdbc:sqlite:database/database.db";
         try {
             Connection con = DriverManager.getConnection(db_path);
-            System.out.println("connected");
             Objects.requireNonNull(con).setAutoCommit(false);
             Statement stmt = con.createStatement();
 
