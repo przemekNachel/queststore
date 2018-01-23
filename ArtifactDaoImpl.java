@@ -1,7 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -23,19 +20,25 @@ public class ArtifactDaoImpl implements ArtifactDao{
         return artifacts;
     }
 
-    public ArtifactModel getArtifact(String name){
-        Iterator<Group<ArtifactModel>> artifactGroupIterator = ArtifactDaoImpl.artifacts.getIterator();
-        while(artifactGroupIterator.hasNext()){
-            Iterator<ArtifactModel> artifactsIterator = artifactGroupIterator.next().getIterator();
-            while(artifactsIterator.hasNext()){
-                ArtifactModel currentArtifact = artifactsIterator.next();
-                if(currentArtifact.getName().equals(name)){
-                    return currentArtifact;
-                }
+        public ArtifactModel getArtifact(String name){
+            try {
+                Connection con = connectToDatabase();
+                Statement stmt = Objects.requireNonNull(con).createStatement();
+
+                String sql = ("SELECT * FROM artifact_store WHERE name='" + name + "';");
+                ResultSet rs = stmt.executeQuery(sql);
+
+
+                String art_name = rs.getString("name");
+                String art_desc = rs.getString("desc");
+                float art_price = rs.getFloat("price");
+
+                return new ArtifactModel(art_name, art_desc, art_price);
+
+            } catch (SQLException e) {
+                throw new RuntimeException("Unable to fetch the artifact: " + e.getMessage());
             }
         }
-        return null;
-    }
 
     public void addArtifact(ArtifactModel artifact, String groupName){
         String artName = artifact.getName();
