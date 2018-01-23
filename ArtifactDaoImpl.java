@@ -15,7 +15,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
         }
     }
 
-    public Group<Group<ArtifactModel>> getAllArtifcts(){
+    public Group<Group<ArtifactModel>> getAllArtifacts(){
         return artifacts;
     }
 
@@ -181,6 +181,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
     }
 
     public void createArtifactGroup(Group<ArtifactModel> group){
+
         artifacts.add(group);
     }
 
