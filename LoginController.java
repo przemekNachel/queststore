@@ -12,6 +12,8 @@ public class LoginController {
 
     // WARNING: the calls below are part of a demonstration
     new UserDaoImpl().tmpSetUsers(AuxiliaryStorage.getSampleUserGroup());
+    new ArtifactDaoImpl().tmpSetArtifacts(AuxiliaryStorage.getSampleArtifactGroup());
+
   }
 
   public void start() {

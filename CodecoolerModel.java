@@ -6,12 +6,8 @@ public class CodecoolerModel extends User {
   public Group<ArtifactModel> artifacts;
   // public Level level;
 
-  public CodecoolerModel() {
-    this.role = Role.CODECOOLER;
-  }
-
   public CodecoolerModel(String nickname, String email, String password, WalletService wallet, Group<User> studentGroup) {
-    this();
+    this.role = Role.CODECOOLER;
     this.nickname = nickname;
     this.email = email;
     this.password = password;
@@ -19,6 +15,8 @@ public class CodecoolerModel extends User {
 
     associatedGroups = new Group<Group<User>>("Groups to which adheres");
     associatedGroups.add(studentGroup);
+
+    this.artifacts = new Group<ArtifactModel>("artifacts of " + this.nickname);
   }
 
   @Override
