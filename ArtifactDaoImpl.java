@@ -1,4 +1,8 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 import java.util.Iterator;
+import java.util.Objects;
 
 public class ArtifactDaoImpl implements ArtifactDao{
     private static Group<Group<ArtifactModel>> artifacts;
@@ -22,21 +26,52 @@ public class ArtifactDaoImpl implements ArtifactDao{
     }
 
     public void addArtifact(ArtifactModel artifact, String groupName){
+        String artName = artifact.getName();
+        String artDesc = artifact.getDescription();
+        float artPrice = artifact.getPrice();
+
+        String db_path = "jdbc:sqlite:database/database.db";
+        try {
+            Connection con = DriverManager.getConnection(db_path);
+            System.out.println("connected");
+            Objects.requireNonNull(con).setAutoCommit(false);
+            Statement stmt = con.createStatement();
+
+            String sql = ("INSERT INTO artifact_store (name, desc, price)" +
+                    "VALUES('"+ artName + "', '" + artDesc + "', '" + artPrice + "');");
+            stmt.executeUpdate(sql);
+
+            stmt.close();
+            con.commit();
+
+
+        } catch (Exception e) {
+            System.out.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+
+
+        /*
+        1. Insert to artifact_store:  name (string), desc (string), price (integer)
+
+         */
+
+
         boolean artifactAdded = false;
         Iterator<Group<ArtifactModel>> allGroupsIterator = ArtifactDaoImpl.artifacts.getIterator();
         while(allGroupsIterator.hasNext()){
             Group<ArtifactModel> artifactGroup = allGroupsIterator.next();
             String artifactGroupName = artifactGroup.getName();
             if(artifactGroupName.equals(groupName)){
-                artifactGroup.add(artifact); //zakładamy że dodawany
-                artifactAdded = true;        //bedzie element tylko
-                                             //wtedy gdy nie znajduje
-                                             //się już w danym zbiorze
+                artifactGroup.add(artifact); //if group exists dont add group to group_names
+                artifactAdded = true;
+
+
                 }
             }if(!artifactAdded){
                 Group<ArtifactModel> tmp = new Group<>(groupName);
                 tmp.add(artifact);
-                artifacts.add(tmp);
+                artifacts.add(tmp); // if group doesnt exists, create new group in group name
             }
             artifactAdded = false;
         }
@@ -99,5 +134,9 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
     public void tmpSetArtifacts(Group<Group<ArtifactModel>> artifacts){
         this.artifacts = artifacts;
+        /*
+        1. file read in another method
+
+         */
     }
 }
