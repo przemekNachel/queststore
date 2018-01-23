@@ -1,11 +1,23 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 import java.util.Objects;
 
 public class ArtifactDaoImpl implements ArtifactDao{
     private static Group<Group<ArtifactModel>> artifacts;
+
+    private Connection connectToDatabase() {
+
+        String db_path = "jdbc:sqlite:database/database.db";
+        try {
+            return DriverManager.getConnection(db_path);
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable to connect to the database.");
+        }
+    }
 
     public Group<Group<ArtifactModel>> getAllArtifcts(){
         return artifacts;
@@ -30,9 +42,9 @@ public class ArtifactDaoImpl implements ArtifactDao{
         String artDesc = artifact.getDescription();
         float artPrice = artifact.getPrice();
 
-        String db_path = "jdbc:sqlite:database/database.db";
+
         try {
-            Connection con = DriverManager.getConnection(db_path);
+            Connection con = connectToDatabase();
             Objects.requireNonNull(con).setAutoCommit(false);
             Statement stmt = con.createStatement();
 
