@@ -17,7 +17,7 @@ public class UserDaoImpl implements UserDao{
         System.out.println("Connected");
     }
 
-    public Group<Group<User>> getAllUsers(){
+    public Group<Group<User>> getAllUsers() throws SQLException{
 
         Group<Group<User>> allUsers = new Group<Group<User>>("all users");
         String query = "SELECT * FROM users";
@@ -35,7 +35,7 @@ public class UserDaoImpl implements UserDao{
 
         WalletService tmpWallet;
         Group<Group<User>> tmpGroup;
-        User tempUsr;
+        User tempUsr = null;
         Group<Group<User>> tmpGroups;
 
         while(results.next()){
@@ -64,7 +64,7 @@ public class UserDaoImpl implements UserDao{
         return allUsers;
     }
 
-    public User getUser(String nickname){
+    public User getUser(String nickname) throws SQLException{
 
         Group<Group<User>> users = getAllUsers();
 
@@ -86,8 +86,8 @@ public class UserDaoImpl implements UserDao{
     }
 
 
-    private Group<Group<User>> getAllGroups(){
-        Group<Group<User>> associatedGroups;
+    private Group<Group<User>> getAllGroups() throws SQLException{
+        Group<Group<User>> associatedGroups = null;
         String query = "SELECT group_name " +
             "FROM user_associations " +
             "LEFT JOIN group_names  " +
@@ -103,8 +103,8 @@ public class UserDaoImpl implements UserDao{
 
     }
 
-    private Group<Group<User>> getUserGroup(int userId, Group<Group<User>> allGroups){
-        Group<Group<User>> associatedGroups;
+    private Group<Group<User>> getUserGroup(int userId, Group<Group<User>> allGroups) throws SQLException{
+        Group<Group<User>> associatedGroups = null;
         String query = "SELECT group_name " +
             "FROM group_names " +
             "LEFT JOIN user_associations  " +
@@ -134,7 +134,7 @@ public class UserDaoImpl implements UserDao{
         return associatedGroups;
     }
 
-    private void associateGroups(User user, Group<Group<User>> userGroups){
+    private void associateGroups(User user, Group<Group<User>> userGroups) throws SQLException{
         Iterator userGroupsIterator = userGroups.getIterator();
         while(userGroupsIterator.hasNext()){
             user.setAssociatedGroups(userGroups);
@@ -142,7 +142,8 @@ public class UserDaoImpl implements UserDao{
     }
 
     private Group<User> getGroup(String groupName,
-                                    Group<Group<User>> userGroups){
+                                    Group<Group<User>> userGroups)
+                                        throws SQLException{
 
         Iterator<Group<User>> userGroupIterator = userGroups.getIterator();
         while(userGroupIterator.hasNext()){
@@ -155,7 +156,7 @@ public class UserDaoImpl implements UserDao{
         return null;
     }
 
-    private Role convertRole(String roleName){
+    private Role convertRole(String roleName) throws SQLException{
         switch(roleName){
             case "codecooler":
                 return Role.CODECOOLER;
@@ -169,7 +170,7 @@ public class UserDaoImpl implements UserDao{
 
     }
 
-    private String getRole(int userId){
+    private String getRole(int userId) throws SQLException{
 
         String query = "SELECT privilege_name " +
             "FROM user_privilege_levels " +
