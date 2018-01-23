@@ -28,10 +28,10 @@ public class ArtifactDaoImpl implements ArtifactDao{
             Group<ArtifactModel> artifactGroup = allGroupsIterator.next();
             String artifactGroupName = artifactGroup.getName();
             if(artifactGroupName.equals(groupName)){
-                artifactGroup.add(artifact); //zakładamy że dodawany
-                artifactAdded = true;        //bedzie element tylko
-                                             //wtedy gdy nie znajduje
-                                             //się już w danym zbiorze
+                artifactGroup.add(artifact);
+                artifactAdded = true;
+
+
                 }
             }if(!artifactAdded){
                 Group<ArtifactModel> tmp = new Group<>(groupName);
