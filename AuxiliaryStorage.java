@@ -53,10 +53,9 @@ public class AuxiliaryStorage {
       CodecoolerModel kdkl1 = new CodecoolerModel("Ferdynand", "Kiepski", "cycu", wallet1, students);
       CodecoolerModel kdkl2 = new CodecoolerModel("Halina", "Kiepska", "cycu", wallet2, students);
 
-      AdminModel admin = new AdminModel("admin", "aaaa");
       Group<Group<User>> adminGroup = new Group<>("associated");
       adminGroup.add(adminG);
-      admin.setAssociatedGroups(adminGroup);
+      AdminModel admin = new AdminModel("admin", "aaaa", adminGroup);
 
       Iterator<Group<User>>schoolIter = school.getIterator();
 
