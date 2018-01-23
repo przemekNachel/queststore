@@ -94,7 +94,7 @@ public class Test{
 
         String testDesc = "gg";
         String testName = "gumki";
-        float testPrice = 4;
+        Integer testPrice = 4;
 
         ArtifactModel testArt = new ArtifactModel(testName, testDesc, testPrice);
 
@@ -108,8 +108,8 @@ public class Test{
         ArtifactDaoImpl atDao = new ArtifactDaoImpl();
         String testDesc = "gg";
         String testName = "gumki";
-        float testPrice = 4;
-        float testPriceUpdated = 4.5f;
+        Integer testPrice = 4;
+        Integer testPriceUpdated = 5;
 
         ArtifactModel testArt = new ArtifactModel(testName, testDesc, testPrice);
 
@@ -149,7 +149,7 @@ public class Test{
 
         String testDesc = "gg";
         String testName = "gumki";
-        float testPrice = 4;
+        Integer testPrice = 4;
         String testGroup = "basic";
         Group<ArtifactModel> atGroup = atDao.getArtifactGroup(testGroup);
         System.out.println("TestGetArtGroup: " +
