@@ -1,10 +1,10 @@
 public interface ArtifactDao{
 
-    public Group<Group<ArtifactModel>> getAllArtifcts();
-    public ArtifactModel getArtifact(String name);
-    public Group<String> getArtifactGroupNames();
-    public Group<ArtifactModel> getArtifactGroup(String groupName);
-    public void addArtifact(ArtifactModel artifact, String groupName);
-    public void updateArtifact(ArtifactModel artifact);
-    public boolean deleteArtifact(ArtifactModel artifact);
+    Group<Group<ArtifactModel>> getAllArtifacts();
+    ArtifactModel getArtifact(String name);
+    Group<String> getArtifactGroupNames();
+    Group<ArtifactModel> getArtifactGroup(String groupName);
+    void addArtifact(ArtifactModel artifact, String groupName);
+    void updateArtifact(ArtifactModel artifact);
+    boolean deleteArtifact(ArtifactModel artifact);
 }
