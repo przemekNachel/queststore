@@ -33,6 +33,10 @@ public class ArtifactDaoImpl implements ArtifactDao{
             String artDesc = rs.getString("desc");
             float artPrice = rs.getFloat("price");
 
+            stmt.close();
+            rs.close();
+            con.close();
+
             return new ArtifactModel(artName, artDesc, artPrice);
 
         } catch (SQLException e) {
@@ -55,8 +59,11 @@ public class ArtifactDaoImpl implements ArtifactDao{
                     "VALUES('"+ artName + "', '" + artDesc + "', '" + artPrice + "');");
             stmt.executeUpdate(sql);
 
-            stmt.close();
             con.commit();
+
+            stmt.close();
+            con.close();
+
 
         } catch (SQLException e) {
             throw new RuntimeException("Unable to add artifact to the database." + e.getMessage());
@@ -86,26 +93,32 @@ public class ArtifactDaoImpl implements ArtifactDao{
             con.close();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Unable to update artifact: " + e.getMessage()) ;
+            throw new RuntimeException("Unable to update artifact: " + e.getMessage());
             }
 
     }
 
     public boolean deleteArtifact(ArtifactModel artifact){
-        boolean artifactRemoved = false;
-        Iterator<Group<ArtifactModel>> artifactGroupIterator = ArtifactDaoImpl.artifacts.getIterator();
-        while(artifactGroupIterator.hasNext()){
-            Group<ArtifactModel> artifactGroup = artifactGroupIterator.next();
-            Iterator<ArtifactModel> artifactIterator = artifactGroup.getIterator();
-            while(artifactIterator.hasNext()){
-                ArtifactModel currentArtifact = artifactIterator.next();
-                if(currentArtifact.getName().equals(artifact.getName())){
-                    artifactGroup.remove(currentArtifact);
-                    artifactRemoved = true;
-                }
+        String artName = artifact.getName();
+
+        try {
+            Connection con = connectToDatabase();
+            Objects.requireNonNull(con).setAutoCommit(false);
+            Statement stmt = con.createStatement();
+
+            String sql = "DELETE from artifact_store WHERE name='" + artName + "';";
+
+            stmt.executeUpdate(sql);
+            con.commit();
+
+            stmt.close();
+            con.close();
+            return true;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable to remove artifact: " + e.getMessage());
             }
-        }
-        return artifactRemoved;
+
     }
 
     public Group<String> getArtifactGroupNames(){
