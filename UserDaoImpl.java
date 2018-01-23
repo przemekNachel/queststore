@@ -64,6 +64,28 @@ public class UserDaoImpl implements UserDao{
         return allUsers;
     }
 
+    public User getUser(String nickname){
+
+        Group<Group<User>> users = getAllUsers();
+
+        Iterator<Group<User>> userGroupIterator = users.getIterator();
+        while(userGroupIterator.hasNext()){
+
+            Group<User> userGroup = userGroupIterator.next();
+            Iterator<User> usersIterator = userGroup.getIterator();
+
+            while(usersIterator.hasNext()){
+
+                User currentUser = usersIterator.next();
+                if(currentUser.getName().equals(nickname)){
+                    return currentUser;
+                }
+            }
+        }
+        return null;
+    }
+
+
     private Group<Group<User>> getAllGroups(){
         Group<Group<User>> associatedGroups;
         String query = "SELECT group_name " +
@@ -170,10 +192,14 @@ public class UserDaoImpl implements UserDao{
 
 
 
+
+
+
+
+
+
+
     // placeholders for the sake of compilation
-    public User getUser(String nickname){
-        return new Admin("a","a", new Group<User>("a"));
-    }
 
     public void addUser(User user){}
 
@@ -199,24 +225,6 @@ public class UserDaoImpl implements UserDao{
 
 
     /*
-    public User getUser(String nickname){
-
-        Iterator<Group<User>> userGroupIterator = UserDaoImpl.users.getIterator();
-        while(userGroupIterator.hasNext()){
-
-            Group<User> userGroup = userGroupIterator.next();
-            Iterator<User> usersIterator = userGroup.getIterator();
-
-            while(usersIterator.hasNext()){
-
-                User currentUser = usersIterator.next();
-                if(currentUser.getName().equals(nickname)){
-                    return currentUser;
-                }
-            }
-        }
-        return null;
-    }
 
     public void addUser(User user){
         Group<Group<User>> userGroups = user.getAssociatedGroups();
