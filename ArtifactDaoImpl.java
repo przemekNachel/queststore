@@ -67,7 +67,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
         } catch (SQLException e) {
             throw new RuntimeException("Unable to add artifact to the database." + e.getMessage());
-            }
+        }
 
     }
 
@@ -94,7 +94,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
         } catch (SQLException e) {
             throw new RuntimeException("Unable to update artifact: " + e.getMessage());
-            }
+        }
 
     }
 
@@ -117,16 +117,29 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
         } catch (SQLException e) {
             throw new RuntimeException("Unable to remove artifact: " + e.getMessage());
-            }
+        }
 
     }
 
     public Group<String> getArtifactGroupNames(){
         Group<String> groupsNames = new Group<>("Group names");
-        Iterator<Group<ArtifactModel>> groupIterator = ArtifactDaoImpl.artifacts.getIterator();
-        while(groupIterator.hasNext()){
-            groupsNames.add(groupIterator.next().getName());
+
+        try {
+            Connection con = connectToDatabase();
+            Statement stmt = Objects.requireNonNull(con).createStatement();
+
+            String sql = "SELECT group_name FROM group_names";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while(rs.next()) {
+                String group_name = rs.getString("group_name");
+                groupsNames.add(group_name);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable to fetch group names: " + e.getMessage());
         }
+
         return groupsNames;
     }
 
@@ -147,9 +160,6 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
     public void tmpSetArtifacts(Group<Group<ArtifactModel>> artifacts){
         this.artifacts = artifacts;
-        /*
-        1. file read in another method
 
-         */
     }
 }
