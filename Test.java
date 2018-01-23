@@ -1,4 +1,5 @@
 import java.util.Iterator;
+import java.util.Random;
 
 public class Test{
     Group<Group<User>> school;
@@ -68,12 +69,12 @@ public class Test{
         test.fillArtifacts();
         atDao.tmpSetArtifacts(test.artifacts);
         System.out.println("\nArtifactDaoTests:\n");
-        test.testGetArtifact();
         test.testAddArtifact();
+        test.testGetArtifact();
         test.testUpdateArtifact();
         test.testRemoveArtifact();
-        test.testGetArtifactGroupNames();
-        test.testGetArtifactGroup();
+//        test.testGetArtifactGroupNames();
+//        test.testGetArtifactGroup();
         atDao = null;
         //koniec testów tests
 
@@ -83,7 +84,7 @@ public class Test{
     //ArtifactDaoTests
     private void testGetArtifact(){
         ArtifactDaoImpl atDao = new ArtifactDaoImpl();
-        ArtifactModel testArt = atDao.getArtifact("dildo");
+        ArtifactModel testArt = atDao.getArtifact("gumki");
         System.out.println("TestGetArtif: " +
             assertNotNull(testArt));
         testArt = null;
@@ -92,24 +93,24 @@ public class Test{
     private void testAddArtifact(){
         ArtifactDaoImpl atDao = new ArtifactDaoImpl();
 
-        String testDesc = "gg";
         String testName = "gumki";
+        String testDesc = "gg";
         float testPrice = 4;
 
         ArtifactModel testArt = new ArtifactModel(testName, testDesc, testPrice);
 
         atDao.addArtifact(testArt, "magic");
-        System.out.println("TestAddArt: " +
-            assertEquals(testArt, atDao.getArtifact(testName)));
-        testArt = null;
+        System.out.println("TestAddArt: " + assertEquals(testArt, atDao.getArtifact(testName)));
+        System.out.println(testName);
     }
 
     private void testUpdateArtifact(){
         ArtifactDaoImpl atDao = new ArtifactDaoImpl();
+        Random randomNum = new Random();
         String testDesc = "gg";
         String testName = "gumki";
         float testPrice = 4;
-        float testPriceUpdated = 4.5f;
+        float testPriceUpdated = randomNum.nextInt(100) ;
 
         ArtifactModel testArt = new ArtifactModel(testName, testDesc, testPrice);
 
@@ -121,7 +122,7 @@ public class Test{
 
     private void testRemoveArtifact(){
         ArtifactDaoImpl atDao = new ArtifactDaoImpl();
-        String testName = "dildo";
+        String testName = "gumki";
         ArtifactModel testArt = atDao.getArtifact(testName);
 
         System.out.println("TestRemoveUser: " +
