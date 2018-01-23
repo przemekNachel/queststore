@@ -73,7 +73,7 @@ public class MentorController {
         studentsGroup = newStudentsGroup;
       }
 
-      WalletService wallet = new WalletService();
+      WalletService wallet = new WalletService(0);
       CodecoolerModel codecooler = new CodecoolerModel(nickname, email, password, wallet, studentsGroup); // TODO add level to the object -- next sprint
 
       // If user getter doesn't find given user, return null
