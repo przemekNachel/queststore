@@ -4,8 +4,8 @@ import java.sql.*;
 class ArtifactStoreController{
 
     public void addNewArtifact(){
-
         ArtifactStoreView view = new ArtifactStoreView();
+
         String name = view.getStringFromUserInput(view.artifactNameQuestion);
         String description = view.getStringFromUserInput(view.artifactDescriptionQuestion);
 
@@ -13,16 +13,16 @@ class ArtifactStoreController{
         Integer price = null;
         do {
 
-          try {
+            try {
 
-            providedValidPrice = true;
-            String priceStr = view.getStringFromUserInput(view.artifactPriceQuestion);
-            price = Integer.parseInt(priceStr);
+                providedValidPrice = true;
+                String priceStr = view.getStringFromUserInput(view.artifactPriceQuestion);
+                price = Integer.parseInt(priceStr);
 
-          } catch (NumberFormatException nfe) {
-            providedValidPrice = false;
-            view.printLine(view.invalidPrice);
-          }
+            } catch (NumberFormatException nfe) {
+                providedValidPrice = false;
+                view.printLine(view.invalidPrice);
+            }
 
         } while(!providedValidPrice);
 
@@ -41,14 +41,12 @@ class ArtifactStoreController{
 
         // get available artifacts by category/ group
         Group<String> allowedArtifactNames = new Group<>("allowed artifact name user input");
-        Group<String> artifactGroupNames;
+        Group<String> artifactGroupNames = null;
         try {
 
-          artifactGroupNames = dao.getArtifactGroupNames();
-        } catch (SQLException sqle) {
-
-          view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
-          return;
+            artifactGroupNames = dao.getArtifactGroupNames();
+        } catch (SQLException e) {
+            view.printSQLException(e);
         }
 
         Iterator<String> iter = artifactGroupNames.getIterator();
@@ -56,14 +54,13 @@ class ArtifactStoreController{
         while (iter.hasNext()) {
 
             String groupName = iter.next();
-            Group<ArtifactModel> artifactGroup;
+            Group<ArtifactModel> artifactGroup = null;
             try {
 
-              artifactGroup = dao.getArtifactGroup(groupName);
-            } catch (SQLException sqle) {
+                artifactGroup = dao.getArtifactGroup(groupName);
+            } catch (SQLException e) {
 
-              view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
-              return;
+                view.printSQLException(e);
             }
 
             groupsFormatted += groupName + " :\n";
@@ -83,13 +80,13 @@ class ArtifactStoreController{
         boolean providedValidArtifactName = false;
         do {
 
-          artifactName = view.getStringFromUserInput(view.artifactNameQuestion);
-          if (allowedArtifactNames.contains(artifactName)) {
+            artifactName = view.getStringFromUserInput(view.artifactNameQuestion);
+            if (allowedArtifactNames.contains(artifactName)) {
 
-            providedValidArtifactName = true;
-          } else {
-            view.printLine(view.artifactNotFoundError);
-          }
+                providedValidArtifactName = true;
+            } else {
+                view.printLine(view.artifactNotFoundError);
+            }
 
         } while(!providedValidArtifactName);
 
@@ -97,10 +94,9 @@ class ArtifactStoreController{
         Group<String> allowedGroupNames = null;
         try{
             allowedGroupNames = userDao.getUserGroupNames();
-        } catch (SQLException sqle) {
+        } catch (SQLException e) {
+            view.printSQLException(e);
 
-          view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
-          return;
         }
         String availableGroups = allowedGroupNames.toString();
         view.printLine(availableGroups);
@@ -110,25 +106,25 @@ class ArtifactStoreController{
         boolean wantToBuyAlone = false;
         do {
 
-          String consumerGroupName = view.getStringFromUserInput(view.chooseGroup);
-          if (allowedGroupNames.contains(consumerGroupName)) {
-              try{
-                  consumers = userDao.getUserGroup(consumerGroupName);
-              } catch (SQLException sqle) {
-                view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
-                return;
-              }
-            providedExistentGroupName = true;
-          } else {
-            if (consumerGroupName.equals("ALONE")) {
-
-              consumers = new Group<>("buying alone");
-              consumers.add(user);
-              wantToBuyAlone = true;
+            String consumerGroupName = view.getStringFromUserInput(view.chooseGroup);
+            if (allowedGroupNames.contains(consumerGroupName)) {
+                try{
+                    consumers = userDao.getUserGroup(consumerGroupName);
+                } catch (SQLException e) {
+                    view.printSQLException(e);
+                    return;
+                }
+                providedExistentGroupName = true;
             } else {
-              view.printLine(view.invalidGroupName);
+                if (consumerGroupName.equals("ALONE")) {
+
+                    consumers = new Group<>("buying alone");
+                    consumers.add(user);
+                    wantToBuyAlone = true;
+                } else {
+                    view.printLine(view.invalidGroupName);
+                }
             }
-          }
 
         } while(!providedExistentGroupName && !wantToBuyAlone);
 
@@ -136,7 +132,7 @@ class ArtifactStoreController{
         Group<CodecoolerModel> converted = new Group<>("Codecooler(s) buying an artifact");
         Iterator<User> iterUser = consumers.getIterator();
         while (iterUser.hasNext()) {
-          converted.add((CodecoolerModel)iterUser.next());
+            converted.add((CodecoolerModel)iterUser.next());
         }
 
         ArtifactModel boughtArtifact = buyArtifact(artifactName, converted);
@@ -148,10 +144,9 @@ class ArtifactStoreController{
 
         try {
 
-          userDao.updateUser(user);
-        } catch (SQLException sqle) {
-
-          view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+            userDao.updateUser(user);
+        } catch (SQLException e) {
+            view.printSQLException(e);
         }
     }
 
@@ -160,14 +155,12 @@ class ArtifactStoreController{
         ArtifactStoreView view = new ArtifactStoreView();
         ArtifactDaoImpl dao = new ArtifactDaoImpl();
 
-        ArtifactModel artifact;
+        ArtifactModel artifact = null;
         try {
 
-          artifact = dao.getArtifact(name);
-        } catch (SQLException sqle) {
-
-          view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
-          return null;
+            artifact = dao.getArtifact(name);
+        } catch (SQLException e) {
+            view.printSQLException(e);
         }
 
         if(artifact == null){
@@ -183,8 +176,8 @@ class ArtifactStoreController{
         boolean allCanAfford = true;
         while (iter.hasNext()) {
 
-          WalletService currentWallet = iter.next().getWallet();
-          allCanAfford &= currentWallet.canAfford(share);
+            WalletService currentWallet = iter.next().getWallet();
+            allCanAfford &= currentWallet.canAfford(share);
         }
 
         if (!allCanAfford) {
@@ -205,24 +198,22 @@ class ArtifactStoreController{
     public void editArtifact(){
 
         Menu editMenu = new Menu(
-          new MenuOption("0", "exit"),
-          new MenuOption("1", "Name"),
-          new MenuOption("2", "Description"),
-          new MenuOption("3", "Price")
-          );
+                new MenuOption("0", "exit"),
+                new MenuOption("1", "Name"),
+                new MenuOption("2", "Description"),
+                new MenuOption("3", "Price")
+        );
 
         ArtifactStoreView view = new ArtifactStoreView(editMenu);
         ArtifactDaoImpl dao = new ArtifactDaoImpl();
 
         String artName = view.getStringFromUserInput(view.artifactNameQuestion);
-        ArtifactModel artifact;
+        ArtifactModel artifact = null;
         try {
 
-          artifact = dao.getArtifact(artName);
-        } catch (SQLException sqle) {
-
-          view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
-          return;
+            artifact = dao.getArtifact(artName);
+        } catch (SQLException e) {
+            view.printSQLException(e);
         }
 
         if(artifact == null){
@@ -233,29 +224,29 @@ class ArtifactStoreController{
         boolean requestedExit = false;
         while (!requestedExit) {
 
-          String choice = view.getStringFromUserInput(view.artifactEditQuestion); //make menu from this
-          MenuOption userOption = view.getMenuOptionFromUserInput(" Please choose option: ");
-          switch(userOption.getId()){
-              case "0":
-                  requestedExit = true;
-                  break;
-              case "1":
-                  String name = view.getStringFromUserInput(view.artifactNameQuestion);
-                  artifact.setName(name);
-                  break;
-              case "2":
-                  String description = view.getStringFromUserInput(view
-                                                          .artifactDescriptionQuestion);
-                  artifact.setDescription(description);
-                  break;
-              case "3":
-                  String priceStr = view.getStringFromUserInput(view
-                                                              .artifactPriceQuestion);
-                  Integer price = Integer.parseInt(priceStr);
-                  artifact.setPrice(price);
-                  break;
-              default :
-                  view.printLine(view.noSuchOption);
+            String choice = view.getStringFromUserInput(view.artifactEditQuestion); //make menu from this
+            MenuOption userOption = view.getMenuOptionFromUserInput(" Please choose option: ");
+            switch(userOption.getId()){
+                case "0":
+                    requestedExit = true;
+                    break;
+                case "1":
+                    String name = view.getStringFromUserInput(view.artifactNameQuestion);
+                    artifact.setName(name);
+                    break;
+                case "2":
+                    String description = view.getStringFromUserInput(view
+                            .artifactDescriptionQuestion);
+                    artifact.setDescription(description);
+                    break;
+                case "3":
+                    String priceStr = view.getStringFromUserInput(view
+                            .artifactPriceQuestion);
+                    Integer price = Integer.parseInt(priceStr);
+                    artifact.setPrice(price);
+                    break;
+                default :
+                    view.printLine(view.noSuchOption);
             } // end switch
         } // end main menu loop
     }
@@ -268,11 +259,9 @@ class ArtifactStoreController{
         Group<ArtifactModel> newGroup = new Group<>(categoryName);
         try {
 
-          artDao.addArtifactGroup(newGroup);
-        } catch (SQLException sqle) {
-
-          view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
-          return;
+            artDao.addArtifactGroup(newGroup);
+        } catch (SQLException e) {
+            view.printSQLException(e);
         }
     }
 
@@ -280,14 +269,13 @@ class ArtifactStoreController{
         ArtifactStoreView view = new ArtifactStoreView();
         ArtifactDaoImpl dao = new ArtifactDaoImpl();
 
-        Group<String> possibleGroupNames;
+        Group<String> possibleGroupNames = null;
         try {
 
-          possibleGroupNames = dao.getArtifactGroupNames();
-        } catch (SQLException sqle) {
+            possibleGroupNames = dao.getArtifactGroupNames();
+        } catch (SQLException e) {
 
-          view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
-          return;
+            view.printSQLException(e);
         }
 
         Iterator<String> iter = possibleGroupNames.getIterator();
@@ -304,11 +292,9 @@ class ArtifactStoreController{
         String desiredGroupName = view.getStringFromUserInput(view.artifactNameQuestion);
         try {
 
-          dao.addArtifact(artifact, desiredGroupName);
-        } catch (SQLException sqle) {
-
-          view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
-          return;
+            dao.addArtifact(artifact, desiredGroupName);
+        } catch (SQLException e) {
+            view.printSQLException(e);
         }
     }
 }
