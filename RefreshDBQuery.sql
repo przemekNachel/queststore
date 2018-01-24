@@ -218,7 +218,10 @@ VALUES
   (1, 1),
   (2, 1),
   (3, 1),
-  (4, 1);
+  (4, 1),
+  (5, 2),
+  (6, 2),
+  (7, 3);
 
 INSERT INTO user_wallet
 (user_id, balance)
