@@ -325,6 +325,17 @@ public class UserDaoImpl implements UserDao{
         return true;
     }
 
+    public Group<String> getUserGroupNames() throws SQLException{
+        Group<String> groupsNames = new Group<>("Group names");
+        Group<Group<User>> users = getAllGroups();
+
+        for(Group<User> group : users){
+            groupsNames.add(group.getName());
+        }
+        return groupsNames;
+    }
+
+
 
     // helper methods for pubic methods
 
@@ -484,10 +495,6 @@ public class UserDaoImpl implements UserDao{
 
     // placeholders for the sake of compilation
 
-    public Group<String> getUserGroupNames(){
-        return new Group<String>("a");
-    }
-
     public Group<User> getUserGroup(String groupName){
         return new Group<User>("a");
     }
@@ -502,28 +509,6 @@ public class UserDaoImpl implements UserDao{
 
 
     /*
-
-    public boolean deleteUser(User user){
-        boolean userRemoved = false;
-        Iterator<Group<User>> userGroupIterator = user.getAssociatedGroups().getIterator();
-        while(userGroupIterator.hasNext()){
-            String tmpName = userGroupIterator.next().getName();
-            Group<User> userGroup = getUserGroup(tmpName);
-            User currentUser = getUser(user.getName());
-            userGroup.remove(currentUser);
-            userRemoved = true;
-        }
-        return userRemoved;
-    }
-
-    public Group<String> getUserGroupNames(){
-        Group<String> groupsNames = new Group<>("Group names");
-        Iterator<Group<User>> groupIterator = UserDaoImpl.users.getIterator();
-        while(groupIterator.hasNext()){
-            groupsNames.add(groupIterator.next().getName());
-        }
-        return groupsNames;
-    }
 
     public Group<User> getUserGroup(String groupName){
         Iterator<Group<User>> groupIterator = UserDaoImpl.users.getIterator();
