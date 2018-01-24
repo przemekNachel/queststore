@@ -268,6 +268,63 @@ public class UserDaoImpl implements UserDao{
 
     }
 
+    public boolean deleteUser(User user) throws SQLException{
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String userName = null, role = null;
+        int userId = 0;//, expGained = 0, ;
+        ArrayList<Integer> groupIds;
+
+        // get basic user credentials (all strings + role)
+        role = convertRole(user.getRole());
+        userName = user.getName();
+        groupIds = getUserGroupIds(getUserGroupNamesFrom(user.getAssociatedGroups()), userId);
+
+        // get userId
+        String getUserId = "SELECT user_id FROM users WHERE nickname='" + userName + "';";
+        ResultSet getUserIdResult = statement.executeQuery(getUserId);
+
+        while(getUserIdResult.next()){
+            userId = getUserIdResult.getInt("user_id");
+        }
+
+        /* execute queries to update */
+
+        // remove Credentials
+        String updateUsers = "DELETE FROM users " +
+            "WHERE user_id=" + userId + " ;";
+
+        statement.executeUpdate(updateUsers);
+        connect.commit();
+
+        // remove privileges
+        String updatePrivileges = "DELETE FROM user_roles " +
+            "WHERE user_id=" + userId + " ;";
+
+        statement.executeUpdate(updatePrivileges);
+        connect.commit();
+
+        // remove user associations
+        String updateAssociations;
+        for(Integer groupId : groupIds){
+            updateAssociations = "DELETE FROM user_associations " +
+                "WHERE user_id=" + userId + " ;";
+            statement.executeUpdate(updateAssociations);
+            connect.commit();
+        }
+
+        // update wallet
+        if(role.equals("codecooler")){
+            String updateWallet = "DELETE FROM user_wallet " +
+                "WHERE user_id=" + userId + " ;";
+
+            statement.executeUpdate(updateWallet);
+            connect.commit();
+        }
+        return true;
+    }
+
 
     // helper methods for pubic methods
 
@@ -426,8 +483,6 @@ public class UserDaoImpl implements UserDao{
 
 
     // placeholders for the sake of compilation
-
-    public boolean deleteUser(User user){return true;}
 
     public Group<String> getUserGroupNames(){
         return new Group<String>("a");

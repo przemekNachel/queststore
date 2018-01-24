@@ -7,6 +7,6 @@ public interface UserDao{
     public Group<User> getUserGroup(String groupName);
     public void addUser(User user) throws SQLException;
     public void updateUser(User user) throws SQLException;
-    public boolean deleteUser(User user);
+    public boolean deleteUser(User user) throws SQLException;
     public boolean addUserAdherence(User user, String name);
 }
