@@ -153,9 +153,9 @@ VALUES
   ('quest_extra'),
   ('artifact_basic'),
   ('artifact_magic'),
-  ('codecooler'),
-  ('mentor'),
-  ('admin');
+  ('codecoolers'),
+  ('mentors'),
+  ('admins');
 
 INSERT INTO predefined_levels
 VALUES
@@ -194,8 +194,11 @@ INSERT INTO user_associations
 VALUES
   (1, 5),
   (2, 5),
-  (2, 5),
-  (2, 5);
+  (3, 5),
+  (4, 5);
+  (5, 6);
+  (6, 6);
+  (7, 7);
 
 INSERT INTO user_experience
 (user_id, experience_gained)
