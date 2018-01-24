@@ -67,7 +67,22 @@ public class QuestDaoImpl implements QuestDao {
 
     @Override
     public QuestModel getQuest(String name) throws SQLException {
-        return null;
+        Connection con = connectToDatabase();
+        Statement stmt = con.createStatement();
+
+        String sql = "SELECT * FROM quest_store WHERE name='" + name + "';";
+
+        ResultSet rs = stmt.executeQuery(sql);
+
+        String questName = rs.getString("name");
+        String questDescr = rs.getString("descr");
+        Integer questReward = rs.getInt("reward");
+
+        stmt.close();
+        rs.close();
+        con.close();
+
+        return new QuestModel(questName, questDescr, questReward);
     }
 
     @Override
