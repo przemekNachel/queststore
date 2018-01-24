@@ -1,4 +1,5 @@
 import java.util.Iterator;
+import java.util.ArrayList;
 import java.sql.*;
 
 public class UserDaoImpl implements UserDao{
@@ -36,11 +37,11 @@ public class UserDaoImpl implements UserDao{
         WalletService tmpWallet;
         Group<Group<User>> tmpGroup;
         User tempUsr = null;
-        Group<Group<User>> tmpGroups;
 
         while(results.next()){
 
             //get user data
+
             tmpGroup = new Group<Group<User>>("associated groups");
             role = convertRole(getRole(results.getInt("user_id")));
             nickname = results.getString("nickname");
@@ -58,7 +59,7 @@ public class UserDaoImpl implements UserDao{
                 tempUsr = new CodecoolerModel(nickname, email,  password, tmpWallet, students);
                 students.add(tempUsr);
             }
-            associateGroups(tempUsr, getUserGroup(results.getInt("user_id"), userGroups));
+            associateGroups(tempUsr, getUserGroups(results.getInt("user_id"), userGroups));
 
         }
         return allUsers;
@@ -66,28 +67,126 @@ public class UserDaoImpl implements UserDao{
 
     public User getUser(String nickname) throws SQLException{
 
-        Group<Group<User>> users = getAllUsers();
+        String query = "SELECT * FROM users WHERE nickname='" + nickname + "';";
 
-        Iterator<Group<User>> userGroupIterator = users.getIterator();
-        while(userGroupIterator.hasNext()){
+        ResultSet results = statement.executeQuery(query);
 
-            Group<User> userGroup = userGroupIterator.next();
-            Iterator<User> usersIterator = userGroup.getIterator();
+        Group<Group<User>> userGroups = getAllGroups();
+        Group<User> students = getGroup("students", userGroups);
+        Group<User> mentors = getGroup("mentors", userGroups);
+        Group<User> admins = getGroup("admins", userGroups);
 
-            while(usersIterator.hasNext()){
+        // user credentials:
+        String name, password, email;
+        Role role;
 
-                User currentUser = usersIterator.next();
-                if(currentUser.getName().equals(nickname)){
-                    return currentUser;
-                }
+        WalletService tmpWallet;
+        Group<Group<User>> tmpGroup;
+        User tempUsr = null;
+        Group<Group<User>> tmpGroups;
+
+        while(results.next()){
+
+            //get user data
+            tmpGroup = new Group<Group<User>>("associated groups");
+            role = convertRole(getRole(results.getInt("user_id")));
+            name = results.getString("nickname");
+            password = results.getString("password");
+            email = results.getString("email");
+
+            if(role == Role.ADMIN){
+                tempUsr = new AdminModel(name, password, admins);
+                admins.add(tempUsr);
+            }else if(role == Role.MENTOR){
+                tempUsr = new MentorModel(name, email, password, mentors);
+                mentors.add(tempUsr);
+            }else if(role == Role.CODECOOLER){
+                tmpWallet = new WalletService(0);
+                tempUsr = new CodecoolerModel(name, email,  password, tmpWallet, students);
+                students.add(tempUsr);
             }
+            associateGroups(tempUsr, getUserGroups(results.getInt("user_id"), userGroups));
+
         }
-        return null;
+        return tempUsr;
+    }
+
+    public void addUser(User user) throws SQLException{
+
+        String userName = null, password = null, email = null, role = null;
+        int userId = 0, userPrivilegeLevelId = 0, balance = 0;//, expGained = 0, ;
+        ArrayList<Integer> groupIds;
+
+        // get basic user credentials (all strings + role)
+        userName = user.getName();
+        password = user.getPassword();
+        email = user.getEmail();
+        role = convertRole(user.getRole());
+
+        // get userId
+        String getUserId = "SELECT user_id FROM users WHERE nickname='" + userName + "';";
+        ResultSet getUserIdResult = statement.executeQuery(getUserId);
+
+        while(getUserIdResult.next()){
+            userId = getUserIdResult.getInt("user_id");
+        }
+
+        // get userPrivilegeLevelId
+
+        String getPrivLevel = "SELECT privilege_id FROM user_privilege_levels " +
+            "WHERE privilege_name='" + role + "';";
+        ResultSet getPrivLevelResult = statement.executeQuery(getPrivLevel);
+
+        while(getPrivLevelResult.next()){
+            userPrivilegeLevelId = getPrivLevelResult.getInt("privilege_id");
+        }
+
+        // get all groupIds
+        groupIds = getUserGroupIds(getUserGroupNamesFrom(user.getAssociatedGroups()), userId);
+
+
+        // if user = codecooler get expGained and balance
+        if(role.equals("codecooler")){
+            CodecoolerModel tmpUser = (CodecoolerModel) user;
+            balance = tmpUser.getWallet().getBalance();
+            //expGained = user.getExp() ???
+        }
+
+        /* execute queries to update */
+
+        // update Credentials
+        String updateUsers = "INSERT INTO users(nickname, password, email) " +
+            "VALUES ('" + userName + "', '" + password + "', '" + email + "');";
+
+        statement.executeUpdate(updateUsers);
+        connect.commit();
+
+        // update privileges
+        String updatePrivileges = "INSERT INTO user_privilege_levels" +
+            "(user_id, user_privilege_level) " +
+            "VALUES ('" + userId + "', '" + userPrivilegeLevelId + "');";
+
+        statement.executeUpdate(updatePrivileges);
+        connect.commit();
+
+        //update user associations
+        String updateAssociations;
+        for(Integer groupId : groupIds){
+            updateAssociations = "INSERT INTO user_associations(user_id, group_id) " +
+                "VALUES (" + userId + ", " + groupId + ");";
+            statement.executeUpdate(updateAssociations);
+            connect.commit();
+        }
+
+        // update wallet
+        String updateWallet = "INSERT INTO user_wallet(balance) " +
+            "VALUES (" + balance + ");";
     }
 
 
+
     private Group<Group<User>> getAllGroups() throws SQLException{
-        Group<Group<User>> associatedGroups = null;
+        Group<Group<User>> associatedGroups = new Group<Group<User>>("all groups");
         String query = "SELECT group_name " +
             "FROM user_associations " +
             "LEFT JOIN group_names  " +
@@ -103,8 +202,8 @@ public class UserDaoImpl implements UserDao{
 
     }
 
-    private Group<Group<User>> getUserGroup(int userId, Group<Group<User>> allGroups) throws SQLException{
-        Group<Group<User>> associatedGroups = null;
+    private Group<Group<User>> getUserGroups(int userId, Group<Group<User>> allGroups) throws SQLException{
+        Group<Group<User>> associatedGroups = new Group<Group<User>>("associated user groups");
         String query = "SELECT group_name " +
             "FROM group_names " +
             "LEFT JOIN user_associations  " +
@@ -134,7 +233,7 @@ public class UserDaoImpl implements UserDao{
         return associatedGroups;
     }
 
-    private void associateGroups(User user, Group<Group<User>> userGroups) throws SQLException{
+    private void associateGroups(User user, Group<Group<User>> userGroups){
         Iterator userGroupsIterator = userGroups.getIterator();
         while(userGroupsIterator.hasNext()){
             user.setAssociatedGroups(userGroups);
@@ -142,8 +241,7 @@ public class UserDaoImpl implements UserDao{
     }
 
     private Group<User> getGroup(String groupName,
-                                    Group<Group<User>> userGroups)
-                                        throws SQLException{
+                                    Group<Group<User>> userGroups){
 
         Iterator<Group<User>> userGroupIterator = userGroups.getIterator();
         while(userGroupIterator.hasNext()){
@@ -156,7 +254,7 @@ public class UserDaoImpl implements UserDao{
         return null;
     }
 
-    private Role convertRole(String roleName) throws SQLException{
+    private Role convertRole(String roleName){
         switch(roleName){
             case "codecooler":
                 return Role.CODECOOLER;
@@ -165,7 +263,18 @@ public class UserDaoImpl implements UserDao{
             case "admin":
                 return Role.ADMIN;
         }
+        return null;
+    }
 
+    private String convertRole(Role role){
+        switch(role){
+            case CODECOOLER:
+                return "codecooler";
+            case MENTOR:
+                return "mentor";
+            case ADMIN:
+                return "admin";
+        }
         return null;
 
     }
@@ -191,6 +300,33 @@ public class UserDaoImpl implements UserDao{
 
     }
 
+    private ArrayList<String> getUserGroupNamesFrom(Group<Group<User>> userGroups){
+        ArrayList<String> groupNames = new ArrayList<String>();
+        Iterator<Group<User>> groupsIterator = userGroups.getIterator();
+        while(groupsIterator.hasNext()){
+            groupNames.add(groupsIterator.next().getName());
+        }
+        return groupNames;
+    }
+
+    private ArrayList<Integer> getUserGroupIds(ArrayList<String> groupNames,
+                                                    int userId) throws SQLException{
+
+        String query=null;
+        ResultSet results;
+        ArrayList<Integer> groupIds = new ArrayList<>();
+        for(String name : groupNames){
+            query = "SELECT group_names.group_id FROM user_associations" +
+            "LEFT JOIN group_names ON user_associations.group_id=group_names.group_id" +
+            "WHERE group_names.group_name = '" + name + "';";
+            results = statement.executeQuery(query);
+            while(results.next()){
+                groupIds.add(results.getInt("group_id"));
+            }
+        }
+        return groupIds;
+    }
+
 
 
 
@@ -202,8 +338,6 @@ public class UserDaoImpl implements UserDao{
 
     // placeholders for the sake of compilation
 
-    public void addUser(User user){}
-
     public void updateUser(User user){}
 
     public boolean deleteUser(User user){return true;}
@@ -211,6 +345,8 @@ public class UserDaoImpl implements UserDao{
     public Group<String> getUserGroupNames(){
         return new Group<String>("a");
     }
+
+
 
     public Group<User> getUserGroup(String groupName){
         return new Group<User>("a");
