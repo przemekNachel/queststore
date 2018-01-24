@@ -17,8 +17,8 @@ public class QuestModel {
     return questName;
   }
 
-  public void setReward(Integer reward) {
-    this.questReward = reward;
+    public void setReward(Integer reward) {
+        this.questReward = reward;
   }
 
   public Integer getReward() {

@@ -1,26 +1,26 @@
 public class MenuOption {
 
-  private String optionId;
-  private String optionName;
+    private String optionId;
+    private String optionName;
 
-  public MenuOption(String optionId, String optionName) {
+    public MenuOption(String optionId, String optionName) {
 
-    this.optionId = optionId;
-    this.optionName = optionName;
-  }
+        this.optionId = optionId;
+        this.optionName = optionName;
+    }
 
-  public String getId() {
+    public String getId() {
 
-    return optionId;
-  }
+        return optionId;
+    }
 
-  public String getName() {
+    public String getName() {
 
-    return optionName;
-  }
+        return optionName;
+    }
 
-  public String toString() {
-    
-    return String.format("%s  %s", optionId, optionName);
-  }
+    public String toString() {
+
+        return String.format("%s  %s", optionId, optionName);
+    }
 }

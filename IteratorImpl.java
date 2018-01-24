@@ -2,22 +2,22 @@ import java.util.Iterator;
 
 public class IteratorImpl<T> implements Iterator<T> {
 
-  private int index;
-  private Group<T> group;
+    private int index;
+    private Group<T> group;
 
-  public IteratorImpl(Group<T> group) {
+    public IteratorImpl(Group<T> group) {
 
-    this.group = group;
-  }
+        this.group = group;
+    }
 
-  public boolean hasNext() {
+    public boolean hasNext() {
 
-    return index < group.size();
-  }
+        return index < group.size();
+    }
 
-  public T next() {
+    public T next() {
 
-    return group.get(index++);
-  }
+        return group.get(index++);
+    }
 
 }
