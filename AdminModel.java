@@ -1,11 +1,13 @@
 public class AdminModel extends User {
 
-  public AdminModel(String nickname, String password, Group<User> associatedGroups) {
+  public AdminModel(String nickname, String password, Group<User> adminGroup) {
     this.role = Role.ADMIN;
     this.nickname = nickname;
     this.password = password;
     this.email = "127.0.0.1";
-    setAssociatedGroups(associatedGroups);
+
+    associatedGroups = new Group<Group<User>>("Groups to which adheres");
+    associatedGroups.add(adminGroup);
   }
 
   @Override
