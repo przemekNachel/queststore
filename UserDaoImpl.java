@@ -8,17 +8,10 @@ public class UserDaoImpl implements UserDao{
     private Statement statement = null;
     private static String JDBC = "jdbc:sqlite:database.db";
 
-    public UserDaoImpl(){
-        try{
-            establishConnection();
-        }catch(Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(1);
-        }
-        System.out.println("Connected");
-    }
-
     public Group<Group<User>> getAllUsers() throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
 
         Group<Group<User>> allUsers = new Group<Group<User>>("all users");
         String query = "SELECT * FROM users";
@@ -59,7 +52,7 @@ public class UserDaoImpl implements UserDao{
                 tempUsr = new CodecoolerModel(nickname, email,  password, tmpWallet, students);
                 students.add(tempUsr);
             }
-            associateGroups(tempUsr, getUserGroups(results.getInt("user_id"), userGroups));
+            tempUsr.setAssociatedGroups(getUserGroups(results.getInt("user_id"), userGroups));
 
         }
         return allUsers;
@@ -67,14 +60,17 @@ public class UserDaoImpl implements UserDao{
 
     public User getUser(String nickname) throws SQLException{
 
-        String query = "SELECT * FROM users WHERE nickname='" + nickname + "';";
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
 
-        ResultSet results = statement.executeQuery(query);
+        String query = "SELECT * FROM users WHERE nickname='" + nickname + "';";
 
         Group<Group<User>> userGroups = getAllGroups();
         Group<User> students = getGroup("students", userGroups);
         Group<User> mentors = getGroup("mentors", userGroups);
         Group<User> admins = getGroup("admins", userGroups);
+
+        ResultSet results = statement.executeQuery(query);
 
         // user credentials:
         String name, password, email;
@@ -86,7 +82,6 @@ public class UserDaoImpl implements UserDao{
         Group<Group<User>> tmpGroups;
 
         while(results.next()){
-
             //get user data
             tmpGroup = new Group<Group<User>>("associated groups");
             role = convertRole(getRole(results.getInt("user_id")));
@@ -105,13 +100,16 @@ public class UserDaoImpl implements UserDao{
                 tempUsr = new CodecoolerModel(name, email,  password, tmpWallet, students);
                 students.add(tempUsr);
             }
-            associateGroups(tempUsr, getUserGroups(results.getInt("user_id"), userGroups));
-
+            // tu sie tnie\/
+            tempUsr.setAssociatedGroups(getUserGroups(results.getInt("user_id"), userGroups));
         }
         return tempUsr;
     }
 
     public void addUser(User user) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
 
         String userName = null, password = null, email = null, role = null;
         int userId = 0, userPrivilegeLevelId = 0, balance = 0;//, expGained = 0, ;
@@ -185,7 +183,14 @@ public class UserDaoImpl implements UserDao{
 
 
 
+
+    // helper methods for pubic methods
+
     private Group<Group<User>> getAllGroups() throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
         Group<Group<User>> associatedGroups = new Group<Group<User>>("all groups");
         String query = "SELECT group_name " +
             "FROM user_associations " +
@@ -197,12 +202,15 @@ public class UserDaoImpl implements UserDao{
         while(results.next()){
             associatedGroups.add(new Group<User>(results.getString("group_name")));
         }
-        results.close();
         return associatedGroups;
 
     }
 
     private Group<Group<User>> getUserGroups(int userId, Group<Group<User>> allGroups) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
         Group<Group<User>> associatedGroups = new Group<Group<User>>("associated user groups");
         String query = "SELECT group_name " +
             "FROM group_names " +
@@ -229,15 +237,7 @@ public class UserDaoImpl implements UserDao{
 
             }
         }
-        results.close();
         return associatedGroups;
-    }
-
-    private void associateGroups(User user, Group<Group<User>> userGroups){
-        Iterator userGroupsIterator = userGroups.getIterator();
-        while(userGroupsIterator.hasNext()){
-            user.setAssociatedGroups(userGroups);
-        }
     }
 
     private Group<User> getGroup(String groupName,
@@ -281,6 +281,9 @@ public class UserDaoImpl implements UserDao{
 
     private String getRole(int userId) throws SQLException{
 
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
         String query = "SELECT privilege_name " +
             "FROM user_privilege_levels " +
             "LEFT JOIN user_roles  " +
@@ -292,10 +295,8 @@ public class UserDaoImpl implements UserDao{
 
         while(results.next()){
             String privilege = results.getString("privilege_name");
-            results.close();
             return privilege;
         }
-        results.close();
         return null;
 
     }
@@ -311,6 +312,9 @@ public class UserDaoImpl implements UserDao{
 
     private ArrayList<Integer> getUserGroupIds(ArrayList<String> groupNames,
                                                     int userId) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
 
         String query=null;
         ResultSet results;
@@ -472,12 +476,16 @@ public class UserDaoImpl implements UserDao{
     }
     */
 
-    private void establishConnection() throws SQLException, ClassNotFoundException{
+    private Connection establishConnection() throws SQLException{
 
-        Class.forName("org.sqlite.JDBC");
-        this.connect = DriverManager.getConnection(UserDaoImpl.JDBC);
+        try{
+            Class.forName("org.sqlite.JDBC");
+        }catch(ClassNotFoundException e){
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+        }
+        Connection connect = DriverManager.getConnection(UserDaoImpl.JDBC);
         connect.setAutoCommit(false);
-        this.statement = connect.createStatement();
+        return connect;
     }
 
     public void close() throws SQLException{
