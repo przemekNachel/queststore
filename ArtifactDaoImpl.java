@@ -9,6 +9,7 @@ import java.util.Objects;
 
 public class ArtifactDaoImpl implements ArtifactDao{
 
+    @Override
     public Connection connectToDatabase() throws SQLException {
 
         String db_path = "jdbc:sqlite:database/database.db";
@@ -18,6 +19,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
     }
 
 
+    @Override
     public Group<Group<ArtifactModel>> getAllArtifacts() throws SQLException {
         Group<Group<ArtifactModel>> allArtifacts = new Group<>("All artifacts");
         Group<String> groupNames = getArtifactGroupNames();
@@ -30,6 +32,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
         return allArtifacts;
     }
 
+    @Override
     public ArtifactModel getArtifact(String name) throws SQLException {
             Connection con = connectToDatabase();
             Statement stmt = Objects.requireNonNull(con).createStatement();
@@ -49,6 +52,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
             return new ArtifactModel(artName, artDesc, artPrice);
     }
 
+    @Override
     public void addArtifact(ArtifactModel artifact, String groupName) throws SQLException {
         String artName = artifact.getName();
         String artDesc = artifact.getDescription();
@@ -68,6 +72,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
             con.close();
     }
 
+    @Override
     public void updateArtifact(ArtifactModel artifact)throws SQLException {
         String artName = artifact.getName();
         String artDesc = artifact.getDescription();
@@ -91,6 +96,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
     }
 
+    @Override
     public boolean deleteArtifact(ArtifactModel artifact) throws SQLException {
         String artName = artifact.getName();
 
@@ -108,6 +114,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
             return true;
     }
 
+    @Override
     public Group<String> getArtifactGroupNames() throws SQLException {
         Group<String> groupsNames = new Group<>("Group name");
 
@@ -124,6 +131,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
         return groupsNames;
     }
 
+    @Override
     public Group<ArtifactModel> getArtifactGroup(String groupName) throws SQLException{
         Group<ArtifactModel> group = new Group<>(groupName);
 
@@ -153,6 +161,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
             return group;
     }
+    @Override
     public void addArtifactGroup(Group<ArtifactModel> group) throws SQLException{
             Connection con = connectToDatabase();
             Objects.requireNonNull(con).setAutoCommit(false);
