@@ -13,7 +13,8 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
     }
 
-    public Group<Group<ArtifactModel>> getAllArtifacts() {
+
+    public Group<Group<ArtifactModel>> getAllArtifacts() throws SQLException {
         Group<Group<ArtifactModel>> allArtifacts = new Group<>("All artifacts");
         Group<String> groupNames = getArtifactGroupNames();
         Iterator<String> groupNamesIter = groupNames.getIterator();

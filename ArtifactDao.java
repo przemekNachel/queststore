@@ -4,7 +4,7 @@ import java.sql.SQLException;
 public interface ArtifactDao{
 
     Connection connectToDatabase() throws SQLException;
-    Group<Group<ArtifactModel>> getAllArtifacts();
+    Group<Group<ArtifactModel>> getAllArtifacts() throws SQLException;
     ArtifactModel getArtifact(String name) throws SQLException;
     Group<String> getArtifactGroupNames() throws SQLException;
     Group<ArtifactModel> getArtifactGroup(String groupName) throws SQLException;
