@@ -63,12 +63,12 @@ CREATE TABLE artifact_associations(
 CREATE TABLE user_roles(
   role_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   user_id INTEGER UNIQUE,
-  user_privilage_level_id INTEGER,
+  user_privilege_level_id INTEGER,
   CONSTRAINT fk_user_id
   FOREIGN KEY (user_id)
   REFERENCES users(user_id),
   CONSTRAINT fk_user_privilege_level_id
-  FOREIGN KEY (user_privilage_level_id)
+  FOREIGN KEY (user_privilege_level_id)
   REFERENCES user_privilege_levels(privilege_id)
 );
 
@@ -213,7 +213,7 @@ VALUES
   ('admin');
 
 INSERT INTO user_roles
-(user_id, user_privilage_level_id)
+(user_id, user_privilege_level_id)
 VALUES
   (1, 1),
   (2, 1),
