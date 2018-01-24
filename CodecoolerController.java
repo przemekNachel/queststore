@@ -57,7 +57,7 @@ public class CodecoolerController {
 
   public void useArtifact() {
     String artifactName = view.getStringFromUserInput(view.artifactNameQuestion);
-    //currentUser.getArtifact(artifactName); // comented for the sake of smooth work
+    currentUser.getArtifact(artifactName);
     view.printLine("Artifact has been used!");
   }
 
