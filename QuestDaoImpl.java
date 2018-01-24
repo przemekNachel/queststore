@@ -44,6 +44,7 @@ public class QuestDaoImpl implements QuestDao {
                 "WHERE name='" + questName+ "';");
 
         stmt.executeUpdate(sql);
+        con.commit();
 
         stmt.close();
         con.close();
