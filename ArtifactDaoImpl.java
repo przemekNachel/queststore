@@ -1,18 +1,13 @@
 import java.sql.*;
 import java.util.Objects;
+import java.util.Iterator;
 
 /*
-TODO: - getAllArtifacts: --- figure out whether it needs to return a Group<Group<ArtifactModeL>>, since
-TODO:   it does not seem to be used anywhere (yet) - look at the UML and figure it out.
-TODO:   SQL just needs to select ALL artifacts from artifact_store (SELECT name, descr, price FROM artifact_store)
-
 TODO: - Figure out the question asked on slack regarding createArtifactGroup
-TODO: - Figure out what tmpSetArtifacts is supposed to do.
 */
 
 
 public class ArtifactDaoImpl implements ArtifactDao{
-    private static Group<Group<ArtifactModel>> artifacts;
 
     private Connection connectToDatabase() {
 
@@ -26,7 +21,15 @@ public class ArtifactDaoImpl implements ArtifactDao{
     }
 
     public Group<Group<ArtifactModel>> getAllArtifacts(){
-        return artifacts;
+        Group<Group<ArtifactModel>> allArtifacts = new Group<>("All artifacts");
+        Group<String> groupNames = getArtifactGroupNames();
+        Iterator<String> groupNamesIter = groupNames.getIterator();
+
+        while(groupNamesIter.hasNext()) {
+            allArtifacts.add(getArtifactGroup(groupNamesIter.next()));
+        }
+
+        return allArtifacts;
     }
 
     public ArtifactModel getArtifact(String name){
@@ -131,7 +134,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
     }
 
     public Group<String> getArtifactGroupNames(){
-        Group<String> groupsNames = new Group<>("Group names");
+        Group<String> groupsNames = new Group<>("Group name");
 
         try {
             Connection con = connectToDatabase();
@@ -153,7 +156,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
     }
 
     public Group<ArtifactModel> getArtifactGroup(String groupName){
-        Group<ArtifactModel> group = new Group<>("Artifact group");
+        Group<ArtifactModel> group = new Group<>(groupName);
 
         try {
             Connection con = connectToDatabase();
@@ -190,11 +193,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
     public void createArtifactGroup(Group<ArtifactModel> group){
 
-        artifacts.add(group);
+//        artifacts.add(group);
     }
 
-    public void tmpSetArtifacts(Group<Group<ArtifactModel>> artifacts){
-        this.artifacts = artifacts;
-
-    }
 }
