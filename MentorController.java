@@ -247,6 +247,14 @@ public class MentorController {
             Integer worth = quest.getReward();
             codecooler.getWallet().payIn(worth);
             view.printLine("  Quest marked");
+            UserDaoImpl userDao = new UserDaoImpl();
+            try {
+
+              userDao.updateUser(codecooler);
+            } catch (SQLException sqle) {
+                view.printLine(sqle.getMessage());
+                return;
+            }
         } else {
             view.printLine("  Someone has changed their mind...");
         }
