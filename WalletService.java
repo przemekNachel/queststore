@@ -1,30 +1,30 @@
 class WalletService{
-  private int balance = 0;
+    private int balance = 0;
 
-  public WalletService(int initialBalance) {
+    public WalletService(int initialBalance) {
 
-    this.balance = initialBalance;
-  }
-
-  public boolean canAfford(int amount){
-
-    return this.balance >= amount;
-  }
-
-  public void withdraw(int amount){
-      this.balance -= amount;
+        this.balance = initialBalance;
     }
 
-  public void payIn(int amount){
-    this.balance += amount;
-  }
+    public boolean canAfford(int amount){
 
-  public int getBalance() {
+        return this.balance >= amount;
+    }
 
-    return balance;
-  }
+    public void withdraw(int amount){
+        this.balance -= amount;
+    }
 
-  public String toString(){
-    return String.valueOf(this.balance);
-  }
+    public void payIn(int amount){
+        this.balance += amount;
+    }
+
+    public int getBalance() {
+
+        return balance;
+    }
+
+    public String toString(){
+        return String.valueOf(this.balance);
+    }
 }

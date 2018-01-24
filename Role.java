@@ -1,4 +1,4 @@
 public enum Role {
-  
-  CODECOOLER, MENTOR, ADMIN
+
+    CODECOOLER, MENTOR, ADMIN
 }
