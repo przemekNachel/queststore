@@ -52,7 +52,17 @@ public class QuestDaoImpl implements QuestDao {
 
     @Override
     public void deleteQuest(QuestModel quest) throws SQLException {
+        Connection con = connectToDatabase();
+        Statement stmt = con.createStatement();
+        Objects.requireNonNull(con).setAutoCommit(false);
 
+        String sql = "DELETE from quest_store WHERE name='" + quest.getName() + "';";
+
+        stmt.executeUpdate(sql);
+        con.commit();
+
+        stmt.close();
+        con.close();
     }
 
     @Override
