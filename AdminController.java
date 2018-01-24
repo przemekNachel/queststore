@@ -98,7 +98,14 @@ class AdminController{
         }
 
         // note: we may still have null in User
-        if(!userDao.addUserAdherence(user, groupName) || user == null){
+        boolean userAddedtoGroup = false;
+        try{
+            userAddedtoGroup = userDao.addUserAdherence(user, groupName);
+        } catch (SQLException e) {
+            view.printSQLException(e);
+        }
+
+        if(!userAddedtoGroup || user == null){
             view.printLine(view.assignMentorToFroupError);
         }else {
 
