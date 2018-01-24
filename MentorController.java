@@ -115,7 +115,14 @@ public class MentorController {
             view.printSQLException(e);
         }
 
-        if(!userDao.addUserAdherence(user, groupName)) {
+        boolean addUserAdherenceSuccess = false;
+        try{
+            addUserAdherenceSuccess = userDao.addUserAdherence(user, groupName);
+        } catch (SQLException e) {
+            view.printSQLException(e);
+        }
+
+        if(!addUserAdherenceSuccess) {
 
             view.printLine(view.codecoolerAlreadyInGroupOrGroupAbsent);
         } else {
