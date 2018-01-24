@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.sql.*;
+import java.util.Map;
 
 public class LevelDaoImpl {
     public HashMap<Integer, String> getLevelCollection(){
@@ -25,6 +26,26 @@ public class LevelDaoImpl {
     }
 
     public boolean saveLevelCollection(HashMap<Integer, String> levels,){
+        try {
+            Connection databaseConnection = Connect();
+            Statement statement = databaseConnection.createStatement();
+
+            String sqlCommand = "DELETE FROM predefined_levels";
+            statement.executeUpdate(sqlCommand);
+
+            for(Map.Entry<Integer, String> entry : levels.entrySet()) {
+                sqlCommand = "INSERT INTO predefined_levels (threshold, level_name) VALUES('" + entry.getKey() +
+                        "', '" + entry.getValue() + "');";
+                statement.executeUpdate(sqlCommand);
+                }
+
+            return true;
+
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+            return false;
+        }
     }
 
     private static Connection Connect() throws java.sql.SQLException, java.lang.ClassNotFoundException {
