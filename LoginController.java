@@ -1,4 +1,5 @@
 import java.lang.UnsupportedOperationException;
+import java.sql.*;
 
 public class LoginController {
 
@@ -12,7 +13,6 @@ public class LoginController {
 
     // WARNING: the calls below are part of a demonstration
     new UserDaoImpl().tmpSetUsers(AuxiliaryStorage.getSampleUserGroup());
-    new ArtifactDaoImpl().tmpSetArtifacts(AuxiliaryStorage.getSampleArtifactGroup());
 
   }
 
@@ -75,7 +75,17 @@ public class LoginController {
   public User login(String nickname, String password) {
 
     UserDao userDao = new UserDaoImpl();
-    User user = userDao.getUser(nickname);
+
+    User user;
+    try {
+
+      user = userDao.getUser(nickname);
+    } catch (SQLException sqle) {
+
+      view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+      return null;
+    }
+
     if (user != null && user.getPassword().equals(password)) {
       return user;
     } else {
