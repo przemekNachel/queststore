@@ -112,8 +112,12 @@ class ArtifactStoreController{
 
           String consumerGroupName = view.getStringFromUserInput(view.chooseGroup);
           if (allowedGroupNames.contains(consumerGroupName)) {
-
-            consumers = userDao.getUserGroup(consumerGroupName);
+              try{
+                  consumers = userDao.getUserGroup(consumerGroupName);
+              } catch (SQLException sqle) {
+                view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+                return;
+              }
             providedExistentGroupName = true;
           } else {
             if (consumerGroupName.equals("ALONE")) {
