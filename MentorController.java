@@ -66,7 +66,15 @@ public class MentorController {
       // TODO Default level 0 -- next sprint
       // TODO Level object -- next sprint
 
-      Group<User> studentsGroup = userDao.getUserGroup("students");
+      Group<User> studentsGroup;
+      try{
+          studentsGroup = userDao.getUserGroup("students");
+      } catch (SQLException sqle) {
+
+        view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+        return;
+      }
+
       if (studentsGroup == null) {
 
         Group<User> newStudentsGroup = new Group<>("students");
@@ -117,7 +125,13 @@ public class MentorController {
       } else {
 
         Group<Group<User>> associatedGroups = user.getAssociatedGroups();
-        associatedGroups.add(userDao.getUserGroup(groupName));
+        try{
+            associatedGroups.add(userDao.getUserGroup(groupName));
+        } catch (SQLException sqle) {
+
+          view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+          return;
+        }
         user.setAssociatedGroups(associatedGroups);
       }
     }
