@@ -1,4 +1,5 @@
 import java.util.Iterator;
+import java.sql.*;
 
 class AdminController{
   AdminView view;
@@ -31,7 +32,6 @@ class AdminController{
     boolean requestedExit = false;
     do {
       UserDao userDao = new UserDaoImpl();
-      view.printLine(userDao.getAllUsers().toString());
       MenuOption userOption = view.getMenuOptionFromUserInput(" Please choose option: ");
       if (userOption.getId().equals("0")) {
         requestedExit = true;
@@ -79,17 +79,26 @@ class AdminController{
 
       String name = view.getStringFromUserInput(view.mentorNameQuestion);
       String groupName = view.getStringFromUserInput(view.groupNameQuestion);
+      User user = null;
+      try {
 
-      User user = userDao.getUser(name);
+        user = userDao.getUser(name);
+      } catch (SQLException sqle) {
+        view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+        return;
+      }
 
-      if(!(userDao.addUserAdherence(user, groupName)) || user == null){
+      // note: we may still have null in User
+      if(!userDao.addUserAdherence(user, groupName) || user == null){
           view.printLine(view.assignMentorToFroupError);
       }else{
 
-          Group<Group<User>> assGroups = user
+          Group<Group<User>> associatedGroups = user
             .getAssociatedGroups();
-          assGroups.add(userDao.getUserGroup(groupName));
-          user.setAssociatedGroups(assGroups);
+
+          associatedGroups.add(userDao.getUserGroup(groupName));
+
+          user.setAssociatedGroups(associatedGroups);
       }
 
   }
@@ -104,7 +113,16 @@ class AdminController{
   public void editMentor(){
       UserDaoImpl dao = new UserDaoImpl();
       String mentorName = view.getStringFromUserInput(view.mentorNameQuestion);
-      User mentor = dao.getUser(mentorName);
+
+      User mentor;
+      try {
+
+        mentor = dao.getUser(mentorName);
+      } catch (SQLException sqle) {
+        view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+        return;
+      }
+
       String choice = view.getStringFromUserInput(view.mentorChangeQuestion);
       if (choice.equals("1")){
           String name = view.getStringFromUserInput(view.mentorNameQuestion);
@@ -138,7 +156,16 @@ class AdminController{
   public String getMentorDisplay(){
       UserDaoImpl dao = new UserDaoImpl();
       String mentorName = view.getStringFromUserInput(view.mentorNameQuestion);
-      User mentor = dao.getUser(mentorName);
+
+      User mentor;
+      try {
+
+        mentor = dao.getUser(mentorName);
+      } catch (SQLException sqle) {
+
+        return sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode());
+      }
+
       if (mentor != null && mentor.getRole() == Role.MENTOR) {
 
         return mentor.toString();
