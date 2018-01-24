@@ -335,6 +335,15 @@ public class UserDaoImpl implements UserDao{
         return groupsNames;
     }
 
+    public Group<User> getUserGroup(String groupName) throws SQLException{
+        Group<Group<User>> groups = getAllGroups();
+        for(Group<User> group : groups){
+            if(group.getName().equals(groupName)){
+                return group;
+            }
+        }
+        return null;
+    }
 
 
     // helper methods for pubic methods
@@ -495,10 +504,6 @@ public class UserDaoImpl implements UserDao{
 
     // placeholders for the sake of compilation
 
-    public Group<User> getUserGroup(String groupName){
-        return new Group<User>("a");
-    }
-
     public boolean addUserAdherence(User user, String groupName){return true;}
 
     public void addUserGroup(Group<User> group){}
@@ -509,17 +514,6 @@ public class UserDaoImpl implements UserDao{
 
 
     /*
-
-    public Group<User> getUserGroup(String groupName){
-        Iterator<Group<User>> groupIterator = UserDaoImpl.users.getIterator();
-        while(groupIterator.hasNext()){
-            Group<User> userGroup = groupIterator.next();
-            if(userGroup.getName().equals(groupName)){
-                return userGroup;
-            }
-        }
-        return null;
-    }
 
     public boolean addUserAdherence(User user, String groupName){
         Iterator<Group<User>> userGroupsIterator = UserDaoImpl.users.getIterator();
