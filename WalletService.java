@@ -19,6 +19,11 @@ class WalletService{
     this.balance += amount;
   }
 
+  public int getBalance() {
+
+    return balance;
+  }
+
   public String toString(){
     return String.valueOf(this.balance);
   }
