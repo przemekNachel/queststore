@@ -151,7 +151,13 @@ class AdminController{
 
   public String getGroupsDisplay(){
       UserDaoImpl dao = new UserDaoImpl();
-      Group<String> groupNames = dao.getUserGroupNames();
+      Group<String> groupNames = null;
+      try{
+        groupNames = dao.getUserGroupNames();
+      } catch (SQLException sqle) {
+        view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+        return "error";
+      }
       Iterator<String> iter = groupNames.getIterator();
       System.out.println(groupNames.size());
       String groupsFormatted = "";
