@@ -5,18 +5,15 @@ import java.util.Iterator;
 
 public class ArtifactDaoImpl implements ArtifactDao{
 
-    private Connection connectToDatabase() {
+    public Connection connectToDatabase() throws SQLException {
 
         String db_path = "jdbc:sqlite:database/database.db";
-        try {
             return DriverManager.getConnection(db_path);
 
-        } catch (SQLException e) {
-            throw new RuntimeException("Unable to connect to the database." + e.getMessage());
-        }
+
     }
 
-    public Group<Group<ArtifactModel>> getAllArtifacts(){
+    public Group<Group<ArtifactModel>> getAllArtifacts() {
         Group<Group<ArtifactModel>> allArtifacts = new Group<>("All artifacts");
         Group<String> groupNames = getArtifactGroupNames();
         Iterator<String> groupNamesIter = groupNames.getIterator();
@@ -28,8 +25,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
         return allArtifacts;
     }
 
-    public ArtifactModel getArtifact(String name){
-        try {
+    public ArtifactModel getArtifact(String name) throws SQLException {
             Connection con = connectToDatabase();
             Statement stmt = Objects.requireNonNull(con).createStatement();
 
@@ -47,18 +43,13 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
             return new ArtifactModel(artName, artDesc, artPrice);
 
-        } catch (SQLException e) {
-            throw new RuntimeException("Unable to fetch the artifact: " + e.getMessage());
-        }
     }
 
-    public void addArtifact(ArtifactModel artifact, String groupName){
+    public void addArtifact(ArtifactModel artifact, String groupName) throws SQLException {
         String artName = artifact.getName();
         String artDesc = artifact.getDescription();
         float artPrice = artifact.getPrice();
 
-
-        try {
             Connection con = connectToDatabase();
             Objects.requireNonNull(con).setAutoCommit(false);
             Statement stmt = con.createStatement();
@@ -71,20 +62,13 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
             stmt.close();
             con.close();
-
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Unable to add artifact to the database." + e.getMessage());
-        }
-
     }
 
-    public void updateArtifact(ArtifactModel artifact){
+    public void updateArtifact(ArtifactModel artifact)throws SQLException {
         String artName = artifact.getName();
         String artDesc = artifact.getDescription();
         float artPrice = artifact.getPrice();
 
-        try {
             Connection con = connectToDatabase();
             Objects.requireNonNull(con).setAutoCommit(false);
             Statement stmt = con.createStatement();
@@ -100,16 +84,12 @@ public class ArtifactDaoImpl implements ArtifactDao{
             stmt.close();
             con.close();
 
-        } catch (SQLException e) {
-            throw new RuntimeException("Unable to update artifact: " + e.getMessage());
-        }
 
     }
 
-    public boolean deleteArtifact(ArtifactModel artifact){
+    public boolean deleteArtifact(ArtifactModel artifact) throws SQLException {
         String artName = artifact.getName();
 
-        try {
             Connection con = connectToDatabase();
             Objects.requireNonNull(con).setAutoCommit(false);
             Statement stmt = con.createStatement();
@@ -122,17 +102,11 @@ public class ArtifactDaoImpl implements ArtifactDao{
             stmt.close();
             con.close();
             return true;
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Unable to remove artifact: " + e.getMessage());
-        }
-
     }
 
-    public Group<String> getArtifactGroupNames(){
+    public Group<String> getArtifactGroupNames() throws SQLException {
         Group<String> groupsNames = new Group<>("Group name");
 
-        try {
             Connection con = connectToDatabase();
             Statement stmt = Objects.requireNonNull(con).createStatement();
 
@@ -143,18 +117,12 @@ public class ArtifactDaoImpl implements ArtifactDao{
                 String group_name = rs.getString("group_name");
                 groupsNames.add(group_name);
             }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Unable to fetch group names: " + e.getMessage());
-        }
-
         return groupsNames;
     }
 
-    public Group<ArtifactModel> getArtifactGroup(String groupName){
+    public Group<ArtifactModel> getArtifactGroup(String groupName) throws SQLException{
         Group<ArtifactModel> group = new Group<>(groupName);
 
-        try {
             Connection con = connectToDatabase();
             Statement stmt = Objects.requireNonNull(con).createStatement();
 
@@ -180,15 +148,9 @@ public class ArtifactDaoImpl implements ArtifactDao{
             con.close();
 
             return group;
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Unable to fetch artifact group " + e.getMessage());
-        }
-
     }
 
-    public void addArtifactGroup(Group<ArtifactModel> group){
-        try {
+    public void addArtifactGroup(Group<ArtifactModel> group) throws SQLException{
             Connection con = connectToDatabase();
             Objects.requireNonNull(con).setAutoCommit(false);
             Statement stmt = con.createStatement();
@@ -200,13 +162,6 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
             stmt.close();
             stmt.close();
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Unable to fetch artifact group " + e.getMessage());
-        }
-
-
-
     }
 
 }
