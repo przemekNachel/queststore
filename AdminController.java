@@ -24,7 +24,15 @@ class AdminController{
       String email = this.view.getStringFromUserInput(view.mentorEmailQuestion);
       String password = this.view.getStringFromUserInput(view.mentorPasswordQuestion);
       Group<User> mentorsGroup = dao.getUserGroup("mentors");
-      mentorsGroup.add(new MentorModel(name, email, password, mentorsGroup));
+      MentorModel mentor = new MentorModel(name, email, password, mentorsGroup);
+      mentorsGroup.add(mentor);
+      try {
+
+        dao.addUser(mentor);
+      } catch (SQLException sqle) {
+        view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+        return;
+      }
   }
 
   public void start() {
