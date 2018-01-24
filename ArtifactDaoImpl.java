@@ -2,10 +2,6 @@ import java.sql.*;
 import java.util.Objects;
 import java.util.Iterator;
 
-/*
-TODO: - Figure out the question asked on slack regarding createArtifactGroup
-*/
-
 
 public class ArtifactDaoImpl implements ArtifactDao{
 
@@ -191,9 +187,26 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
     }
 
-    public void createArtifactGroup(Group<ArtifactModel> group){
+    public void addArtifactGroup(Group<ArtifactModel> group){
+        try {
+            Connection con = connectToDatabase();
+            Objects.requireNonNull(con).setAutoCommit(false);
+            Statement stmt = con.createStatement();
 
-//        artifacts.add(group);
+            String sql = ("INSERT INTO group_names (group_name) VALUES ('" + group.getName() + "');");
+            stmt.executeUpdate(sql);
+
+            con.commit();
+
+            stmt.close();
+            stmt.close();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable to fetch artifact group " + e.getMessage());
+        }
+
+
+
     }
 
 }
