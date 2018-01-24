@@ -8,5 +8,5 @@ public interface UserDao{
     public void addUser(User user) throws SQLException;
     public void updateUser(User user) throws SQLException;
     public boolean deleteUser(User user) throws SQLException;
-    public boolean addUserAdherence(User user, String name);
+    public boolean addUserAdherence(User user, String name) throws SQLException;
 }

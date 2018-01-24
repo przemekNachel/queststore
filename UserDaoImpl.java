@@ -345,8 +345,59 @@ public class UserDaoImpl implements UserDao{
         return null;
     }
 
+    public boolean addUserAdherence(User user, String groupName) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+        
+        int userId = getUserId(user.getName());
+        int groupId = getGroupId(groupName);
+
+        if(userId > 0 && groupId > 0){
+            String query = "INSERT INTO user_associations(user_id, group_id) " +
+                "VALUES (" + userId + ", " + groupId + ");";
+
+            statement.executeUpdate(query);
+            connect.commit();
+            return true;
+        }
+        return false;
+    }
+
+
+
 
     // helper methods for pubic methods
+
+    private int getGroupId(String groupName) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String query = "SELECT group_id FROM group_names WHERE group_name='" + groupName + "';";
+
+        ResultSet results = statement.executeQuery(query);
+
+        while(results.next()){
+            return results.getInt("group_id");
+        }
+        return -1;
+    }
+
+    private int getUserId(String userName) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String query = "SELECT user_id FROM users WHERE nickname='" + userName + "';";
+
+        ResultSet results = statement.executeQuery(query);
+
+        while(results.next()){
+            return results.getInt("user_id");
+        }
+        return -1;
+    }
 
     private Group<Group<User>> getAllGroups() throws SQLException{
 
@@ -450,7 +501,7 @@ public class UserDaoImpl implements UserDao{
             "FROM user_privilege_levels " +
             "LEFT JOIN user_roles  " +
             "ON user_privilege_levels.privilege_id" +
-            "=user_roles.user_privilege_level " +
+            "=user_roles.user_privilege_level_id " +
             "WHERE user_roles.user_id = " + userId + ";";
 
         ResultSet results = statement.executeQuery(query);
@@ -504,8 +555,6 @@ public class UserDaoImpl implements UserDao{
 
     // placeholders for the sake of compilation
 
-    public boolean addUserAdherence(User user, String groupName){return true;}
-
     public void addUserGroup(Group<User> group){}
 
     public void tmpSetUsers(Group<Group<User>> users){}
@@ -514,17 +563,6 @@ public class UserDaoImpl implements UserDao{
 
 
     /*
-
-    public boolean addUserAdherence(User user, String groupName){
-        Iterator<Group<User>> userGroupsIterator = UserDaoImpl.users.getIterator();
-        while(userGroupsIterator.hasNext()){
-            Group<User> usersGroup = userGroupsIterator.next();
-            if(usersGroup.getName().equals(groupName)){
-                return usersGroup.add(user);
-            }
-        }
-        return false;
-    }
 
     public void addUserGroup(Group<User> group){
         users.add(group);
