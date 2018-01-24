@@ -23,7 +23,13 @@ class AdminController{
       String name = this.view.getStringFromUserInput(view.mentorNameQuestion);
       String email = this.view.getStringFromUserInput(view.mentorEmailQuestion);
       String password = this.view.getStringFromUserInput(view.mentorPasswordQuestion);
-      Group<User> mentorsGroup = dao.getUserGroup("mentors");
+      Group<User> mentorsGroup = null;
+      try{
+          mentorsGroup = dao.getUserGroup("mentors");
+      } catch (SQLException sqle) {
+        view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+        return;
+      }
       MentorModel mentor = new MentorModel(name, email, password, mentorsGroup);
       mentorsGroup.add(mentor);
       try {
@@ -103,8 +109,12 @@ class AdminController{
 
           Group<Group<User>> associatedGroups = user
             .getAssociatedGroups();
-
-          associatedGroups.add(userDao.getUserGroup(groupName));
+            try{
+                associatedGroups.add(userDao.getUserGroup(groupName));
+            } catch (SQLException sqle) {
+              view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+              return;
+            }
 
           user.setAssociatedGroups(associatedGroups);
       }
