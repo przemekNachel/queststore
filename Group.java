@@ -1,6 +1,7 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 
-public class Group<T> {
+public class Group<T> implements Iterable<T> {
 
   private String name;
   private ArrayList<T> group;
@@ -11,9 +12,16 @@ public class Group<T> {
     setName(name);
   }
 
+  /* below getter left for backwards compatibility - it will be deleted after refactoring */
   public IteratorImpl<T> getIterator() {
 
     return new IteratorImpl<T>(this);
+  }
+
+  /* below getter is due to Iterable */
+  public Iterator<T> iterator() {
+
+    return getIterator();
   }
 
   public String getName() {
