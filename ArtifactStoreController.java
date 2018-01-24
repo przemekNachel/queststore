@@ -94,7 +94,14 @@ class ArtifactStoreController{
         } while(!providedValidArtifactName);
 
         // get all user groups to choose from and display them
-        Group<String> allowedGroupNames = userDao.getUserGroupNames();
+        Group<String> allowedGroupNames = null;
+        try{
+            allowedGroupNames = userDao.getUserGroupNames();
+        } catch (SQLException sqle) {
+
+          view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+          return;
+        }
         String availableGroups = allowedGroupNames.toString();
         view.printLine(availableGroups);
         // get group which will crowd-fund the artifact
