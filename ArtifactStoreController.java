@@ -134,8 +134,14 @@ class ArtifactStoreController{
             return;
         }
         user.addArtifact(boughtArtifact);
-        System.out.println(user.getStatisticsDisplay());
-        userDao.updateUser(user);
+
+        try {
+
+          userDao.updateUser(user);
+        } catch (SQLException sqle) {
+
+          view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+        }
     }
 
     public ArtifactModel buyArtifact(String name, Group<CodecoolerModel> consumers) {
