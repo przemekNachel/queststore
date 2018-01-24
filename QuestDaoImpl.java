@@ -2,7 +2,7 @@ import java.sql.*;
 import java.util.Iterator;
 import java.util.Objects;
 
-@SuppressWarnings("ALL")
+
 public class QuestDaoImpl implements QuestDao {
     @Override
     public Connection connectToDatabase() throws SQLException {
