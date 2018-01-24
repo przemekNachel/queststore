@@ -8,5 +8,7 @@ public class LevelService {
     }
 
     public void saveLevels(HashMap<Integer, String> levels){
+        LevelDaoImpl dao = new LevelDaoImpl();
+        dao.saveLevelCollection(levels);
     }
 }
