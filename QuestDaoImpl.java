@@ -30,7 +30,23 @@ public class QuestDaoImpl implements QuestDao {
 
     @Override
     public void updateQuest(QuestModel quest) throws SQLException {
+        Connection con = connectToDatabase();
+        Statement stmt = con.createStatement();
+        Objects.requireNonNull(con).setAutoCommit(false);
 
+        String questName = quest.getName();
+        String questDescr = quest.getDescription();
+        Integer questReward = quest.getReward();
+
+        String sql = ("UPDATE quest_store SET "+
+                "descr='"+questDescr+"', "+
+                "price='"+questReward+"' "+
+                "WHERE name='" + questName+ "';");
+
+        stmt.executeUpdate(sql);
+
+        stmt.close();
+        con.close();
     }
 
     @Override
