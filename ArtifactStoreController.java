@@ -1,4 +1,5 @@
 import java.util.Iterator;
+import java.sql.*;
 
 class ArtifactStoreController{
 
@@ -40,13 +41,30 @@ class ArtifactStoreController{
 
         // get available artifacts by category/ group
         Group<String> allowedArtifactNames = new Group<>("allowed artifact name user input");
-        Group<String> names = dao.getArtifactGroupNames();
-        Iterator<String> iter = names.getIterator();
+        Group<String> artifactGroupNames;
+        try {
+
+          artifactGroupNames = dao.getArtifactGroupNames();
+        } catch (SQLException sqle) {
+
+          view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+          return;
+        }
+
+        Iterator<String> iter = artifactGroupNames.getIterator();
         String groupsFormatted = "";
         while (iter.hasNext()) {
 
             String groupName = iter.next();
-            Group<ArtifactModel> artifactGroup = dao.getArtifactGroup(groupName);
+            Group<ArtifactModel> artifactGroup;
+            try {
+
+              artifactGroup = dao.getArtifactGroup(groupName);
+            } catch (SQLException sqle) {
+
+              view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+              return;
+            }
 
             groupsFormatted += groupName + " :\n";
             Iterator<ArtifactModel> iterArtifact = artifactGroup.getIterator();
@@ -124,7 +142,17 @@ class ArtifactStoreController{
 
         ArtifactStoreView view = new ArtifactStoreView();
         ArtifactDaoImpl dao = new ArtifactDaoImpl();
-        ArtifactModel artifact = dao.getArtifact(name);
+
+        ArtifactModel artifact;
+        try {
+
+          artifact = dao.getArtifact(name);
+        } catch (SQLException sqle) {
+
+          view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+          return null;
+        }
+
         if(artifact == null){
             return null;
         }
@@ -170,7 +198,15 @@ class ArtifactStoreController{
         ArtifactDaoImpl dao = new ArtifactDaoImpl();
 
         String artName = view.getStringFromUserInput(view.artifactNameQuestion);
-        ArtifactModel artifact = dao.getArtifact(artName);
+        ArtifactModel artifact;
+        try {
+
+          artifact = dao.getArtifact(artName);
+        } catch (SQLException sqle) {
+
+          view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+          return;
+        }
 
         if(artifact == null){
             view.printLine(view.artifactNotFoundError);
@@ -213,14 +249,30 @@ class ArtifactStoreController{
         String categoryName = view.getStringFromUserInput(view.artifactCategoryQuestion);
 
         Group<ArtifactModel> newGroup = new Group<>(categoryName);
-        artDao.createArtifactGroup(newGroup);
+        try {
+
+          artDao.addArtifactGroup(newGroup);
+        } catch (SQLException sqle) {
+
+          view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+          return;
+        }
     }
 
     public void assignArtifactToCategory(ArtifactModel artifact){
         ArtifactStoreView view = new ArtifactStoreView();
         ArtifactDaoImpl dao = new ArtifactDaoImpl();
 
-        Group<String> possibleGroupNames = dao.getArtifactGroupNames();
+        Group<String> possibleGroupNames;
+        try {
+
+          possibleGroupNames = dao.getArtifactGroupNames();
+        } catch (SQLException sqle) {
+
+          view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+          return;
+        }
+
         Iterator<String> iter = possibleGroupNames.getIterator();
         view.printLine(view.chooseGroup);
 
@@ -233,6 +285,13 @@ class ArtifactStoreController{
 
         view.printLine(groupsToChooseFrom);
         String desiredGroupName = view.getStringFromUserInput(view.artifactNameQuestion);
-        dao.addArtifact(artifact, desiredGroupName); // a category/group is created if it does not exist
+        try {
+
+          dao.addArtifact(artifact, desiredGroupName);
+        } catch (SQLException sqle) {
+
+          view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+          return;
+        }
     }
 }

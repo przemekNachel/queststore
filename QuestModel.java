@@ -1,9 +1,9 @@
 public class QuestModel {
   private String questName;
   private String questDescription;
-  private Float questReward;
+  private Integer questReward;
 
-  public QuestModel(String name, String desc, Float reward) {
+  public QuestModel(String name, String desc, Integer reward) {
     this.questName = name;
     this.questDescription = desc;
     this.questReward = reward;
@@ -17,11 +17,11 @@ public class QuestModel {
     return questName;
   }
 
-  public void setReward(Float reward) {
+  public void setReward(Integer reward) {
     this.questReward = reward;
   }
 
-  public Float getReward() {
+  public Integer getReward() {
     return questReward;
   }
 

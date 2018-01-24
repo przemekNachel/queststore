@@ -34,8 +34,17 @@ public class CodecoolerModel extends User {
   }
 
   public ArtifactModel getArtifact(String name) {
-    ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
-    return artifactDao.getArtifact(name);
+
+    Iterator<ArtifactModel> iter = artifacts.getIterator();
+    while(iter.hasNext()) {
+
+      ArtifactModel currentArtifact = iter.next();
+      if (currentArtifact.getName().equals(name)) {
+
+        return currentArtifact;
+      }
+    }
+    return null;
   }
 
   public Group<String> getGroupNames() {
