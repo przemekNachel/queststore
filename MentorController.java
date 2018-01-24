@@ -1,7 +1,7 @@
 import java.sql.*;
 
 public class MentorController {
-    public MentorView view;
+    private MentorView view;
 
     public MentorController() {
         Menu mentorMenu = new Menu(
@@ -137,22 +137,123 @@ public class MentorController {
         }
     }
 
-    // public void markCodecoolerQuestCompletion() {
-    //   UserDaoImpl userDao = new UserDaoImpl();
-    //   QuestDaoImpl questDao = new QuestDaoImpl();
-    //
-    //   String nickname = view.getStringFromUserInput(view.userNicknameQuestion);
-    //   String questname = view.getStringFromUserInput(view.markQuestNameQuestion);
-    //
-    //   User user = userDao.getUser(nickname);
-    //   Quest questname = questDao.getQuest(questname);
-    //
-    //
-    //
-    // }
-    //
-    // public void markCodecoolerArtifactUsage() {
-    //    // mark that codecooler's artifact has been use and disable it's usage.
-    // }
+    private CodecoolerModel getCodecooler() {
+
+        UserDaoImpl userDao = new UserDaoImpl();
+        boolean validNameProvided = false;
+        User user;
+        do {
+
+            String name = view.getStringFromUserInput(view.userNicknameQuestion);
+            try {
+
+              user = userDao.getUser(name);
+            } catch (SQLException sqle) {
+                view.printLine(sqle.getMessage());
+                return null;
+            }
+
+            if (user != null && user.getRole() == Role.CODECOOLER) {
+                validNameProvided = true;
+            } else {
+                view.printLine(view.invalidNickname);
+            }
+        } while (!validNameProvided);
+
+        return (CodecoolerModel)user;
+    }
+
+    public void markCodecoolerQuestCompletion() {
+
+      UserDaoImpl userDao = new UserDaoImpl();
+      QuestDaoImpl questDao = new QuestDaoImpl();
+
+      // get quest group names ...
+      Group<String> allowedQuestNames = new Group<>("allowed quest name user input");
+      Group<String> questGroupNames;
+      try {
+
+        questGroupNames = questDao.getQuestGroupNames();
+      } catch (SQLException sqle) {
+
+        view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+        return;
+      }
+
+      // ... to retrieve particular quest names
+      String groupsFormatted = "";
+      for (String groupName : questGroupNames) {
+
+          Group<QuestModel> questGroup;
+          try {
+
+              questGroup = questDao.getQuestGroup(groupName);
+          } catch (SQLException sqle) {
+
+              view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+              return;
+          }
+
+          groupsFormatted += groupName + " :\n";
+          for (QuestModel currentQuest : questGroup) {
+
+              groupsFormatted += "*" + currentQuest + "\n";
+              allowedQuestNames.add(currentQuest.getName());
+          }
+      }
+
+      view.printLine(view.availableQuests);
+      view.printLine(groupsFormatted);
+
+      // get the quest to be checked
+      String questName = null;
+      boolean providedValidQuestName = false;
+      do {
+
+         questName = view.getStringFromUserInput(view.markQuestNameQuestion);
+         if (allowedQuestNames.contains(questName)) {
+
+            providedValidQuestName = true;
+         } else {
+            view.printLine(view.questNotFoundError);
+         }
+      } while(!providedValidQuestName);
+
+      // get quest to be marked
+      QuestModel quest;
+      try {
+
+        quest = questDao.getQuest(questName);
+      } catch (SQLException sqle) {
+          view.printLine(sqle.getMessage());
+          return;
+      }
+      // get a Codecooler to be marked
+      CodecoolerModel codecooler = getCodecooler();
+
+      markQuest(codecooler, quest);
+    }
+
+    private void markQuest(CodecoolerModel codecooler, QuestModel quest) {
+
+        view.printLine("You are about to mark the quest \"" + quest.getName() + "\" for " + codecooler.getName() + ", completion of which is worth " + quest.getReward().toString());
+        String input = "";
+        while (!input.equals("Y") && !input.equals("N")) {
+            input = view.getStringFromUserInput("\n\n  Do you want to honor this achievement? [Y/N] ");
+        }
+
+        if (input.equals("Y")) {
+
+            Integer worth = quest.getReward();
+            codecooler.getWallet().payIn(worth);
+            view.printLine("  Quest marked");
+        } else {
+            view.printLine("  Someone has changed their mind...");
+        }
+    }
+
+    public void markCodecoolerArtifactUsage() {
+
+    }
 
 }
