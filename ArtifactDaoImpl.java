@@ -13,7 +13,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
     public Connection connectToDatabase() throws SQLException {
 
         String db_path = "jdbc:sqlite:database/database.db";
-            return DriverManager.getConnection(db_path);
+        return DriverManager.getConnection(db_path);
 
 
     }
@@ -34,22 +34,22 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
     @Override
     public ArtifactModel getArtifact(String name) throws SQLException {
-            Connection con = connectToDatabase();
-            Statement stmt = Objects.requireNonNull(con).createStatement();
+        Connection con = connectToDatabase();
+        Statement stmt = Objects.requireNonNull(con).createStatement();
 
-            String sql = ("SELECT * FROM artifact_store WHERE name='" + name + "';");
-            ResultSet rs = stmt.executeQuery(sql);
+        String sql = ("SELECT * FROM artifact_store WHERE name='" + name + "';");
+        ResultSet rs = stmt.executeQuery(sql);
 
 
-            String artName = rs.getString("name");
-            String artDesc = rs.getString("descr");
-            Integer artPrice = rs.getInt("price");
+        String artName = rs.getString("name");
+        String artDesc = rs.getString("descr");
+        Integer artPrice = rs.getInt("price");
 
-            stmt.close();
-            rs.close();
-            con.close();
+        stmt.close();
+        rs.close();
+        con.close();
 
-            return new ArtifactModel(artName, artDesc, artPrice);
+        return new ArtifactModel(artName, artDesc, artPrice);
     }
 
     @Override
@@ -58,18 +58,18 @@ public class ArtifactDaoImpl implements ArtifactDao{
         String artDesc = artifact.getDescription();
         float artPrice = artifact.getPrice();
 
-            Connection con = connectToDatabase();
-            Objects.requireNonNull(con).setAutoCommit(false);
-            Statement stmt = con.createStatement();
+        Connection con = connectToDatabase();
+        Objects.requireNonNull(con).setAutoCommit(false);
+        Statement stmt = con.createStatement();
 
-            String sql = ("INSERT INTO artifact_store (name, descr, price)" +
-                    "VALUES('"+ artName + "', '" + artDesc + "', '" + artPrice + "');");
-            stmt.executeUpdate(sql);
+        String sql = ("INSERT INTO artifact_store (name, descr, price)" +
+                "VALUES('"+ artName + "', '" + artDesc + "', '" + artPrice + "');");
+        stmt.executeUpdate(sql);
 
-            con.commit();
+        con.commit();
 
-            stmt.close();
-            con.close();
+        stmt.close();
+        con.close();
     }
 
     @Override
@@ -78,20 +78,20 @@ public class ArtifactDaoImpl implements ArtifactDao{
         String artDesc = artifact.getDescription();
         float artPrice = artifact.getPrice();
 
-            Connection con = connectToDatabase();
-            Objects.requireNonNull(con).setAutoCommit(false);
-            Statement stmt = con.createStatement();
+        Connection con = connectToDatabase();
+        Objects.requireNonNull(con).setAutoCommit(false);
+        Statement stmt = con.createStatement();
 
-            String sql = ("UPDATE artifact_store SET " +
-                    "descr='" + artDesc + "', " +
-                    "price='" + artPrice + "' " +
-                    "WHERE name='" + artName+ "';");
+        String sql = ("UPDATE artifact_store SET " +
+                "descr='" + artDesc + "', " +
+                "price='" + artPrice + "' " +
+                "WHERE name='" + artName+ "';");
 
-            stmt.executeUpdate(sql);
-            con.commit();
+        stmt.executeUpdate(sql);
+        con.commit();
 
-            stmt.close();
-            con.close();
+        stmt.close();
+        con.close();
 
 
     }
@@ -100,34 +100,34 @@ public class ArtifactDaoImpl implements ArtifactDao{
     public boolean deleteArtifact(ArtifactModel artifact) throws SQLException {
         String artName = artifact.getName();
 
-            Connection con = connectToDatabase();
-            Objects.requireNonNull(con).setAutoCommit(false);
-            Statement stmt = con.createStatement();
+        Connection con = connectToDatabase();
+        Objects.requireNonNull(con).setAutoCommit(false);
+        Statement stmt = con.createStatement();
 
-            String sql = "DELETE from artifact_store WHERE name='" + artName + "';";
+        String sql = "DELETE from artifact_store WHERE name='" + artName + "';";
 
-            stmt.executeUpdate(sql);
-            con.commit();
+        stmt.executeUpdate(sql);
+        con.commit();
 
-            stmt.close();
-            con.close();
-            return true;
+        stmt.close();
+        con.close();
+        return true;
     }
 
     @Override
     public Group<String> getArtifactGroupNames() throws SQLException {
         Group<String> groupsNames = new Group<>("Group name");
 
-            Connection con = connectToDatabase();
-            Statement stmt = Objects.requireNonNull(con).createStatement();
+        Connection con = connectToDatabase();
+        Statement stmt = Objects.requireNonNull(con).createStatement();
 
-            String sql = "SELECT group_name FROM group_names";
-            ResultSet rs = stmt.executeQuery(sql);
+        String sql = "SELECT group_name FROM group_names";
+        ResultSet rs = stmt.executeQuery(sql);
 
-            while(rs.next()) {
-                String group_name = rs.getString("group_name");
-                groupsNames.add(group_name);
-            }
+        while(rs.next()) {
+            String group_name = rs.getString("group_name");
+            groupsNames.add(group_name);
+        }
         return groupsNames;
     }
 
@@ -135,45 +135,45 @@ public class ArtifactDaoImpl implements ArtifactDao{
     public Group<ArtifactModel> getArtifactGroup(String groupName) throws SQLException{
         Group<ArtifactModel> group = new Group<>(groupName);
 
-            Connection con = connectToDatabase();
-            Statement stmt = Objects.requireNonNull(con).createStatement();
+        Connection con = connectToDatabase();
+        Statement stmt = Objects.requireNonNull(con).createStatement();
 
-            String sql = "SELECT\n" +
-                    "  artifact_store.artifact_id, name, descr, price, group_names.group_name\n" +
-                    "FROM\n" +
-                    "  artifact_store\n" +
-                    "  INNER JOIN artifact_associations ON artifact_associations.association_id = artifact_store.artifact_id\n" +
-                    "  INNER JOIN group_names ON group_names.group_id = artifact_associations.group_id\n" +
-                    " WHERE group_name='" + groupName + "';";
+        String sql = "SELECT\n" +
+                "  artifact_store.artifact_id, name, descr, price, group_names.group_name\n" +
+                "FROM\n" +
+                "  artifact_store\n" +
+                "  INNER JOIN artifact_associations ON artifact_associations.association_id = artifact_store.artifact_id\n" +
+                "  INNER JOIN group_names ON group_names.group_id = artifact_associations.group_id\n" +
+                " WHERE group_name='" + groupName + "';";
 
-            ResultSet rs = stmt.executeQuery(sql);
+        ResultSet rs = stmt.executeQuery(sql);
 
-            while(rs.next()) {
-                String name = rs.getString("name");
-                String descr = rs.getString("descr");
-                Integer price = rs.getInt("price");
-                group.add(new ArtifactModel(name, descr, price));
-            }
+        while(rs.next()) {
+            String name = rs.getString("name");
+            String descr = rs.getString("descr");
+            Integer price = rs.getInt("price");
+            group.add(new ArtifactModel(name, descr, price));
+        }
 
-            stmt.close();
-            rs.close();
-            con.close();
+        stmt.close();
+        rs.close();
+        con.close();
 
-            return group;
+        return group;
     }
     @Override
     public void addArtifactGroup(Group<ArtifactModel> group) throws SQLException{
-            Connection con = connectToDatabase();
-            Objects.requireNonNull(con).setAutoCommit(false);
-            Statement stmt = con.createStatement();
+        Connection con = connectToDatabase();
+        Objects.requireNonNull(con).setAutoCommit(false);
+        Statement stmt = con.createStatement();
 
-            String sql = ("INSERT INTO group_names (group_name) VALUES ('" + group.getName() + "');");
-            stmt.executeUpdate(sql);
+        String sql = ("INSERT INTO group_names (group_name) VALUES ('" + group.getName() + "');");
+        stmt.executeUpdate(sql);
 
-            con.commit();
+        con.commit();
 
-            stmt.close();
-            stmt.close();
+        stmt.close();
+        stmt.close();
     }
 
 }
