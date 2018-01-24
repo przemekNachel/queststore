@@ -82,7 +82,7 @@ public class LoginController {
       user = userDao.getUser(nickname);
     } catch (SQLException sqle) {
 
-      view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+      System.err.println( sqle.getClass().getName() + ": " + sqle.getMessage() );
       return null;
     }
 
