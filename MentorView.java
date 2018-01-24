@@ -1,5 +1,9 @@
 public class MentorView extends AbstractConsoleView {
 
+  public MentorView() {
+    // a no-menu constructor - not all uses require a menu
+  }
+  
   public MentorView(Menu menu) {
 
     this.menu = menu;
@@ -16,4 +20,5 @@ public class MentorView extends AbstractConsoleView {
   public String markQuestNameQuestion = "Provide Quest name: ";
   public String markArtifactUsedQuestion = "Provide name of used artifact: ";
   public String codecoolerAlreadyInGroupOrGroupAbsent = "The Codecooler *had* been added to the given group or the group does not exist.";
+  public String userAlreadyInDatabase = "User already in database.";
 }
