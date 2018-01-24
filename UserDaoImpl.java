@@ -4,8 +4,6 @@ import java.sql.*;
 
 public class UserDaoImpl implements UserDao{
 
-    private Connection connect = null;
-    private Statement statement = null;
     private static String JDBC = "jdbc:sqlite:database.db";
 
     public Group<Group<User>> getAllUsers() throws SQLException{
@@ -120,6 +118,7 @@ public class UserDaoImpl implements UserDao{
         password = user.getPassword();
         email = user.getEmail();
         role = convertRole(user.getRole());
+        System.out.println(userName + "|" + password + "|" + email + "|" + role);
 
         // get userId
         String getUserId = "SELECT user_id FROM users WHERE nickname='" + userName + "';";
@@ -160,7 +159,7 @@ public class UserDaoImpl implements UserDao{
         connect.commit();
 
         // update privileges
-        String updatePrivileges = "INSERT INTO user_privilege_levels" +
+        String updatePrivileges = "INSERT INTO user_roles" +
             "(user_id, user_privilege_level) " +
             "VALUES ('" + userId + "', '" + userPrivilegeLevelId + "');";
 
@@ -177,11 +176,97 @@ public class UserDaoImpl implements UserDao{
         }
 
         // update wallet
-        String updateWallet = "INSERT INTO user_wallet(balance) " +
-            "VALUES (" + balance + ");";
+        if(role.equals("codecooler")){
+            String updateWallet = "INSERT INTO user_wallet(user_id, balance) " +
+                "VALUES (" + userId + ", " + balance + ");";
+
+            statement.executeUpdate(updateWallet);
+            connect.commit();
+        }
     }
 
+    public void updateUser(User user) throws SQLException{
 
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String userName = null, password = null, email = null, role = null;
+        int userId = 0, userPrivilegeLevelId = 0, balance = 0;//, expGained = 0, ;
+        ArrayList<Integer> groupIds;
+
+        // get basic user credentials (all strings + role)
+        userName = user.getName();
+        password = user.getPassword();
+        email = user.getEmail();
+        role = convertRole(user.getRole());
+        System.out.println(userName + "|" + password + "|" + email + "|" + role);
+
+        // get userId
+        String getUserId = "SELECT user_id FROM users WHERE nickname='" + userName + "';";
+        ResultSet getUserIdResult = statement.executeQuery(getUserId);
+
+        while(getUserIdResult.next()){
+            userId = getUserIdResult.getInt("user_id");
+        }
+
+        // get userPrivilegeLevelId
+
+        String getPrivLevel = "SELECT privilege_id FROM user_privilege_levels " +
+            "WHERE privilege_name='" + role + "';";
+        ResultSet getPrivLevelResult = statement.executeQuery(getPrivLevel);
+
+        while(getPrivLevelResult.next()){
+            userPrivilegeLevelId = getPrivLevelResult.getInt("privilege_id");
+        }
+
+        // get all groupIds
+        groupIds = getUserGroupIds(getUserGroupNamesFrom(user.getAssociatedGroups()), userId);
+
+
+        // if user = codecooler get expGained and balance
+        if(role.equals("codecooler")){
+            CodecoolerModel tmpUser = (CodecoolerModel) user;
+            balance = tmpUser.getWallet().getBalance();
+            //expGained = user.getExp() ???
+        }
+
+        /* execute queries to update */
+
+        // update Credentials
+        String updateUsers = "UPDATE users " +
+            "SET password='" + password + "', email='" + email + "' " +
+            "WHERE user_id=" + userId + ";";
+
+        statement.executeUpdate(updateUsers);
+        connect.commit();
+
+        // update privileges
+        String updatePrivileges = "UPDATE user_roles" +
+            "SET user_privilege_level=" + userPrivilegeLevelId + " " +
+            "WHERE user_id=" + userId + ";";
+
+        statement.executeUpdate(updatePrivileges);
+        connect.commit();
+
+        //update user associations
+        String updateAssociations;
+        for(Integer groupId : groupIds){
+            updateAssociations = "UPDATE user_associations " +
+                "SET group_id=" + groupId + " WHERE user_id=" + userId + ";";
+            statement.executeUpdate(updateAssociations);
+            connect.commit();
+        }
+
+        // update wallet
+        if(role.equals("codecooler")){
+            String updateWallet = "UPDATE user_wallet " +
+                "SET balance=" + balance + " WHERE user_id=" + userId + ";";
+
+            statement.executeUpdate(updateWallet);
+            connect.commit();
+        }
+
+    }
 
 
     // helper methods for pubic methods
@@ -342,15 +427,11 @@ public class UserDaoImpl implements UserDao{
 
     // placeholders for the sake of compilation
 
-    public void updateUser(User user){}
-
     public boolean deleteUser(User user){return true;}
 
     public Group<String> getUserGroupNames(){
         return new Group<String>("a");
     }
-
-
 
     public Group<User> getUserGroup(String groupName){
         return new Group<User>("a");
@@ -366,31 +447,6 @@ public class UserDaoImpl implements UserDao{
 
 
     /*
-
-    public void addUser(User user){
-        Group<Group<User>> userGroups = user.getAssociatedGroups();
-        Iterator<Group<User>> userGroupIterator = userGroups.getIterator();
-        while(userGroupIterator.hasNext()){
-            String userGroupName = userGroupIterator.next().getName();
-            if(contains(userGroupName)){
-                getUserGroup(userGroupName).add(user);
-            }else{
-                UserDaoImpl.users.add(new Group<User>(userGroupName));
-                getUserGroup(userGroupName).add(user);
-            }
-        }
-    }
-
-    public void updateUser(User user){
-        Iterator<Group<User>> userGroupIterator = user.getAssociatedGroups().getIterator();
-        while(userGroupIterator.hasNext()){
-            String tmpName = userGroupIterator.next().getName();
-            Group<User> userGroup = getUserGroup(tmpName);
-            User currentUser = getUser(user.getName());
-            userGroup.remove(currentUser);
-            userGroup.add(user);
-        }
-    }
 
     public boolean deleteUser(User user){
         boolean userRemoved = false;
@@ -488,7 +544,7 @@ public class UserDaoImpl implements UserDao{
         return connect;
     }
 
-    public void close() throws SQLException{
+    public void close(Connection connect, Statement statement) throws SQLException{
         if(statement != null){
             statement.close();
         }
