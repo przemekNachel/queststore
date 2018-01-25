@@ -10,10 +10,6 @@ public class LoginController {
         Menu loginMenu = null;
         this.view = new LoginView(loginMenu);
 
-
-        // WARNING: the calls below are part of a demonstration
-        new UserDaoImpl().tmpSetUsers(AuxiliaryStorage.getSampleUserGroup());
-
     }
 
     public void start() {
