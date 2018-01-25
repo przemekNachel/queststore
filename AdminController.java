@@ -126,7 +126,11 @@ class AdminController{
         UserDaoImpl userDao = new UserDaoImpl();
         String groupName = view.getStringFromUserInput(view.groupNameQuestion);
         Group<User> tmp = new Group<>(groupName);
-        userDao.addUserGroup(tmp);
+        try{
+            userDao.addUserGroup(tmp);
+        } catch (SQLException e) {
+            view.printSQLException(e);
+        }
     }
 
     public void editMentor(){
