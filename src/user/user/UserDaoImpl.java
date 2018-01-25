@@ -401,13 +401,14 @@ public class UserDaoImpl implements UserDao{
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
 
+
         int userId = getUserId(user.getName());
         int groupId = getGroupId(groupName);
+
 
         if(userId > 0 && groupId > 0){
             String query = "INSERT INTO user_associations(user_id, group_id) " +
                 "VALUES (" + userId + ", " + groupId + ");";
-
             statement.executeUpdate(query);
             connect.commit();
             close(connect, statement);
@@ -543,12 +544,15 @@ public class UserDaoImpl implements UserDao{
 
         ResultSet results = statement.executeQuery(query);
 
+        int id = -1;
         while(results.next()){
-            close(connect, statement);
-            return results.getInt("group_id");
+
+            id = results.getInt("group_id");
+            break;
         }
+        results.close();
         close(connect, statement);
-        return -1;
+        return id;
     }
 
     private int getUserId(String userName) throws SQLException{
@@ -559,13 +563,14 @@ public class UserDaoImpl implements UserDao{
         String query = "SELECT user_id FROM users WHERE nickname='" + userName + "';";
 
         ResultSet results = statement.executeQuery(query);
-
+        int id = -1;
         while(results.next()){
-            close(connect, statement);
-            return results.getInt("user_id");
+            id = results.getInt("user_id");
+            break;
         }
+        results.close();
         close(connect, statement);
-        return -1;
+        return id;
     }
 
     private Group<Group<User>> getAllGroups() throws SQLException{
