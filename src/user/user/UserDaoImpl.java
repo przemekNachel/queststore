@@ -104,7 +104,7 @@ public class UserDaoImpl implements UserDao{
             }else if(role == MENTOR){
                 tempUsr = new MentorModel(name, email, password, mentors);
             }else if(role == CODECOOLER){
-                tmpWallet = new WalletService(0);
+                tmpWallet = getWallet(userId);
                 tempUsr = new CodecoolerModel(name, email,  password, tmpWallet, students);
             }
             tempUsr.setAssociatedGroups(getUserGroups(results.getInt("user_id"), userGroups));
@@ -291,6 +291,24 @@ public class UserDaoImpl implements UserDao{
     }
 
     // helper methods for pubic methods
+
+    private WalletService getWallet(int userId){
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String query = "SELECT balance FROM user_wallet WHERE user_id=" + userId + " ;";
+        ResultSet results = statement.executeQuery(query);
+
+        int balance = 0;
+        while(results.next()){
+            balance = results.getInt("balance");
+            break;
+        }
+        results.close();
+        close(connect, statement);
+        return new WalletService(balance);
+    }
 
     private void updateCredentials(String userName, String password, String email) throws SQLException{
 
