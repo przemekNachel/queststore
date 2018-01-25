@@ -97,7 +97,7 @@ public class MentorController {
         WalletService wallet = new WalletService(0);
         CodecoolerModel codecooler = new CodecoolerModel(nickname, email, password, wallet, studentsGroup); // TODO add level to the object -- next sprint
 
-        User user;
+        User user = null;
         try {
 
             user = userDao.getUser(nickname);
@@ -154,7 +154,7 @@ public class MentorController {
 
         UserDaoImpl userDao = new UserDaoImpl();
         boolean validNameProvided = false;
-        User user;
+        User user = null;
         do {
 
             String name = view.getStringFromUserInput(view.userNicknameQuestion);
@@ -183,7 +183,7 @@ public class MentorController {
 
       // get quest group names ...
       Group<String> allowedQuestNames = new Group<>("allowed quest name user input");
-      Group<String> questGroupNames;
+      Group<String> questGroupNames = null;
       try {
 
         questGroupNames = questDao.getQuestGroupNames();
