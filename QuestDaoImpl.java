@@ -6,7 +6,7 @@ import java.util.Objects;
 public class QuestDaoImpl implements QuestDao {
     @Override
     public Connection connectToDatabase() throws SQLException {
-        String db_path = "jdbc:sqlite:database/database.db";
+        String db_path = "jdbc:sqlite:database.db";
         return DriverManager.getConnection(db_path);
     }
 
