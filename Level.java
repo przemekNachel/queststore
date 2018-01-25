@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class Level{
     private static HashMap<Integer, String> levels = new HashMap<>();
@@ -12,7 +13,8 @@ public class Level{
     }
 
     public String getCurrentLevel() {
-        for(Map.Entry<Integer, String> entry : levels.entrySet()) {
+        Map<Integer, String> segregatedLevels = new TreeMap<>(levels);
+        for(Map.Entry<Integer, String> entry : segregatedLevels.entrySet()) {
             if (entry.getKey() > experienceGained) {
                 return entry.getValue();
             }
