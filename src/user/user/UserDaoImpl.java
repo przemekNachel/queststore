@@ -824,7 +824,7 @@ public class UserDaoImpl implements UserDao{
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
 
-        String updateArtifacts = "DELETE FROM user_artifacts " +
+        String updateArtifacts = "DELETE IF EXISTS FROM user_artifacts " +
                 "WHERE user_id=" + userId + " ;";
 
         statement.executeUpdate(updateArtifacts);
