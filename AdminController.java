@@ -210,13 +210,11 @@ class AdminController{
     }
 
     public void createLevel(){
-        Scanner sc = new Scanner(System.in);
 
-        System.out.println(view.levelNameQuestion);
-        String lvlName = sc.next();
-        System.out.println(view.levelTresholdQuestion);
-        Integer threshold = sc.nextInt();
+        String lvlName = view.getStringFromUserInput(view.levelNameQuestion);
+        String threshold = view.getStringFromUserInput(view.levelTresholdQuestion);
+        Integer thr = Integer.valueOf(threshold);
 
-        Level.addLevel(lvlName, threshold);
+        Level.addLevel(lvlName, thr);
     }
 }
