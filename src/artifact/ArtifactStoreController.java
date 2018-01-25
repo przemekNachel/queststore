@@ -13,6 +13,13 @@ import java.sql.*;
 
 public class ArtifactStoreController{
 
+    ArtifactStoreView view;
+
+    public ArtifactStoreController() {
+
+      this.view = new ArtifactStoreView();
+    }
+
     public void addNewArtifact(){
         ArtifactStoreView view = new ArtifactStoreView();
 
@@ -40,49 +47,84 @@ public class ArtifactStoreController{
         assignArtifactToCategory(artifact);
     }
 
-    public void buyProductProcess(CodecoolerModel user){
+    private Group<String> getAllowedArtifactNames() {
 
-        boolean shopUpdated = true;
-        ArtifactStoreView view = new ArtifactStoreView();
-        ArtifactDaoImpl dao = new ArtifactDaoImpl();
-        UserDaoImpl userDao = new UserDaoImpl();
-
-        System.out.println(user.getStatisticsDisplay());
+        ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
 
         Group<String> allowedArtifactNames = new Group<>("allowed artifact name user input");
+        // get available artifacts by category/ group
         Group<String> artifactGroupNames = null;
         try {
 
-            artifactGroupNames = dao.getArtifactGroupNames();
+            artifactGroupNames = artifactDao.getArtifactGroupNames();
         } catch (SQLException e) {
             view.printSQLException(e);
+            return null;
         }
 
-        Iterator<String> iter = artifactGroupNames.getIterator();
-        String groupsFormatted = "";
-        while (iter.hasNext()) {
+        for (String groupName : artifactGroupNames) {
 
-            String groupName = iter.next();
             Group<ArtifactModel> artifactGroup = null;
             try {
 
-                artifactGroup = dao.getArtifactGroup(groupName);
+                artifactGroup = artifactDao.getArtifactGroup(groupName);
             } catch (SQLException e) {
 
                 view.printSQLException(e);
+                return null;
             }
 
-            groupsFormatted += groupName + " :\n";
-            Iterator<ArtifactModel> iterArtifact = artifactGroup.getIterator();
-            while (iterArtifact.hasNext()) {
-                ArtifactModel currentArtifact = iterArtifact.next();
-                groupsFormatted += "*" + currentArtifact + "\n";
+            for (ArtifactModel currentArtifact : artifactGroup) {
+
                 allowedArtifactNames.add(currentArtifact.getName());
             }
         }
+        return allowedArtifactNames;
+    }
+
+    private String getArtifactStoreDisplay() {
+
+        ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
+
+        // get available artifacts by category/ group
+        Group<String> artifactGroupNames = null;
+        try {
+
+            artifactGroupNames = artifactDao.getArtifactGroupNames();
+        } catch (SQLException e) {
+            view.printSQLException(e);
+            return null;
+        }
+
+        String display = "Available artifacts:\n";
+        for (String groupName : artifactGroupNames) {
+
+            Group<ArtifactModel> artifactGroup = null;
+            try {
+
+                artifactGroup = artifactDao.getArtifactGroup(groupName);
+            } catch (SQLException e) {
+
+                view.printSQLException(e);
+                return null;
+            }
+
+            display += "\n  Group " + artifactGroup.getName();
+            for (ArtifactModel currentArtifact : artifactGroup) {
+                display += "\n    " + currentArtifact.getName() + " - " + currentArtifact.getDescription() + " - PRICE: " + currentArtifact.getPrice();
+            }
+        }
+
+        return display;
+    }
+
+    private String getArtifactNameFromUserInput() {
+
+        Group<String> allowedArtifactNames = getAllowedArtifactNames();
+        String storeDisplay = getArtifactStoreDisplay();
 
         view.printLine(view.productsMessage);
-        view.printLine(groupsFormatted);
+        view.printLine(storeDisplay);
 
         String artifactName;
         boolean providedValidArtifactName = false;
@@ -98,59 +140,79 @@ public class ArtifactStoreController{
 
         } while(!providedValidArtifactName);
 
+        return artifactName;
+    }
+
+    private Group<CodecoolerModel> getConsumerGroup(CodecoolerModel codecooler) {
+
+        UserDaoImpl userDao = new UserDaoImpl();
+
+        // get all user groups to choose from and display them
         Group<String> allowedGroupNames = null;
 
         try{
             allowedGroupNames = userDao.getUserGroupNames();
         } catch (SQLException e) {
             view.printSQLException(e);
-
+            return null;
         }
-        String availableGroups = allowedGroupNames.toString();
-        view.printLine(availableGroups);
 
-        Group<User> consumers = null;
+        // get group which will crowd-fund the artifact
+        Group<CodecoolerModel> codecoolers = null;
         boolean providedExistentGroupName = false;
         boolean wantToBuyAlone = false;
         do {
             String consumerGroupName = view.getStringFromUserInput(view.chooseGroup);
             if (allowedGroupNames.contains(consumerGroupName)) {
                 try{
-                    consumers = userDao.getUserGroup(consumerGroupName);
+                    Group<User> users = userDao.getUserGroup(consumerGroupName);
+                    // buy the artifact as a group
+                    codecoolers = new Group<>("Codecooler(s) buying an artifact");
+                    for (User currentUser : users) {
+
+                        codecoolers.add((CodecoolerModel)currentUser);
+                    }
                 } catch (SQLException e) {
                     view.printSQLException(e);
-                    return;
+                    return null;
                 }
                 providedExistentGroupName = true;
             } else {
                 if (consumerGroupName.equals("ALONE")) {
-
-                    consumers = new Group<>("buying alone");
-                    consumers.add(user);
+                    codecoolers = new Group<>("buying alone");
+                    codecoolers.add(codecooler);
                     wantToBuyAlone = true;
                 } else {
                     view.printLine(view.invalidGroupName);
                 }
             }
-
         } while(!providedExistentGroupName && !wantToBuyAlone);
 
-        Group<CodecoolerModel> converted = new Group<>("user.codecooler(s) buying an artifact");
-        Iterator<User> iterUser = consumers.getIterator();
-        while (iterUser.hasNext()) {
-            converted.add((CodecoolerModel)iterUser.next());
-        }
+        return codecoolers;
+    }
 
-        ArtifactModel boughtArtifact = buyArtifact(artifactName, converted);
-        if (boughtArtifact == null){
-            view.printLine(view.artifactNotFoundError);
+    public void buyProductProcess(CodecoolerModel codecooler){
+
+        ArtifactDaoImpl dao = new ArtifactDaoImpl();
+        UserDaoImpl userDao = new UserDaoImpl();
+
+        String artifactName = getArtifactNameFromUserInput();
+
+        Group<CodecoolerModel> consumers = getConsumerGroup(codecooler);
+
+        ArtifactModel boughtArtifact = buyArtifact(artifactName, consumers);
+        if (boughtArtifact == null) {
+
             return;
         }
-        user.addArtifact(boughtArtifact);
-
+        /* purchase process succeeded */
+        codecooler.addArtifact(boughtArtifact);
         try {
 
-            userDao.updateUser(user);
+            for (User user : consumers) {
+
+                userDao.updateUser(user);
+            }
         } catch (SQLException e) {
             view.printSQLException(e);
         }
