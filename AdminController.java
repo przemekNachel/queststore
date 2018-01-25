@@ -1,5 +1,6 @@
 import java.util.Iterator;
 import java.sql.*;
+import java.util.Scanner;
 
 class AdminController{
     AdminView view;
@@ -12,8 +13,8 @@ class AdminController{
                 new MenuOption("3", "Create user group"),
                 new MenuOption("4", "Edit mentor"),
                 new MenuOption("5", "View mentor's details"),
-                new MenuOption("6", "View groups")
-        );
+                new MenuOption("6", "View groups"),
+                new MenuOption("7","Create level"));
 
         view = new AdminView(adminMenu);
     }
@@ -80,6 +81,9 @@ class AdminController{
             // view all existing groups
             case "6":
                 view.printLine(getGroupsDisplay());
+                break;
+            case "7":
+                createLevel();
                 break;
         }
     }
@@ -205,4 +209,14 @@ class AdminController{
         return view.noMentorOfSuchName;
     }
 
+    public void createLevel(){
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println(view.levelNameQuestion);
+        String lvlName = sc.next();
+        System.out.println(view.levelTresholdQuestion);
+        Integer threshold = sc.nextInt();
+
+        Level.addLevel(lvlName, threshold);
+    }
 }
