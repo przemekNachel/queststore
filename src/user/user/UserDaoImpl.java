@@ -12,15 +12,13 @@ import java.util.ArrayList;
 import java.sql.*;
 
 import static user.user.Role.*;
-import static user.user.Role.CODECOOLER;
-import static user.user.Role.MENTOR;
+
 
 public class UserDaoImpl implements UserDao{
 
     private static String JDBC = "jdbc:sqlite:database/database.db";
 
     public Group<Group<User>> getAllUsers() throws SQLException{
-
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
@@ -31,7 +29,7 @@ public class UserDaoImpl implements UserDao{
         ResultSet results = statement.executeQuery(query);
 
         Group<Group<User>> userGroups = getAllGroups();
-        Group<User> students = getGroup("students", userGroups);
+        Group<User> students = getGroup("codecoolers", userGroups);
         Group<User> mentors = getGroup("mentors", userGroups);
         Group<User> admins = getGroup("admins", userGroups);
 
@@ -132,68 +130,29 @@ public class UserDaoImpl implements UserDao{
         email = user.getEmail();
         role = convertRole(user.getRole());
 
-        // update Credentials
-        String updateUsers = "INSERT INTO users(nickname, password, email) " +
-                "VALUES ('" + userName + "', '" + password + "', '" + email + "');";
-        statement.executeUpdate(updateUsers);
-        connect.commit();
+        updateCredentials(userName, password, email);
 
-        // get userId
-        String getUserId = "SELECT user_id FROM users WHERE nickname='" + userName + "';";
-        ResultSet getUserIdResult = statement.executeQuery(getUserId);
-        while(getUserIdResult.next()){
-            userId = getUserIdResult.getInt("user_id");
-        }
+        userId = getUserId(userName);
 
-        // get userPrivilegeLevelId
+        userPrivilegeLevelId = getUserPrivilegeLevelId(role);
 
-        String getPrivLevel = "SELECT privilege_id FROM user_privilege_levels " +
-                "WHERE privilege_name='" + role + "';";
-        ResultSet getPrivLevelResult = statement.executeQuery(getPrivLevel);
-        while(getPrivLevelResult.next()){
-            userPrivilegeLevelId = getPrivLevelResult.getInt("privilege_id");
-        }
-
-        // get all groupIds
         groupIds = getUserGroupIds(getUserGroupNamesFrom(user.getAssociatedGroups()), userId);
-        for(int grid : groupIds){
-        }
 
-        // if user = codecooler get expGained and balance
         if(role.equals("codecooler")){
             CodecoolerModel tmpUser = (CodecoolerModel) user;
             balance = tmpUser.getWallet().getBalance();
             //expGained = user.getExp() ???
         }
 
-        /* execute queries to update */
+        /* execute updates */
 
+        updatePrivileges(userId, userPrivilegeLevelId);
 
-
-        // update privileges
-        String updatePrivileges = "INSERT INTO user_roles" +
-                "(user_id, user_privilege_level_id) " +
-                "VALUES ('" + userId + "', '" + userPrivilegeLevelId + "');";
-        statement.executeUpdate(updatePrivileges);
-        connect.commit();
-
-        //update user associations //TODO fix this shieeeeet \/
-
-        String updateAssociations;
-        for(Integer groupId : groupIds){
-            updateAssociations = "INSERT INTO user_associations(user_id, group_id) " +
-                    "VALUES (" + userId + ", " + groupId + ");";
-            statement.executeUpdate(updateAssociations);
-            connect.commit();
-        }
+        updateUserAssociations(groupIds, userId);
 
         // update wallet
         if(role.equals("codecooler")){
-            String updateWallet = "INSERT INTO user_wallet(user_id, balance) " +
-                    "VALUES (" + userId + ", " + balance + ");";
-
-            statement.executeUpdate(updateWallet);
-            connect.commit();
+            updateWallet(userId, balance);
         }
         close(connect, statement);
     }
@@ -213,31 +172,12 @@ public class UserDaoImpl implements UserDao{
         email = user.getEmail();
         role = convertRole(user.getRole());
 
-        // get userId
-        String getUserId = "SELECT user_id FROM users WHERE nickname='" + userName + "';";
-        ResultSet getUserIdResult = statement.executeQuery(getUserId);
+        userId = getUserId(userName);
 
-        while(getUserIdResult.next()){
-            userId = getUserIdResult.getInt("user_id");
-        }
+        userPrivilegeLevelId = getUserPrivilegeLevelId(role);
 
-
-
-        // get userPrivilegeLevelId
-
-        String getPrivLevel = "SELECT privilege_id FROM user_privilege_levels " +
-                "WHERE privilege_name='" + role + "';";
-        ResultSet getPrivLevelResult = statement.executeQuery(getPrivLevel);
-
-        while(getPrivLevelResult.next()){
-            userPrivilegeLevelId = getPrivLevelResult.getInt("privilege_id");
-        }
-
-
-        // get all groupIds
         groupIds = getUserGroupIds(getUserGroupNamesFrom(user.getAssociatedGroups()), userId);
 
-        // if user = codecooler get expGained and balance and artifacts
         if(role.equals("codecooler")){
             CodecoolerModel tmpUser = (CodecoolerModel) user;
             balance = tmpUser.getWallet().getBalance();
@@ -247,72 +187,19 @@ public class UserDaoImpl implements UserDao{
 
         /* execute queries to update */
 
-        // update Credentials
-        String updateUsers = "UPDATE users " +
-                "SET password='" + password + "', email='" + email + "' " +
-                "WHERE user_id=" + userId + ";";
+        upgradeCredentials(password, email, userId);
 
-        statement.executeUpdate(updateUsers);
-        connect.commit();
+        upgradePrivilages(userPrivilegeLevelId, userId);
 
-        // update privileges
-        String updatePrivileges = ("UPDATE user_roles " +
-                "SET user_privilege_level_id=" + userPrivilegeLevelId + " " +
-                "WHERE user_id=" + userId + ";");
-
-        statement.executeUpdate(updatePrivileges);
-        connect.commit();
-
-        //update user associations
-        String updateAssociations;
-        for(Integer groupId : groupIds){
-            updateAssociations = "UPDATE user_associations " +
-                    "SET group_id=" + groupId + " WHERE user_id=" + userId + ";";
-            statement.executeUpdate(updateAssociations);
-            connect.commit();
-        }
+        upgradeUserAssociations(groupIds, userId);
 
         // update wallet and artifacts
         if(role.equals("codecooler")){
-            String updateWallet = "UPDATE user_wallet " +
-                    "SET balance=" + balance + " WHERE user_id=" + userId + ";";
 
-            statement.executeUpdate(updateWallet);
-            connect.commit();
+            upgradeWallet(balance, userId);
 
-            if(!currentGroups.isEmpty()){
-                String updateArtifact = null;
+            upgradeArtifacts(currentGroups, userId);
 
-                for(String[] artifactIdAndState : currentGroups){
-                    int currentArtifactId = Integer.parseInt(artifactIdAndState[0]);
-                    String currentArtifactState = artifactIdAndState[1];
-                    String getArtifactQuery = "SELECT used FROM user_artifacts " +
-                        "WHERE user_id=" + userId + " AND artifact_id=" +
-                        currentArtifactId + " ;";
-                    ResultSet results = statement.executeQuery(getArtifactQuery);
-
-                    String used = null ;
-                    while(results.next()){
-                        used = results.getString("used");
-                    }
-                    results.close();
-
-                    if(!currentArtifactState.equals(used)){
-                        updateArtifact = "UPDATE user_artifacts " +
-                            "SET used='" + currentArtifactState + "' " +
-                            "WHERE user_id=" + userId + " AND artifact_id=" +
-                            currentArtifactId + " ;";
-                    }else if(used == null){
-                        updateArtifact = "INSERT INTO user_artifacts(user_id, artifact_id, used) " +
-                            "VALUES(" + userId + " , " + currentArtifactId + " , " + currentArtifactState + ");";
-                    }
-
-                    if(updateArtifact != null){
-                        statement.executeUpdate(updateArtifact);
-                        connect.commit();
-                    }
-                }
-            }
         }
 
         close(connect, statement);
@@ -331,46 +218,21 @@ public class UserDaoImpl implements UserDao{
         userName = user.getName();
         groupIds = getUserGroupIds(getUserGroupNamesFrom(user.getAssociatedGroups()), userId);
 
-        // get userId
-        String getUserId = "SELECT user_id FROM users WHERE nickname='" + userName + "';";
-        ResultSet getUserIdResult = statement.executeQuery(getUserId);
-
-        while(getUserIdResult.next()){
-            userId = getUserIdResult.getInt("user_id");
-        }
+        userId = getUserId(userName);
 
         /* execute queries to update */
 
-        // remove Credentials
-        String updateUsers = "DELETE FROM users " +
-                "WHERE user_id=" + userId + " ;";
+        removeCredentials(userId);
 
-        statement.executeUpdate(updateUsers);
-        connect.commit();
+        removePrivileges(userId);
 
-        // remove privileges
-        String updatePrivileges = "DELETE FROM user_roles " +
-                "WHERE user_id=" + userId + " ;";
-
-        statement.executeUpdate(updatePrivileges);
-        connect.commit();
-
-        // remove user associations
-        String updateAssociations;
-        for(Integer groupId : groupIds){
-            updateAssociations = "DELETE FROM user_associations " +
-                    "WHERE user_id=" + userId + " ;";
-            statement.executeUpdate(updateAssociations);
-            connect.commit();
-        }
-
+        removeUserAssociations(userId, groupIds);
         // update wallet
         if(role.equals("codecooler")){
-            String updateWallet = "DELETE FROM user_wallet " +
-                    "WHERE user_id=" + userId + " ;";
 
-            statement.executeUpdate(updateWallet);
-            connect.commit();
+            removeWallet(userId);
+
+            removeArtifacts(userId);
         }
         close(connect, statement);
         return true;
@@ -435,6 +297,19 @@ public class UserDaoImpl implements UserDao{
 
 
     // helper methods for pubic methods
+
+    private void updateCredentials(String userName, String password, String email) throws SQLException{
+
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String updateUsers = "INSERT INTO users(nickname, password, email) " +
+                "VALUES ('" + userName + "', '" + password + "', '" + email + "');";
+        statement.executeUpdate(updateUsers);
+        connect.commit();
+        close(connect, statement);
+    }
 
     private ArrayList<String[]> getUserArtifactsList(CodecoolerModel user) throws SQLException{
 
@@ -724,6 +599,228 @@ public class UserDaoImpl implements UserDao{
         close(connect, statement);
         return groupIds;
     }
+
+    private int getUserPrivilegeLevelId(String role) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        int userPrivilegeLevelId = -1;
+        String getPrivLevel = "SELECT privilege_id FROM user_privilege_levels " +
+                "WHERE privilege_name='" + role + "';";
+        ResultSet getPrivLevelResult = statement.executeQuery(getPrivLevel);
+        while(getPrivLevelResult.next()){
+            userPrivilegeLevelId = getPrivLevelResult.getInt("privilege_id");
+        }
+        getPrivLevelResult.close();
+        close(connect, statement);
+        return userPrivilegeLevelId;
+    }
+
+    private void updatePrivileges(int userId, int userPrivilegeLevelId) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String updatePrivileges = "INSERT INTO user_roles" +
+                "(user_id, user_privilege_level_id) " +
+                "VALUES (" + userId + ", " + userPrivilegeLevelId + ");";
+        statement.executeUpdate(updatePrivileges);
+        connect.commit();
+    }
+
+    private void updateUserAssociations(ArrayList<Integer> groupIds, int userId) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String updateAssociations;
+        for(Integer groupId : groupIds){
+            updateAssociations = "INSERT INTO user_associations(user_id, group_id) " +
+                    "VALUES (" + userId + ", " + groupId + ");";
+            statement.executeUpdate(updateAssociations);
+            connect.commit();
+        }
+        close(connect, statement);
+    }
+
+    private void updateWallet(int userId, int balance) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String updateWallet = "INSERT INTO user_wallet(user_id, balance) " +
+                "VALUES (" + userId + ", " + balance + ");";
+
+        statement.executeUpdate(updateWallet);
+        connect.commit();
+        close(connect, statement);
+    }
+
+    private void upgradeCredentials(String password, String email, int userId) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String updateUsers = "UPDATE users " +
+                "SET password='" + password + "', email='" + email + "' " +
+                "WHERE user_id=" + userId + ";";
+
+        statement.executeUpdate(updateUsers);
+        connect.commit();
+        close(connect, statement);
+    }
+
+    private void upgradePrivilages(int userPrivilegeLevelId, int userId) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String updatePrivileges = ("UPDATE user_roles " +
+                "SET user_privilege_level_id=" + userPrivilegeLevelId + " " +
+                "WHERE user_id=" + userId + ";");
+
+        statement.executeUpdate(updatePrivileges);
+        connect.commit();
+        close(connect, statement);
+    }
+
+    private void upgradeUserAssociations(ArrayList<Integer> groupIds, int userId) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String updateAssociations;
+        for(Integer groupId : groupIds){
+            updateAssociations = "UPDATE user_associations " +
+                    "SET group_id=" + groupId + " WHERE user_id=" + userId + ";";
+            statement.executeUpdate(updateAssociations);
+            connect.commit();
+        }
+        close(connect, statement);
+    }
+
+    private void upgradeWallet(int balance, int userId) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String updateWallet = "UPDATE user_wallet " +
+                "SET balance=" + balance + " WHERE user_id=" + userId + ";";
+
+        statement.executeUpdate(updateWallet);
+        connect.commit();
+        close(connect, statement);
+    }
+
+    private void upgradeArtifacts(ArrayList<String[]> currentGroups, int userId) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        if(!currentGroups.isEmpty()){
+            String updateArtifact = null;
+
+            for(String[] artifactIdAndState : currentGroups){
+                int currentArtifactId = Integer.parseInt(artifactIdAndState[0]);
+                String currentArtifactState = artifactIdAndState[1];
+                String getArtifactQuery = "SELECT used FROM user_artifacts " +
+                    "WHERE user_id=" + userId + " AND artifact_id=" +
+                    currentArtifactId + " ;";
+                ResultSet results = statement.executeQuery(getArtifactQuery);
+
+                String used = null ;
+                while(results.next()){
+                    used = results.getString("used");
+                }
+                results.close();
+
+                if(!currentArtifactState.equals(used)){
+                    updateArtifact = "UPDATE user_artifacts " +
+                        "SET used='" + currentArtifactState + "' " +
+                        "WHERE user_id=" + userId + " AND artifact_id=" +
+                        currentArtifactId + " ;";
+                }else if(used == null){
+                    updateArtifact = "INSERT INTO user_artifacts(user_id, artifact_id, used) " +
+                        "VALUES(" + userId + " , " + currentArtifactId + " , " + currentArtifactState + ");";
+                }
+
+                if(updateArtifact != null){
+                    statement.executeUpdate(updateArtifact);
+                    connect.commit();
+                }
+            }
+        }
+        close(connect, statement);
+    }
+
+    private void removeCredentials(int userId) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String updateUsers = "DELETE FROM users " +
+                "WHERE user_id=" + userId + " ;";
+
+        statement.executeUpdate(updateUsers);
+        connect.commit();
+        close(connect, statement);
+    }
+
+    private void removePrivileges(int userId) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String updatePrivileges = "DELETE FROM user_roles " +
+                "WHERE user_id=" + userId + " ;";
+
+        statement.executeUpdate(updatePrivileges);
+        connect.commit();
+        close(connect, statement);
+    }
+
+    private void removeUserAssociations(int userId, ArrayList<Integer> groupIds) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String updateAssociations;
+        for(Integer groupId : groupIds){
+            updateAssociations = "DELETE FROM user_associations " +
+                    "WHERE user_id=" + userId + " ;";
+            statement.executeUpdate(updateAssociations);
+            connect.commit();
+        }
+        close(connect, statement);
+    }
+
+    private void removeWallet(int userId) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String updateWallet = "DELETE FROM user_wallet " +
+                "WHERE user_id=" + userId + " ;";
+
+        statement.executeUpdate(updateWallet);
+        connect.commit();
+        close(connect, statement);
+    }
+
+    private void removeArtifacts(int userId) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String updateArtifacts = "DELETE FROM user_artifacts " +
+                "WHERE user_id=" + userId + " ;";
+
+        statement.executeUpdate(updateArtifacts);
+        connect.commit();
+        close(connect, statement);
+    }
+
 
     // ----- basic database operations -----/
 
