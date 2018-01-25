@@ -185,6 +185,9 @@ public class UserDaoImpl implements UserDao{
             //expGained = user.getExp() ???
         }
 
+        for (String[] s : currentArtifacts)
+          System.out.println(s[0] + "    " + s[1]);
+
         /* execute queries to update */
 
         upgradeCredentials(password, email, userId);
@@ -193,9 +196,10 @@ public class UserDaoImpl implements UserDao{
 
         upgradeUserAssociations(groupIds, userId);
 
+        System.out.println("O" + role + "0");
         // update wallet and artifacts
         if(role.equals("codecooler")){
-
+            System.out.println("XD1");
             upgradeWallet(balance, userId);
 
             upgradeArtifacts(currentArtifacts, userId);
@@ -389,16 +393,16 @@ public class UserDaoImpl implements UserDao{
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
 
-        String query = "SELECT artifact_id FROM artifact_store WHERE artifact_name='" + artifactName + "';";
+        String query = "SELECT artifact_id FROM artifact_store WHERE name='" + artifactName + "';";
 
         ResultSet results = statement.executeQuery(query);
 
+        int artifactId = -1;
         while(results.next()){
-            close(connect, statement);
-            return results.getInt("artifact_name");
+            artifactId = results.getInt("artifact_id");
         }
         close(connect, statement);
-        return -1;
+        return artifactId;
     }
 
     private ArrayList<Integer> getUserArtifactIds(int userId) throws SQLException{
@@ -770,6 +774,7 @@ public class UserDaoImpl implements UserDao{
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
 
+        System.out.println("Elo " + balance);
         String updateWallet = "UPDATE user_wallet " +
                 "SET balance=" + balance + " WHERE user_id=" + userId + ";";
 
@@ -807,7 +812,7 @@ public class UserDaoImpl implements UserDao{
                         currentArtifactId + " ;";
                 }else if(used == null){
                     updateArtifact = "INSERT INTO user_artifacts(user_id, artifact_id, used) " +
-                        "VALUES(" + userId + " , " + currentArtifactId + " , " + currentArtifactState + ");";
+                        "VALUES(" + userId + " , " + currentArtifactId + " , '" + currentArtifactState + "');";
                 }
 
                 if(updateArtifact != null){

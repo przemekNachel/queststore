@@ -8,6 +8,7 @@ import user.user.Role;
 import user.user.User;
 import user.user.UserDao;
 import user.user.UserDaoImpl;
+import level.Level;
 
 import java.util.Iterator;
 import java.sql.*;
@@ -41,7 +42,7 @@ public class AdminController{
             MentorModel mentor = new MentorModel(name, email, password, mentorsGroup);
 
             dao.addUser(mentor);
-            mentorsGroup.add(mentor);
+//            mentorsGroup.add(mentor);
         } catch (SQLException e) {
             view.printSQLException(e);
         }
@@ -183,18 +184,18 @@ public class AdminController{
     }
 
     public String getGroupsDisplay(){
+
         UserDaoImpl dao = new UserDaoImpl();
         Group<String> groupNames = null;
-        try{
+        try {
             groupNames = dao.getUserGroupNames();
         } catch (SQLException e) {
             view.printSQLException(e);
         }
-        Iterator<String> iter = groupNames.getIterator();
-        System.out.println(groupNames.size());
+
         String groupsFormatted = "";
-        while(iter.hasNext()){
-            groupsFormatted += iter.next() + " | ";
+        for (String name : groupNames) {
+            groupsFormatted += name + " | ";
         }
         return groupsFormatted;
     }
@@ -219,11 +220,11 @@ public class AdminController{
     }
 
     public void createLevel(){
-//
-//        String lvlName = view.getStringFromUserInput(view.levelNameQuestion);
-//        String threshold = view.getStringFromUserInput(view.levelTresholdQuestion);
-//        Integer thr = Integer.valueOf(threshold);
-//
-//        level.addLevel(lvlName, thr);
+
+       String lvlName = view.getStringFromUserInput(view.levelNameQuestion);
+       String threshold = view.getStringFromUserInput(view.levelTresholdQuestion);
+       Integer thr = Integer.valueOf(threshold);
+
+       Level.addLevel(lvlName, thr);
     }
 }
