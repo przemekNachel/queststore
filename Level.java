@@ -23,7 +23,7 @@ public class Level{
         return experienceGained;
     }
 
-    public HashMap<Integer, String> getLevels() {
+    public static HashMap<Integer, String> getLevels() {
         return levels;
     }
 
