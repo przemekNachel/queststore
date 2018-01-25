@@ -45,7 +45,7 @@ public class MentorController {
                 break;
             // mark quest completion
             case "3":
-                // TODO markCodecoolerArtifactUsage();
+                markCodecoolerQuestCompletion();
                 break;
             // mark artifact usage
             case "4":
