@@ -24,5 +24,7 @@ public class MentorView extends AbstractConsoleView {
   public String availableQuests = "Available quests: ";
   public String invalidNickname = "User not in database or not a Codecooler.";
   public String questNotFoundError = "Quest name not found";
+  public String artifactNameQuestion = "Enter the artifact's name: ";
+  public String artifactNotFoundError = "No such artifact found!";
 
 }
