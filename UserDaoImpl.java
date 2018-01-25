@@ -53,6 +53,7 @@ public class UserDaoImpl implements UserDao{
             tempUsr.setAssociatedGroups(getUserGroups(results.getInt("user_id"), userGroups));
 
         }
+        close(connect, statement);
         return allUsers;
     }
 
@@ -101,6 +102,7 @@ public class UserDaoImpl implements UserDao{
             // tu sie tnie\/
             tempUsr.setAssociatedGroups(getUserGroups(results.getInt("user_id"), userGroups));
         }
+        close(connect, statement);
         return tempUsr;
     }
 
@@ -118,12 +120,16 @@ public class UserDaoImpl implements UserDao{
         password = user.getPassword();
         email = user.getEmail();
         role = convertRole(user.getRole());
-        System.out.println(userName + "|" + password + "|" + email + "|" + role);
+
+        // update Credentials
+        String updateUsers = "INSERT INTO users(nickname, password, email) " +
+                "VALUES ('" + userName + "', '" + password + "', '" + email + "');";
+        statement.executeUpdate(updateUsers);
+        connect.commit();
 
         // get userId
         String getUserId = "SELECT user_id FROM users WHERE nickname='" + userName + "';";
         ResultSet getUserIdResult = statement.executeQuery(getUserId);
-
         while(getUserIdResult.next()){
             userId = getUserIdResult.getInt("user_id");
         }
@@ -133,14 +139,14 @@ public class UserDaoImpl implements UserDao{
         String getPrivLevel = "SELECT privilege_id FROM user_privilege_levels " +
                 "WHERE privilege_name='" + role + "';";
         ResultSet getPrivLevelResult = statement.executeQuery(getPrivLevel);
-
         while(getPrivLevelResult.next()){
             userPrivilegeLevelId = getPrivLevelResult.getInt("privilege_id");
         }
 
         // get all groupIds
         groupIds = getUserGroupIds(getUserGroupNamesFrom(user.getAssociatedGroups()), userId);
-
+        for(int grid : groupIds){
+        }
 
         // if user = codecooler get expGained and balance
         if(role.equals("codecooler")){
@@ -151,22 +157,16 @@ public class UserDaoImpl implements UserDao{
 
         /* execute queries to update */
 
-        // update Credentials
-        String updateUsers = "INSERT INTO users(nickname, password, email) " +
-                "VALUES ('" + userName + "', '" + password + "', '" + email + "');";
 
-        statement.executeUpdate(updateUsers);
-        connect.commit();
 
         // update privileges
         String updatePrivileges = "INSERT INTO user_roles" +
-                "(user_id, user_privilege_level) " +
+                "(user_id, user_privilege_level_id) " +
                 "VALUES ('" + userId + "', '" + userPrivilegeLevelId + "');";
-
         statement.executeUpdate(updatePrivileges);
         connect.commit();
 
-        //update user associations
+        //update user associations //TODO fix this shieeeeet \/
         String updateAssociations;
         for(Integer groupId : groupIds){
             updateAssociations = "INSERT INTO user_associations(user_id, group_id) " +
@@ -183,6 +183,7 @@ public class UserDaoImpl implements UserDao{
             statement.executeUpdate(updateWallet);
             connect.commit();
         }
+        close(connect, statement);
     }
 
     public void updateUser(User user) throws SQLException{
@@ -199,7 +200,10 @@ public class UserDaoImpl implements UserDao{
         password = user.getPassword();
         email = user.getEmail();
         role = convertRole(user.getRole());
-        System.out.println(userName + "|" + password + "|" + email + "|" + role);
+        System.out.println("+++++++++" + userName);
+        System.out.println("+++++++++" + password);
+        System.out.println("+++++++++" + email);
+        System.out.println("+++++++++" + role);
 
         // get userId
         String getUserId = "SELECT user_id FROM users WHERE nickname='" + userName + "';";
@@ -208,6 +212,8 @@ public class UserDaoImpl implements UserDao{
         while(getUserIdResult.next()){
             userId = getUserIdResult.getInt("user_id");
         }
+
+        System.out.println("+++++++++" + userId);
 
         // get userPrivilegeLevelId
 
@@ -219,8 +225,14 @@ public class UserDaoImpl implements UserDao{
             userPrivilegeLevelId = getPrivLevelResult.getInt("privilege_id");
         }
 
+        System.out.println("+++++++++" + userPrivilegeLevelId);
+
         // get all groupIds
         groupIds = getUserGroupIds(getUserGroupNamesFrom(user.getAssociatedGroups()), userId);
+
+        for(int grp : groupIds){
+            System.out.println("+++*******+++" + userPrivilegeLevelId);
+        }
 
 
         // if user = codecooler get expGained and balance
@@ -265,6 +277,8 @@ public class UserDaoImpl implements UserDao{
             statement.executeUpdate(updateWallet);
             connect.commit();
         }
+
+        close(connect, statement);
 
     }
 
@@ -322,6 +336,7 @@ public class UserDaoImpl implements UserDao{
             statement.executeUpdate(updateWallet);
             connect.commit();
         }
+        close(connect, statement);
         return true;
     }
 
@@ -359,9 +374,23 @@ public class UserDaoImpl implements UserDao{
 
             statement.executeUpdate(query);
             connect.commit();
+            close(connect, statement);
             return true;
         }
+        close(connect, statement);
         return false;
+    }
+
+    public void addUserGroup(Group<User> group){
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String query = "INSERT INTO group_names(group_name) " +
+            "VALUES ('" + group.getName() + "');";
+
+        statement.executeUpdate(query);
+        connect.commit();        
     }
 
 
@@ -379,8 +408,10 @@ public class UserDaoImpl implements UserDao{
         ResultSet results = statement.executeQuery(query);
 
         while(results.next()){
+            close(connect, statement);
             return results.getInt("group_id");
         }
+        close(connect, statement);
         return -1;
     }
 
@@ -394,8 +425,10 @@ public class UserDaoImpl implements UserDao{
         ResultSet results = statement.executeQuery(query);
 
         while(results.next()){
+            close(connect, statement);
             return results.getInt("user_id");
         }
+        close(connect, statement);
         return -1;
     }
 
@@ -415,6 +448,7 @@ public class UserDaoImpl implements UserDao{
         while(results.next()){
             associatedGroups.add(new Group<User>(results.getString("group_name")));
         }
+        close(connect, statement);
         return associatedGroups;
 
     }
@@ -450,6 +484,7 @@ public class UserDaoImpl implements UserDao{
 
             }
         }
+        close(connect, statement);
         return associatedGroups;
     }
 
@@ -508,8 +543,10 @@ public class UserDaoImpl implements UserDao{
 
         while(results.next()){
             String privilege = results.getString("privilege_name");
+            close(connect, statement);
             return privilege;
         }
+        close(connect, statement);
         return null;
 
     }
@@ -518,7 +555,8 @@ public class UserDaoImpl implements UserDao{
         ArrayList<String> groupNames = new ArrayList<String>();
         Iterator<Group<User>> groupsIterator = userGroups.getIterator();
         while(groupsIterator.hasNext()){
-            groupNames.add(groupsIterator.next().getName());
+            String groupName = groupsIterator.next().getName();
+            groupNames.add(groupName);
         }
         return groupNames;
     }
@@ -532,15 +570,18 @@ public class UserDaoImpl implements UserDao{
         String query=null;
         ResultSet results;
         ArrayList<Integer> groupIds = new ArrayList<>();
+        int tmp;
         for(String name : groupNames){
-            query = "SELECT group_names.group_id FROM user_associations" +
-                    "LEFT JOIN group_names ON user_associations.group_id=group_names.group_id" +
-                    "WHERE group_names.group_name = '" + name + "';";
+            query = "SELECT DISTINCT group_names.group_id FROM user_associations " +
+                    "LEFT JOIN group_names ON user_associations.group_id=group_names.group_id " +
+                    "WHERE group_names.group_name='" + name + "';";
             results = statement.executeQuery(query);
             while(results.next()){
-                groupIds.add(results.getInt("group_id"));
+                tmp = results.getInt("group_id");
+                groupIds.add(tmp);
             }
         }
+        close(connect, statement);
         return groupIds;
     }
 
@@ -555,7 +596,6 @@ public class UserDaoImpl implements UserDao{
 
     // placeholders for the sake of compilation
 
-    public void addUserGroup(Group<User> group){}
 
     public void tmpSetUsers(Group<Group<User>> users){}
 
@@ -563,10 +603,6 @@ public class UserDaoImpl implements UserDao{
 
 
     /*
-
-    public void addUserGroup(Group<User> group){
-        users.add(group);
-    }
 
     public void tmpSetUsers(Group<Group<User>> users){
         this.users = users;
