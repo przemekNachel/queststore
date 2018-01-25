@@ -349,25 +349,25 @@ public class UserDaoImpl implements UserDao{
 
     private ArrayList<Integer> getUserArtifactIds(int userId) throws SQLException{
 
-                Connection connect = establishConnection();
-                Statement statement = connect.createStatement();
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
 
-                ArrayList<Integer> groupIds = new ArrayList<Integer>();
+        ArrayList<Integer> groupIds = new ArrayList<Integer>();
 
-                String getArtifactIdsquery = "SELECT user_artifacts.artifact_id FROM user_artifacts " +
-                    "WHERE user_artifacts.user_id=" + userId + ";";
+        String getArtifactIdsquery = "SELECT user_artifacts.artifact_id FROM user_artifacts " +
+            "WHERE user_artifacts.user_id=" + userId + ";";
 
-                ResultSet results = statement.executeQuery(getArtifactIdsquery);
+        ResultSet results = statement.executeQuery(getArtifactIdsquery);
 
-                while(results.next()){
-                    groupIds.add(results.getInt("artifact_id"));
-                }
+        while(results.next()){
+            groupIds.add(results.getInt("artifact_id"));
+        }
 
-                results.close();
+        results.close();
 
-                close(connect, statement);
+        close(connect, statement);
 
-                return groupIds;
+        return groupIds;
     }
 
     private ArrayList<Integer> getUserArtifactIds(ArrayList<String> groupNames, int userId) throws SQLException{
@@ -462,7 +462,6 @@ public class UserDaoImpl implements UserDao{
             groupFound = false;
             for(Group<User> currentGroup : associatedGroups){
                 String currentName = currentGroup.getName();
-                System.out.println(currentName + " | " + groupName);
                 if(groupName.equals(currentName)){
                     groupFound = true;
                 }
@@ -507,6 +506,7 @@ public class UserDaoImpl implements UserDao{
 
             }
         }
+        results.close();
         close(connect, statement);
         return associatedGroups;
     }
@@ -564,17 +564,18 @@ public class UserDaoImpl implements UserDao{
 
         ResultSet results = statement.executeQuery(query);
 
+        String privilege = null;
         while(results.next()){
-            String privilege = results.getString("privilege_name");
-            close(connect, statement);
-            return privilege;
+            privilege = results.getString("privilege_name");
         }
+        results.close();
         close(connect, statement);
-        return null;
+        return privilege;
 
     }
 
     private ArrayList<String> getUserGroupNamesFrom(Group<Group<User>> userGroups){
+
         ArrayList<String> groupNames = new ArrayList<String>();
         Iterator<Group<User>> groupsIterator = userGroups.getIterator();
         while(groupsIterator.hasNext()){
@@ -591,7 +592,7 @@ public class UserDaoImpl implements UserDao{
         Statement statement = connect.createStatement();
 
         String query=null;
-        ResultSet results;
+        ResultSet results = null;
         ArrayList<Integer> groupIds = new ArrayList<>();
         int tmp;
         for(String name : groupNames){
@@ -604,6 +605,7 @@ public class UserDaoImpl implements UserDao{
                 groupIds.add(tmp);
             }
         }
+        results.close();
         close(connect, statement);
         return groupIds;
     }
@@ -635,6 +637,7 @@ public class UserDaoImpl implements UserDao{
                 "VALUES (" + userId + ", " + userPrivilegeLevelId + ");";
         statement.executeUpdate(updatePrivileges);
         connect.commit();
+        close(connect, statement);
     }
 
     private void updateUserAssociations(ArrayList<Integer> groupIds, int userId) throws SQLException{
