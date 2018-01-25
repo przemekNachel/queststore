@@ -108,6 +108,7 @@ public class UserDaoImpl implements UserDao{
             }else if(role == CODECOOLER){
                 tmpWallet = getWallet(userId);
                 tempUsr = new CodecoolerModel(name, email,  password, tmpWallet, students);
+                retriveUserArtifacts((CodecoolerModel) tempUsr, userId);
             }
             tempUsr.setAssociatedGroups(getUserGroups(results.getInt("user_id"), userGroups));
         }
@@ -163,7 +164,7 @@ public class UserDaoImpl implements UserDao{
         String userName = null, password = null, email = null, role = null;
         int userId = 0, userPrivilegeLevelId = 0, balance = 0;//, expGained = 0, ;
         ArrayList<Integer> groupIds = null;
-        ArrayList<String[]> currentGroups = null;
+        ArrayList<String[]> currentArtifacts = null;
 
         // get basic user credentials (all strings + role)
         userName = user.getName();
@@ -180,7 +181,7 @@ public class UserDaoImpl implements UserDao{
         if(role.equals("codecooler")){
             CodecoolerModel tmpUser = (CodecoolerModel) user;
             balance = tmpUser.getWallet().getBalance();
-            currentGroups = getUserArtifactsList((CodecoolerModel) user);
+            currentArtifacts = getUserArtifactsList((CodecoolerModel) user);
             //expGained = user.getExp() ???
         }
 
@@ -197,7 +198,7 @@ public class UserDaoImpl implements UserDao{
 
             upgradeWallet(balance, userId);
 
-            upgradeArtifacts(currentGroups, userId);
+            upgradeArtifacts(currentArtifacts, userId);
 
         }
 
@@ -293,6 +294,39 @@ public class UserDaoImpl implements UserDao{
     }
 
     // helper methods for pubic methods
+
+    private void retriveUserArtifacts(CodecoolerModel user, int userId) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String artifactIdQuery = "SELECT artifact_id FROM user_artifacts WHERE user_id=" + userId + " ;";
+        ResultSet results = statement.executeQuery(artifactIdQuery);
+
+        while(results.next()){
+            user.addArtifact(getArtifact(results.getInt("artifact_id")));
+        }
+        results.close();
+        close(connect, statement);
+    }
+
+    private ArtifactModel getArtifact(int artifactId) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String ArtifactQuery = "SELECT name, descr, price FROM artifact_store WHERE artifact_id =" + artifactId + " ;";
+        ResultSet results = statement.executeQuery(ArtifactQuery);
+
+        ArtifactModel artifact = null;
+        while(results.next()){
+            artifact = new ArtifactModel(results.getString("name"), results.getString("descr"), results.getInt("price"));
+            break;
+        }
+        results.close();
+        close(connect, statement);
+        return artifact;
+    }
 
     private WalletService getWallet(int userId) throws SQLException{
 
