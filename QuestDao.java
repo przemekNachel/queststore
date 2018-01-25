@@ -1,7 +1,13 @@
+import java.sql.Connection;
+import java.sql.SQLException;
+
 public interface QuestDao {
-  public Group<Group<QuestModel>> getAllQuests();
-  public QuestModel getQuest(String name);
-  public void addQuest(QuestModel quest, String groupName);
-  public void updateQuest(QuestModel quest);
-  public boolean deleteQuest(QuestModel quest);
+    Connection connectToDatabase() throws SQLException;
+    Group<Group<QuestModel>> getAllQuests() throws SQLException;
+    Group<String> getQuestGroupNames() throws SQLException;
+    Group<QuestModel> getQuestGroup(String groupName) throws SQLException;
+    QuestModel getQuest(String name) throws SQLException;
+    void addQuest(QuestModel quest) throws SQLException;
+    void updateQuest(QuestModel quest) throws SQLException;
+    void deleteQuest(QuestModel quest) throws SQLException;
 }

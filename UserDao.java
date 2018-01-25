@@ -1,10 +1,12 @@
+import java.sql.*;
+
 public interface UserDao{
-    public Group<Group<User>> getAllUsers();
-    public User getUser(String nickname);
-    public Group<String> getUserGroupNames();
-    public Group<User> getUserGroup(String groupName);
-    public void addUser(User user);
-    public void updateUser(User user);
-    public boolean deleteUser(User user);
-    public boolean addUserAdherence(User user, String name);
+    Group<Group<User>> getAllUsers() throws SQLException;
+    User getUser(String nickname) throws SQLException;
+    Group<String> getUserGroupNames() throws SQLException;
+    Group<User> getUserGroup(String groupName) throws SQLException;
+    void addUser(User user) throws SQLException;
+    void updateUser(User user) throws SQLException;
+    boolean deleteUser(User user) throws SQLException;
+    boolean addUserAdherence(User user, String name) throws SQLException;
 }

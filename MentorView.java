@@ -1,11 +1,15 @@
 public class MentorView extends AbstractConsoleView {
 
-  public MentorView(Menu menu) {
+    public MentorView() {
+        // a no-menu constructor - not all uses require a menu
+    }
 
-    this.menu = menu;
-  }
+    public MentorView(Menu menu) {
 
-  public String userNicknameQuestion = "Provide user Nickname: ";
+        this.menu = menu;
+    }
+
+  public String userNicknameQuestion = "Provide user Nickname : ";
   public String userEmailQuestion = "Provide user Email: ";
   public String userPasswordQuestion = "Provide user Password: ";
   public String userGroupQuestion = "Provide user Group: ";
@@ -16,4 +20,9 @@ public class MentorView extends AbstractConsoleView {
   public String markQuestNameQuestion = "Provide Quest name: ";
   public String markArtifactUsedQuestion = "Provide name of used artifact: ";
   public String codecoolerAlreadyInGroupOrGroupAbsent = "The Codecooler *had* been added to the given group or the group does not exist.";
+  public String userAlreadyInDatabase = "User already in database.";
+  public String availableQuests = "Available quests: ";
+  public String invalidNickname = "User not in database or not a Codecooler.";
+  public String questNotFoundError = "Quest name not found";
+
 }

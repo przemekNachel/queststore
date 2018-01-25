@@ -1,10 +1,15 @@
+import java.sql.Connection;
+import java.sql.SQLException;
+
 public interface ArtifactDao{
 
-    public Group<Group<ArtifactModel>> getAllArtifcts();
-    public ArtifactModel getArtifact(String name);
-    public Group<String> getArtifactGroupNames();
-    public Group<ArtifactModel> getArtifactGroup(String groupName);
-    public void addArtifact(ArtifactModel artifact, String groupName);
-    public void updateArtifact(ArtifactModel artifact);
-    public boolean deleteArtifact(ArtifactModel artifact);
+    Connection connectToDatabase() throws SQLException;
+    Group<Group<ArtifactModel>> getAllArtifacts() throws SQLException;
+    ArtifactModel getArtifact(String name) throws SQLException;
+    Group<String> getArtifactGroupNames() throws SQLException;
+    Group<ArtifactModel> getArtifactGroup(String groupName) throws SQLException;
+    void addArtifact(ArtifactModel artifact, String groupName) throws SQLException ;
+    void updateArtifact(ArtifactModel artifact) throws SQLException;
+    void addArtifactGroup(Group<ArtifactModel> group) throws SQLException;
+    boolean deleteArtifact(ArtifactModel artifact) throws SQLException;
 }

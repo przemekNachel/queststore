@@ -1,22 +1,30 @@
 class WalletService{
-  private float balance = 0;
+    private int balance = 0;
 
-  public boolean canAfford(float amount){
-    if(this.balance >= amount){
-      return true;
-    }
-    return false;
-  }
+    public WalletService(int initialBalance) {
 
-  public void withdraw(float amount){
-      this.balance -= amount;
+        this.balance = initialBalance;
     }
 
-  public void payIn(float amount){
-    this.balance += amount;
-  }
+    public boolean canAfford(int amount){
 
-  public String toString(){
-    return String.valueOf(this.balance);
-  }
+        return this.balance >= amount;
+    }
+
+    public void withdraw(int amount){
+        this.balance -= amount;
+    }
+
+    public void payIn(int amount){
+        this.balance += amount;
+    }
+
+    public int getBalance() {
+
+        return balance;
+    }
+
+    public String toString(){
+        return String.valueOf(this.balance);
+    }
 }

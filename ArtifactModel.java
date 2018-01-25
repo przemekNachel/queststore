@@ -1,10 +1,10 @@
 public class ArtifactModel {
     private String name;
     private String description;
-    private Float price;
+    private Integer price;
     private boolean hesBeenUsed;
 
-    public ArtifactModel(String name, String description, float price){
+    public ArtifactModel(String name, String description, Integer price){
         this.name = name;
         this.description = description;
         this.price = price;
@@ -29,11 +29,11 @@ public class ArtifactModel {
         this.description = description;
     }
 
-    public Float getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(Float price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
