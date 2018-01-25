@@ -266,6 +266,55 @@ public class MentorController {
 
     public void markCodecoolerArtifactUsage() {
 
+      MentorView view = new MentorView();
+
+      // get Codecooler artifact usage of whom is to be marked
+      CodecoolerModel codecooler = getCodecooler();
+
+      // get artifact to be marked
+      Group<String> allowedArtifactNames = new Group<>("allowed artifact name user input");
+      Group<ArtifactModel> userArtifacts = codecooler.getCodecoolerArtifacts();
+      String artifactsFormatted = "Artifacts of Codecooler " + codecooler.getName() + "\n\n:";
+      for (ArtifactModel currentArtifact : userArtifacts) {
+
+        artifactsFormatted += "*" + currentArtifact + "\n";
+        allowedArtifactNames.add(currentArtifact.getName());
+      }
+
+      view.printLine(artifactsFormatted);
+
+      // get the name of the artifact to be marked
+      String artifactName = null;
+      boolean providedValidArtifactName = false;
+      do {
+
+          artifactName = view.getStringFromUserInput(view.artifactNameQuestion);
+          if (allowedArtifactNames.contains(artifactName)) {
+
+              providedValidArtifactName = true;
+          } else {
+              view.printLine(view.artifactNotFoundError);
+          }
+
+      } while(!providedValidArtifactName);
+
+      String input = "";
+      while (!input.equals("Y") && !input.equals("N")) {
+
+          view.printLine("  Provide Y to mark as used, N as unused: ");
+      }
+
+      boolean usageStatus = input.equals("Y");
+      codecooler.getArtifact(artifactName).setUsageStatus(usageStatus);
+      UserDaoImpl userDao = new UserDaoImpl();
+      try {
+        
+          userDao.updateUser(codecooler);
+      } catch (SQLException e) {
+
+          view.printSQLException(e);
+      }
+
     }
 
 }
