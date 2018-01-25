@@ -6,7 +6,9 @@ public class Level{
     private Integer experienceGained;
 
     public static void addLevel(String name, Integer treshold){
+        LevelService service = new LevelService();
         levels.put(treshold, name);
+        service.saveLevels(levels);
     }
 
     public String getCurrentLevel() {
