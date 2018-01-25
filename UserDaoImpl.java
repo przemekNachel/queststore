@@ -391,6 +391,7 @@ public class UserDaoImpl implements UserDao{
 
         statement.executeUpdate(query);
         connect.commit();
+        close(connect, statement);
     }
 
 
@@ -585,60 +586,7 @@ public class UserDaoImpl implements UserDao{
         return groupIds;
     }
 
-
-
-
-
-
-
-
-
-
-    // placeholders for the sake of compilation
-
-
-    public void tmpSetUsers(Group<Group<User>> users){}
-
-
-
-
-    /*
-
-    public void tmpSetUsers(Group<Group<User>> users){
-        this.users = users;
-    }
-
-    private boolean contains(String name){
-        // iterates through all groups
-        Iterator<Group<User>> tmpIter = UserDaoImpl.users.getIterator();
-        while(tmpIter.hasNext()){
-            String tmpName = tmpIter.next().getName();
-            if(tmpName.equals(name)){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean contains(String name, Group<User> userGroup ){
-        // iterates through given Group
-        Iterator<User> tmpIter = userGroup.getIterator();
-        while(tmpIter.hasNext()){
-            String tmpName = tmpIter.next().getName();
-            if(tmpName.equals(name)){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    */
-
-    /*
-     public void size(){
-        System.out.println("Size of 'users': " + this.users.size());
-    }
-    */
+    // ----- basic database operations -----/
 
     private Connection establishConnection() throws SQLException{
 
