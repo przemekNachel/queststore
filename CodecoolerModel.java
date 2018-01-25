@@ -47,6 +47,11 @@ public class CodecoolerModel extends User {
         return null;
     }
 
+    public Group<ArtifactModel> getCodecoolerArtifacts() {
+
+        return artifacts;
+    }
+
     public Group<String> getGroupNames() {
         Group<String> names = new Group<String>("Group Names");
 
