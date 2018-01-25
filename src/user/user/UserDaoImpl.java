@@ -85,6 +85,7 @@ public class UserDaoImpl implements UserDao{
         // user credentials:
         String name, password, email;
         Role role;
+        int userId;
 
         WalletService tmpWallet;
         Group<Group<User>> tmpGroup;
@@ -98,6 +99,7 @@ public class UserDaoImpl implements UserDao{
             name = results.getString("nickname");
             password = results.getString("password");
             email = results.getString("email");
+            userId = getUserId(name);
 
             if(role == ADMIN){
                 tempUsr = new AdminModel(name, password, admins);
@@ -292,7 +294,7 @@ public class UserDaoImpl implements UserDao{
 
     // helper methods for pubic methods
 
-    private WalletService getWallet(int userId){
+    private WalletService getWallet(int userId) throws SQLException{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
