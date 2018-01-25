@@ -77,7 +77,11 @@ public class MentorController {
         if (studentsGroup == null) {
 
             Group<User> newStudentsGroup = new Group<>("students");
-            userDao.addUserGroup(newStudentsGroup);
+            try{
+                userDao.addUserGroup(newStudentsGroup);
+            } catch (SQLException e) {
+                view.printSQLException(e);
+            }
             studentsGroup = newStudentsGroup;
         }
 
