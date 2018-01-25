@@ -3,6 +3,8 @@ import java.sql.*;
 import java.util.Map;
 
 public class LevelDaoImpl {
+    private static String JDBC = "jdbc:sqlite:database.db";
+
     public HashMap<Integer, String> getLevelCollection(){
         try {
             HashMap<Integer, String> levels = new HashMap<>();
@@ -25,7 +27,7 @@ public class LevelDaoImpl {
         }
     }
 
-    public boolean saveLevelCollection(HashMap<Integer, String> levels,){
+    public boolean saveLevelCollection(HashMap<Integer, String> levels){
         try {
             Connection databaseConnection = Connect();
             Statement statement = databaseConnection.createStatement();
@@ -48,14 +50,14 @@ public class LevelDaoImpl {
         }
     }
 
-    private static Connection Connect() throws java.sql.SQLException, java.lang.ClassNotFoundException {
-        Connection connection = null;
-
-        String databasePath = "C:/Users/Nikodem/java/untitled/src/database.db";
-        Class.forName("org.sqlite.JDBC");
-        connection = DriverManager.getConnection("jdbc:sqlite:" + databasePath);
-
-
-        return connection;
+    private static Connection Connect() throws java.sql.SQLException{
+        try{
+            Class.forName("org.sqlite.JDBC");
+        }catch(ClassNotFoundException e){
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+        }
+        Connection connect = DriverManager.getConnection(JDBC);
+        connect.setAutoCommit(false);
+        return connect;
     }
 }
