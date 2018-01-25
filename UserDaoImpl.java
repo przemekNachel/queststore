@@ -193,17 +193,14 @@ public class UserDaoImpl implements UserDao{
 
         String userName = null, password = null, email = null, role = null;
         int userId = 0, userPrivilegeLevelId = 0, balance = 0;//, expGained = 0, ;
-        ArrayList<Integer> groupIds;
+        ArrayList<Integer> groupIds = null;
+        ArrayList<Integer> artifactIds = null;
 
         // get basic user credentials (all strings + role)
         userName = user.getName();
         password = user.getPassword();
         email = user.getEmail();
         role = convertRole(user.getRole());
-        System.out.println("+++++++++" + userName);
-        System.out.println("+++++++++" + password);
-        System.out.println("+++++++++" + email);
-        System.out.println("+++++++++" + role);
 
         // get userId
         String getUserId = "SELECT user_id FROM users WHERE nickname='" + userName + "';";
@@ -213,7 +210,7 @@ public class UserDaoImpl implements UserDao{
             userId = getUserIdResult.getInt("user_id");
         }
 
-        System.out.println("+++++++++" + userId);
+
 
         // get userPrivilegeLevelId
 
@@ -225,20 +222,15 @@ public class UserDaoImpl implements UserDao{
             userPrivilegeLevelId = getPrivLevelResult.getInt("privilege_id");
         }
 
-        System.out.println("+++++++++" + userPrivilegeLevelId);
 
         // get all groupIds
         groupIds = getUserGroupIds(getUserGroupNamesFrom(user.getAssociatedGroups()), userId);
 
-        for(int grp : groupIds){
-            System.out.println("+++*******+++" + userPrivilegeLevelId);
-        }
-
-
-        // if user = codecooler get expGained and balance
+        // if user = codecooler get expGained and balance and artifacts
         if(role.equals("codecooler")){
             CodecoolerModel tmpUser = (CodecoolerModel) user;
             balance = tmpUser.getWallet().getBalance();
+            artifactIds = getUserArtifactIds(getUserArtifactNames(tmpUser.getCodecoolerArtifacts()), userId) ;
             //expGained = user.getExp() ???
         }
 
@@ -269,14 +261,22 @@ public class UserDaoImpl implements UserDao{
             connect.commit();
         }
 
-        // update wallet
+        // update wallet and artifacts
         if(role.equals("codecooler")){
             String updateWallet = "UPDATE user_wallet " +
                     "SET balance=" + balance + " WHERE user_id=" + userId + ";";
 
             statement.executeUpdate(updateWallet);
             connect.commit();
+
+            if(artifactIds.size() > 0){
+                String updateArtifacts = "UPDATE ";
+            }
         }
+
+
+
+
 
         close(connect, statement);
 
@@ -398,6 +398,39 @@ public class UserDaoImpl implements UserDao{
 
 
     // helper methods for pubic methods
+    private ArrayList<Integer> getUserArtifactIds(ArrayList<String> groupNames, int userId) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        ArrayList<Integer> groupIds = new ArrayList<Integer>();
+
+        String getArtifactIdsquery = "SELECT artifact_store.artifact_id FROM user_artifacts " +
+            "LEFT JOIN artifact_store ON user_artifacts.artifact_id=artifact_store.artifact_id " +
+            "WHERE user_artifacts.user_id=" + userId + ";";
+
+        ResultSet results = statement.executeQuery(getArtifactIdsquery);
+
+        while(results.next()){
+            groupIds.add(results.getInt("artifact_id"));
+        }
+
+        results.close();
+
+        close(connect, statement);
+
+        return groupIds;
+
+    }
+
+    private ArrayList<String> getUserArtifactNames(Group<ArtifactModel> userArtifacts){
+
+        ArrayList<String> artifactNames = new ArrayList<String>();
+        for(ArtifactModel artifact : userArtifacts){
+            artifactNames.add(artifact.getName());
+        }
+        return artifactNames;
+    }
 
     private int getGroupId(String groupName) throws SQLException{
 
