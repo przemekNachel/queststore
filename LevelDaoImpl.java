@@ -17,7 +17,6 @@ public class LevelDaoImpl {
                 String levelName = rs.getString("level_name");
                 levels.put(levelThreshold, levelName);
             }
-
             return levels;
 
         } catch (Exception e) {
@@ -40,7 +39,9 @@ public class LevelDaoImpl {
                         "', '" + entry.getValue() + "');";
                 statement.executeUpdate(sqlCommand);
                 }
-
+            databaseConnection.commit();
+            statement.close();
+            databaseConnection.close();
             return true;
 
         } catch (Exception e) {
