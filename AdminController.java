@@ -157,6 +157,12 @@ class AdminController{
         else{
             view.printLine(view.noSuchOption);
         }
+        try {
+
+            dao.updateUser(mentor);
+        } catch (SQLException e) {
+            view.printSQLException(e);
+        }
     }
 
     public String getGroupsDisplay(){
