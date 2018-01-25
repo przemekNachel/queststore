@@ -381,7 +381,7 @@ public class UserDaoImpl implements UserDao{
         return false;
     }
 
-    public void addUserGroup(Group<User> group){
+    public void addUserGroup(Group<User> group) throws SQLException{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
@@ -390,7 +390,7 @@ public class UserDaoImpl implements UserDao{
             "VALUES ('" + group.getName() + "');";
 
         statement.executeUpdate(query);
-        connect.commit();        
+        connect.commit();
     }
 
 
