@@ -49,7 +49,7 @@ public class MentorController {
                 break;
             // mark artifact usage
             case "4":
-                // TODO
+                markCodecoolerArtifactUsage();
                 break;
         }
     }
@@ -308,7 +308,7 @@ public class MentorController {
       codecooler.getArtifact(artifactName).setUsageStatus(usageStatus);
       UserDaoImpl userDao = new UserDaoImpl();
       try {
-        
+
           userDao.updateUser(codecooler);
       } catch (SQLException e) {
 
