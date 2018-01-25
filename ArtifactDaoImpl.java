@@ -12,7 +12,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
     @Override
     public Connection connectToDatabase() throws SQLException {
 
-        String db_path = "jdbc:sqlite:database/database.db";
+        String db_path = "jdbc:sqlite:database.db";
         return DriverManager.getConnection(db_path);
 
 
