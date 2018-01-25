@@ -101,14 +101,11 @@ public class UserDaoImpl implements UserDao{
 
             if(role == ADMIN){
                 tempUsr = new AdminModel(name, password, admins);
-                admins.add(tempUsr);
             }else if(role == MENTOR){
                 tempUsr = new MentorModel(name, email, password, mentors);
-                mentors.add(tempUsr);
             }else if(role == CODECOOLER){
                 tmpWallet = new WalletService(0);
                 tempUsr = new CodecoolerModel(name, email,  password, tmpWallet, students);
-                students.add(tempUsr);
             }
             tempUsr.setAssociatedGroups(getUserGroups(results.getInt("user_id"), userGroups));
         }
@@ -293,9 +290,6 @@ public class UserDaoImpl implements UserDao{
         close(connect, statement);
     }
 
-
-
-
     // helper methods for pubic methods
 
     private void updateCredentials(String userName, String password, String email) throws SQLException{
@@ -460,8 +454,22 @@ public class UserDaoImpl implements UserDao{
 
         ResultSet results = statement.executeQuery(query);
 
+        String groupName;
+        boolean groupFound = false;
+
         while(results.next()){
-            associatedGroups.add(new Group<User>(results.getString("group_name")));
+            groupName = results.getString("group_name");
+            groupFound = false;
+            for(Group<User> currentGroup : associatedGroups){
+                String currentName = currentGroup.getName();
+                System.out.println(currentName + " | " + groupName);
+                if(groupName.equals(currentName)){
+                    groupFound = true;
+                }
+            }
+            if(!groupFound){
+                associatedGroups.add(new Group<User>(groupName));
+            }
         }
         close(connect, statement);
         return associatedGroups;
@@ -820,7 +828,6 @@ public class UserDaoImpl implements UserDao{
         connect.commit();
         close(connect, statement);
     }
-
 
     // ----- basic database operations -----/
 
