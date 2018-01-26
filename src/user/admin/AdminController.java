@@ -9,9 +9,9 @@ import user.user.User;
 import user.user.UserDao;
 import user.user.UserDaoImpl;
 import level.Level;
-
-import java.util.Iterator;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AdminController{
     AdminView view;
@@ -25,12 +25,12 @@ public class AdminController{
                 new MenuOption("4", "Edit mentor"),
                 new MenuOption("5", "View mentor's details"),
                 new MenuOption("6", "View groups"),
-                new MenuOption("7","Create level"));
+                new MenuOption("7", "Create level"));
 
         view = new AdminView(adminMenu);
     }
 
-    public void createMentor(){
+    public void createMentor() {
 
         UserDaoImpl dao = new UserDaoImpl();
         String name = this.view.getStringFromUserInput(view.mentorNameQuestion);
@@ -99,7 +99,7 @@ public class AdminController{
         }
     }
 
-    public void assignMentorToGroup(){
+    public void assignMentorToGroup() {
         UserDaoImpl userDao = new UserDaoImpl();
 
         String name = view.getStringFromUserInput(view.mentorNameQuestion);
@@ -113,15 +113,15 @@ public class AdminController{
         }
 
         boolean userAddedtoGroup = false;
-        try{
+        try {
             userAddedtoGroup = userDao.addUserAdherence(user, groupName);
         } catch (SQLException e) {
             view.printSQLException(e);
         }
 
-        if(!userAddedtoGroup || user == null){
+        if (!userAddedtoGroup || user == null) {
             view.printLine(view.assignMentorToFroupError);
-        }else {
+        } else {
 
             try {
                 Group<Group<User>> associatedGroups = user
@@ -136,18 +136,18 @@ public class AdminController{
         }
     }
 
-    public void createGroup(){
+    public void createGroup() {
         UserDaoImpl userDao = new UserDaoImpl();
         String groupName = view.getStringFromUserInput(view.groupNameQuestion);
         Group<User> tmp = new Group<>(groupName);
-        try{
+        try {
             userDao.addUserGroup(tmp);
         } catch (SQLException e) {
             view.printSQLException(e);
         }
     }
 
-    public void editMentor(){
+    public void editMentor() {
         UserDaoImpl dao = new UserDaoImpl();
         String mentorName = view.getStringFromUserInput(view.mentorNameQuestion);
 
@@ -160,19 +160,16 @@ public class AdminController{
         }
 
         String choice = view.getStringFromUserInput(view.mentorChangeQuestion);
-        if (choice.equals("1")){
+        if (choice.equals("1")) {
             String name = view.getStringFromUserInput(view.mentorNameQuestion);
             mentor.setName(name);
-        }
-        else if(choice.equals("2")){
+        } else if (choice.equals("2")) {
             String email = view.getStringFromUserInput(view.mentorEmailQuestion);
             mentor.setEmail(email);
-        }
-        else if(choice.equals("3")){
+        } else if (choice.equals("3")) {
             String password = view.getStringFromUserInput(view.mentorPasswordQuestion);
             mentor.setPassword(password);
-        }
-        else{
+        } else {
             view.printLine(view.noSuchOption);
         }
         try {
@@ -183,8 +180,8 @@ public class AdminController{
         }
     }
 
-    public String getGroupsDisplay(){
 
+    public String getGroupsDisplay(){
         UserDaoImpl dao = new UserDaoImpl();
         Group<String> groupNames = null;
         try {
@@ -200,7 +197,7 @@ public class AdminController{
         return groupsFormatted;
     }
 
-    public String getMentorDisplay(){
+    public String getMentorDisplay() {
         UserDaoImpl dao = new UserDaoImpl();
         String mentorName = view.getStringFromUserInput(view.mentorNameQuestion);
 
@@ -213,10 +210,21 @@ public class AdminController{
         }
 
         if (mentor != null && mentor.getRole() == Role.MENTOR) {
-
             return mentor.toString();
         }
         return view.noMentorOfSuchName;
+    }
+
+    public void createLevel() {
+        HashMap<Integer, String> levels = Level.getLevels();
+
+        System.out.println(view.currentLevelsText);
+        for (Map.Entry<Integer, String> entry : levels.entrySet()) {
+            System.out.println(Integer.toString(entry.getKey()) + "   " + entry.getValue());
+        }
+        String lvlName = view.getStringFromUserInput(view.levelNameQuestion);
+        String threshold = view.getStringFromUserInput(view.levelTresholdQuestion);
+        Integer thr = Integer.valueOf(threshold);
     }
 
     private Integer getInt(String prompt) {
@@ -238,13 +246,5 @@ public class AdminController{
       } while(!validInputProvided);
 
       return result;
-    }
-
-    public void createLevel(){
-
-       String lvlName = view.getStringFromUserInput(view.levelNameQuestion);
-       Integer thr = getInt(view.levelTresholdQuestion);
-
-       Level.addLevel(lvlName, thr);
     }
 }

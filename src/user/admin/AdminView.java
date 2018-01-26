@@ -20,4 +20,6 @@ class AdminView extends AbstractConsoleView {
     public String noSuchOption = "No such option!";
     public String assignMentorToFroupError = "Given group does not exist or mentor is already in group!";
     public String noMentorOfSuchName = "There is no mentor of given name.";
+    public String currentLevelsText = "Note: Creating a lvl with the same treshold as currently existing one will rename it \n" +
+            "Currently existing levels:\n\nThres   Name" ;
 }
