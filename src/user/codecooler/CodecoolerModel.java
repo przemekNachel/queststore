@@ -76,7 +76,7 @@ public class CodecoolerModel extends User {
         String walletBalance;
         String artifactsOwned = "Owned artifacts:";
 
-        walletBalance = wallet.toString() + "\n";
+        walletBalance = "Wallet balance: " + wallet.toString() + "\n\n";
 
         Iterator<ArtifactModel> iter = artifacts.getIterator();
         while(iter.hasNext()) {
