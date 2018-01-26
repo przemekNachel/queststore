@@ -373,7 +373,7 @@ public class MentorController {
       String input = "";
       while (!input.equals("Y") && !input.equals("N")) {
 
-          view.printLine("  Provide Y to mark as used, N as unused: ");
+          input = view.getStringFromUserInput("  Provide Y to mark as used, N as unused: ");
       }
 
       boolean usageStatus = input.equals("Y");
