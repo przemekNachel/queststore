@@ -1,6 +1,11 @@
 package user.mentor;
 
 import artifact.ArtifactModel;
+import artifact.ArtifactDao;
+import artifact.ArtifactDaoImpl;
+import quest.QuestModel;
+import quest.QuestDao;
+import quest.QuestDaoImpl;
 import console.menu.Menu;
 import console.menu.MenuOption;
 import user.codecooler.CodecoolerModel;
@@ -22,7 +27,9 @@ public class MentorController {
                 new MenuOption("1", "Create a user.codecooler"),
                 new MenuOption("2", "Assign a user.codecooler to a group"),
                 new MenuOption("3", "Mark user.codecooler's quest completion"),
-                new MenuOption("4", "Mark user.codecooler's artifact usage")
+                new MenuOption("4", "Mark user.codecooler's artifact usage"),
+                new MenuOption("5", "Create artifact"),
+                new MenuOption("6", "Create quest")
         );
 
         view = new MentorView(mentorMenu);
@@ -60,13 +67,70 @@ public class MentorController {
             case "4":
                 markCodecoolerArtifactUsage();
                 break;
+            case "5":
+                createArtifact();
+                break;
+            case "6":
+                createQuest();
+                break;
         }
     }
 
+    private Integer getInt(String prompt) {
+
+      Integer result = null;
+      boolean validInputProvided;
+      do {
+
+        validInputProvided = true;
+        try {
+
+          result = Integer.valueOf(view.getStringFromUserInput(prompt));
+
+        } catch (NumberFormatException nfe) {
+
+            validInputProvided = false;
+            view.printLine("  Invalid input.");
+        }
+      } while(!validInputProvided);
+
+      return result;
+    }
+
+    public void createArtifact() {
+
+        ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
+        String name = view.getStringFromUserInput(view.artifactNameQuestion);
+        String desc = view.getStringFromUserInput(view.artifactDescQuestion);
+        Integer price = getInt(view.artifactPriceQuestion);
+
+        try {
+
+            artifactDao.addArtifact(new ArtifactModel(name, desc, price), "basic");
+        } catch (SQLException e) {
+
+            view.printSQLException(e);
+        }
+    }
+
+    public void createQuest() {
+
+        QuestDaoImpl questDao = new QuestDaoImpl();
+        String name = view.getStringFromUserInput(view.questNameQuestion);
+        String desc = view.getStringFromUserInput(view.questDescQuestion);
+        Integer reward = getInt(view.questPriceQuestion);
+
+        try {
+
+            questDao.addQuest(new QuestModel(name, desc, reward));
+        } catch (SQLException e) {
+
+            view.printSQLException(e);
+        }
+    }
 
     public void createCodecooler() {
         UserDaoImpl userDao = new UserDaoImpl();
-        MentorView view = new MentorView();
 
         String nickname = view.getStringFromUserInput(view.userNicknameQuestion);
         String email = view.getStringFromUserInput(view.userEmailQuestion);
@@ -207,10 +271,10 @@ public class MentorController {
               return;
           }
 
-          groupsFormatted += groupName + " :\n";
+          groupsFormatted += "\n" + groupName + " :\n";
           for (quest.QuestModel currentQuest : questGroup) {
 
-              groupsFormatted += "*" + currentQuest + "\n";
+              groupsFormatted += "*" + currentQuest.getName() + "\n";
               allowedQuestNames.add(currentQuest.getName());
           }
       }

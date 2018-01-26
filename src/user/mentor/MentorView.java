@@ -29,7 +29,12 @@ public class MentorView extends AbstractConsoleView {
   public String availableQuests = "Available quests: ";
   public String invalidNickname = "user not in database or not a user.codecooler.";
   public String questNotFoundError = "quest name not found";
-  public String artifactNameQuestion = "Enter the artifact's name: ";
   public String artifactNotFoundError = "No such artifact found!";
+  public String artifactNameQuestion = "Provide artifact name: ";
+  public String artifactDescQuestion = "Provide artifact description: ";
+  public String artifactPriceQuestion = "Provide artifact price: ";
+  public String questNameQuestion = "Provide quest name: ";
+  public String questDescQuestion = "Provide quest description: ";
+  public String questPriceQuestion = "Provide quest price: ";
 
 }
