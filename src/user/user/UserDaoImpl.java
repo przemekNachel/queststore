@@ -185,8 +185,7 @@ public class UserDaoImpl implements UserDao{
             //expGained = user.getExp() ???
         }
 
-        for (String[] s : currentArtifacts)
-          System.out.println(s[0] + "    " + s[1]);
+
 
         /* execute queries to update */
 
@@ -196,10 +195,8 @@ public class UserDaoImpl implements UserDao{
 
         upgradeUserAssociations(groupIds, userId);
 
-        System.out.println("O" + role + "0");
         // update wallet and artifacts
         if(role.equals("codecooler")){
-            System.out.println("XD1");
             upgradeWallet(balance, userId);
 
             upgradeArtifacts(currentArtifacts, userId);
@@ -774,7 +771,6 @@ public class UserDaoImpl implements UserDao{
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
 
-        System.out.println("Elo " + balance);
         String updateWallet = "UPDATE user_wallet " +
                 "SET balance=" + balance + " WHERE user_id=" + userId + ";";
 
@@ -794,7 +790,7 @@ public class UserDaoImpl implements UserDao{
             for(String[] artifactIdAndState : currentGroups){
                 int currentArtifactId = Integer.parseInt(artifactIdAndState[0]);
                 String currentArtifactState = artifactIdAndState[1];
-                String getArtifactQuery = "SELECT used FROM user_artifacts " +
+                String getArtifactQuery = "SELECT * FROM user_artifacts " +
                     "WHERE user_id=" + userId + " AND artifact_id=" +
                     currentArtifactId + " ;";
                 ResultSet results = statement.executeQuery(getArtifactQuery);
@@ -802,15 +798,17 @@ public class UserDaoImpl implements UserDao{
                 String used = null ;
                 while(results.next()){
                     used = results.getString("used");
+
                 }
                 results.close();
 
-                if(!currentArtifactState.equals(used)){
+                if(!currentArtifactState.equals(used) && used != null){
                     updateArtifact = "UPDATE user_artifacts " +
                         "SET used='" + currentArtifactState + "' " +
                         "WHERE user_id=" + userId + " AND artifact_id=" +
                         currentArtifactId + " ;";
                 }else if(used == null){
+
                     updateArtifact = "INSERT INTO user_artifacts(user_id, artifact_id, used) " +
                         "VALUES(" + userId + " , " + currentArtifactId + " , '" + currentArtifactState + "');";
                 }
