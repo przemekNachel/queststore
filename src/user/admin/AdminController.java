@@ -9,6 +9,7 @@ import user.user.User;
 import user.user.UserDao;
 import user.user.UserDaoImpl;
 import level.Level;
+import level.LevelService;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -216,15 +217,17 @@ public class AdminController{
     }
 
     public void createLevel() {
+
+        LevelService levelService = new LevelService();
+        levelService.initializeLevels();
         HashMap<Integer, String> levels = Level.getLevels();
 
-        System.out.println(view.currentLevelsText);
+        view.printLine(view.currentLevelsText);
         for (Map.Entry<Integer, String> entry : levels.entrySet()) {
-            System.out.println(Integer.toString(entry.getKey()) + "   " + entry.getValue());
+            view.printLine(Integer.toString(entry.getKey()) + "   " + entry.getValue());
         }
         String lvlName = view.getStringFromUserInput(view.levelNameQuestion);
-        String threshold = view.getStringFromUserInput(view.levelTresholdQuestion);
-        Integer thr = Integer.valueOf(threshold);
+        Integer thr = getInt(view.levelTresholdQuestion);
     }
 
     private Integer getInt(String prompt) {
