@@ -160,7 +160,7 @@ public class ArtifactStoreController{
         // get group which will crowd-fund the artifact
         Group<CodecoolerModel> codecoolers = null;
         boolean providedExistentGroupName = false;
-        boolean wantToBuyAlone = false;
+        boolean wantToBuyAlone = true;
         do {
             String consumerGroupName = view.getStringFromUserInput(view.chooseGroup);
             if (allowedGroupNames.contains(consumerGroupName)) {
