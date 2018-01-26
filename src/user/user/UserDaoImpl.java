@@ -24,47 +24,30 @@ public class UserDaoImpl implements UserDao{
         Statement statement = connect.createStatement();
 
         Group<Group<User>> allUsers = new Group<Group<User>>("all users");
-        String query = "SELECT * FROM users";
+        String query = "SELECT nickname FROM users";
 
         ResultSet results = statement.executeQuery(query);
 
-        Group<Group<User>> userGroups = getAllGroups();
-        Group<User> students = getGroup("codecoolers", userGroups);
-        Group<User> mentors = getGroup("mentors", userGroups);
-        Group<User> admins = getGroup("admins", userGroups);
-
-        // user credentials:
-        String nickname, password, email;
-        Role role;
-
-        WalletService tmpWallet;
-        Group<Group<User>> tmpGroup;
         User tempUsr = null;
-
+        boolean groupFound = false;
         while(results.next()){
-
-            //get user data
-
-            tmpGroup = new Group<Group<User>>("associated groups");
-            role = convertRole(getRole(results.getInt("user_id")));
-            nickname = results.getString("nickname");
-            password = results.getString("password");
-            email = results.getString("email");
-
-            if(role == ADMIN){
-                tempUsr = new AdminModel(nickname, password, admins);
-                admins.add(tempUsr);
-            }else if(role == MENTOR){
-                tempUsr = new MentorModel(nickname, email, password, mentors);
-                mentors.add(tempUsr);
-            }else if(role == CODECOOLER){
-                tmpWallet = new WalletService(0);
-                tempUsr = new CodecoolerModel(nickname, email,  password, tmpWallet, students);
-                students.add(tempUsr);
+            groupFound = false;
+            tempUsr = getUser(results.getString("nickname"));
+            for(Group<User> tmpGroup : tempUsr.getAssociatedGroups()){
+                for(Group<User> groupInAll : allUsers){
+                    if(tmpGroup.getName().equals(groupInAll.getName())){
+                        groupFound = true;
+                    }
+                    if(groupFound){
+                        break;
+                    }
+                }
+                if(!groupFound){
+                    allUsers.add(tmpGroup);
+                }
             }
-            tempUsr.setAssociatedGroups(getUserGroups(results.getInt("user_id"), userGroups));
-
         }
+        results.close();
         close(connect, statement);
         return allUsers;
     }
@@ -198,7 +181,6 @@ public class UserDaoImpl implements UserDao{
         // update wallet and artifacts
         if(role.equals("codecooler")){
             upgradeWallet(balance, userId);
-
             upgradeArtifacts(currentArtifacts, userId);
 
         }
@@ -250,13 +232,18 @@ public class UserDaoImpl implements UserDao{
     }
 
     public Group<User> getUserGroup(String groupName) throws SQLException{
-        Group<Group<User>> groups = getAllGroups();
-        for(Group<User> group : groups){
+
+
+        Group<User> usersFromGroup = null;
+        Group<Group<User>> users = getAllUsers();
+        for(Group<User> group : users){
             if(group.getName().equals(groupName)){
-                return group;
+                insertUsersTo(group);
+                usersFromGroup = group;
+                break;
             }
         }
-        return null;
+        return usersFromGroup;
     }
 
     public boolean addUserAdherence(User user, String groupName) throws SQLException{
@@ -294,7 +281,45 @@ public class UserDaoImpl implements UserDao{
         close(connect, statement);
     }
 
+    public void updateOnlyWallet(CodecoolerModel user) throws SQLException{
+
+        int userId = getUserId(user.getName());
+
+        upgradeWallet(user.getWallet().getBalance(), userId);
+    }
+
     // helper methods for pubic methods
+
+
+
+    private void insertUsersTo(Group<User> group) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String name, password, email;
+        WalletService wallet = null;
+
+        String query = "SELECT users.*, user_wallet.balance AS balance FROM users " +
+            "JOIN user_associations ON user_associations.user_id = users.user_id " +
+            "JOIN group_names ON group_names.group_id = user_associations.group_id " +
+            "JOIN user_wallet ON user_wallet.user_id = users.user_id " +
+            "WHERE group_name = '" + group.getName() + "' ;" ;
+
+        ResultSet results = statement.executeQuery(query);
+
+        while(results.next()){
+
+            name = results.getString("nickname");
+            password = results.getString("password");
+            email = results.getString("email");
+            wallet = new WalletService(results.getInt("balance"));
+
+            group.add(new CodecoolerModel(name, email, password, wallet, group));
+        }
+        results.close();
+        close(connect, statement);
+    }
 
     private void retriveUserArtifacts(CodecoolerModel user, int userId) throws SQLException{
 
@@ -786,7 +811,6 @@ public class UserDaoImpl implements UserDao{
 
         if(!currentGroups.isEmpty()){
             String updateArtifact = null;
-
             for(String[] artifactIdAndState : currentGroups){
                 int currentArtifactId = Integer.parseInt(artifactIdAndState[0]);
                 String currentArtifactState = artifactIdAndState[1];
@@ -808,7 +832,6 @@ public class UserDaoImpl implements UserDao{
                         "WHERE user_id=" + userId + " AND artifact_id=" +
                         currentArtifactId + " ;";
                 }else if(used == null){
-
                     updateArtifact = "INSERT INTO user_artifacts(user_id, artifact_id, used) " +
                         "VALUES(" + userId + " , " + currentArtifactId + " , '" + currentArtifactState + "');";
                 }

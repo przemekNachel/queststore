@@ -151,7 +151,6 @@ public class QuestDaoImpl implements QuestDao {
         rs.close();
         con.close();
 
-        System.out.println(group);
         return group;
     }
 }

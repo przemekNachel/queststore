@@ -169,8 +169,11 @@ public class ArtifactStoreController{
                     // buy the artifact as a group
                     codecoolers = new Group<>("Codecooler(s) buying an artifact");
                     for (User currentUser : users) {
-
-                        codecoolers.add((CodecoolerModel)currentUser);
+                        if(currentUser.getName().equals(codecooler.getName())){
+                            codecoolers.add(codecooler);
+                        }else{
+                            codecoolers.add((CodecoolerModel)currentUser);
+                        }
                     }
                 } catch (SQLException e) {
                     view.printSQLException(e);
@@ -210,8 +213,11 @@ public class ArtifactStoreController{
         try {
 
             for (User user : consumers) {
-
-                userDao.updateUser(user);
+                if(user.getName().equals(codecooler.getName())){
+                    userDao.updateUser(user);
+                }else{
+                    userDao.updateOnlyWallet((CodecoolerModel) user);
+                }
             }
         } catch (SQLException e) {
             view.printSQLException(e);
