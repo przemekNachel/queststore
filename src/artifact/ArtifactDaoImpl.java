@@ -125,7 +125,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
         Connection con = connectToDatabase();
         Statement stmt = Objects.requireNonNull(con).createStatement();
 
-        String sql = "SELECT group_name FROM group_names";
+        String sql = "SELECT group_name FROM group_names WHERE group_name LIKE 'artifact%'";
         ResultSet rs = stmt.executeQuery(sql);
 
         while(rs.next()) {
