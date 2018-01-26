@@ -185,6 +185,8 @@ public class UserDaoImpl implements UserDao{
             //expGained = user.getExp() ???
         }
 
+
+
         /* execute queries to update */
 
         upgradeCredentials(password, email, userId);
@@ -195,7 +197,6 @@ public class UserDaoImpl implements UserDao{
 
         // update wallet and artifacts
         if(role.equals("codecooler")){
-
             upgradeWallet(balance, userId);
 
             upgradeArtifacts(currentArtifacts, userId);
@@ -389,16 +390,16 @@ public class UserDaoImpl implements UserDao{
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
 
-        String query = "SELECT artifact_id FROM artifact_store WHERE artifact_name='" + artifactName + "';";
+        String query = "SELECT artifact_id FROM artifact_store WHERE name='" + artifactName + "';";
 
         ResultSet results = statement.executeQuery(query);
 
+        int artifactId = -1;
         while(results.next()){
-            close(connect, statement);
-            return results.getInt("artifact_name");
+            artifactId = results.getInt("artifact_id");
         }
         close(connect, statement);
-        return -1;
+        return artifactId;
     }
 
     private ArrayList<Integer> getUserArtifactIds(int userId) throws SQLException{
@@ -789,7 +790,7 @@ public class UserDaoImpl implements UserDao{
             for(String[] artifactIdAndState : currentGroups){
                 int currentArtifactId = Integer.parseInt(artifactIdAndState[0]);
                 String currentArtifactState = artifactIdAndState[1];
-                String getArtifactQuery = "SELECT used FROM user_artifacts " +
+                String getArtifactQuery = "SELECT * FROM user_artifacts " +
                     "WHERE user_id=" + userId + " AND artifact_id=" +
                     currentArtifactId + " ;";
                 ResultSet results = statement.executeQuery(getArtifactQuery);
@@ -797,17 +798,19 @@ public class UserDaoImpl implements UserDao{
                 String used = null ;
                 while(results.next()){
                     used = results.getString("used");
+
                 }
                 results.close();
 
-                if(!currentArtifactState.equals(used)){
+                if(!currentArtifactState.equals(used) && used != null){
                     updateArtifact = "UPDATE user_artifacts " +
                         "SET used='" + currentArtifactState + "' " +
                         "WHERE user_id=" + userId + " AND artifact_id=" +
                         currentArtifactId + " ;";
                 }else if(used == null){
+
                     updateArtifact = "INSERT INTO user_artifacts(user_id, artifact_id, used) " +
-                        "VALUES(" + userId + " , " + currentArtifactId + " , " + currentArtifactState + ");";
+                        "VALUES(" + userId + " , " + currentArtifactId + " , '" + currentArtifactState + "');";
                 }
 
                 if(updateArtifact != null){

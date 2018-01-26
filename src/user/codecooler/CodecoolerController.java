@@ -46,7 +46,7 @@ public class CodecoolerController {
                 useArtifact();
                 break;
             case "3":
-                view.printLine(currentUser.toString());
+                view.printLine(currentUser.getStatisticsDisplay() + "\n\nGroup adherence:\n" + currentUser.getCodecoolerGroupDisplay());
                 break;
         }
     }
