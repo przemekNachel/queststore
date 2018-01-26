@@ -219,11 +219,31 @@ public class AdminController{
         return view.noMentorOfSuchName;
     }
 
+    private Integer getInt(String prompt) {
+
+      Integer result = null;
+      boolean validInputProvided;
+      do {
+
+        validInputProvided = true;
+        try {
+
+          result = Integer.valueOf(view.getStringFromUserInput(prompt));
+
+        } catch (NumberFormatException nfe) {
+
+            validInputProvided = false;
+            view.printLine("  Invalid input.");
+        }
+      } while(!validInputProvided);
+
+      return result;
+    }
+
     public void createLevel(){
 
        String lvlName = view.getStringFromUserInput(view.levelNameQuestion);
-       String threshold = view.getStringFromUserInput(view.levelTresholdQuestion);
-       Integer thr = Integer.valueOf(threshold);
+       Integer thr = getInt(view.levelTresholdQuestion);
 
        Level.addLevel(lvlName, thr);
     }
