@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="nwo_db">
+  <database-model serializer="dbm" rdbms="SQLITE" format-version="4.7">
+    <root id="1"/>
+    <schema id="2" parent="1" name="main">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </schema>
+    <collation id="3" parent="1" name="BINARY"/>
+    <collation id="4" parent="1" name="NOCASE"/>
+    <collation id="5" parent="1" name="RTRIM"/>
+    <table id="6" parent="2" name="Artifact_association"/>
+    <table id="7" parent="2" name="Artifact_store"/>
+    <table id="8" parent="2" name="Predefined_Levels"/>
+    <table id="9" parent="2" name="Quest_association"/>
+    <table id="10" parent="2" name="Quests"/>
+    <table id="11" parent="2" name="User_Artifacts"/>
+    <table id="12" parent="2" name="User_Experience"/>
+    <table id="13" parent="2" name="User_association"/>
+    <table id="14" parent="2" name="Users"/>
+    <table id="15" parent="2" name="sqlite_master">
+      <System>1</System>
+    </table>
+    <table id="16" parent="2" name="sqlite_sequence">
+      <System>1</System>
+    </table>
+    <column id="17" parent="6" name="artifact_name">
+      <Position>1</Position>
+      <DataType>TEXT|0</DataType>
+    </column>
+    <column id="18" parent="6" name="group_name">
+      <Position>2</Position>
+      <DataType>TEXT|0</DataType>
+    </column>
+    <column id="19" parent="7" name="artifact_name">
+      <Position>1</Position>
+      <DataType>TEXT|0</DataType>
+    </column>
+    <column id="20" parent="7" name="artifact_description">
+      <Position>2</Position>
+      <DataType>TEXT|0</DataType>
+    </column>
+    <column id="21" parent="7" name="artifact_price">
+      <Position>3</Position>
+      <DataType>REAL|0</DataType>
+    </column>
+    <index id="22" parent="7" name="sqlite_autoindex_Artifact_store_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>artifact_name</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="23" parent="7">
+      <ColNames>artifact_name</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_Artifact_store_1</UnderlyingIndexName>
+    </key>
+    <column id="24" parent="8" name="level_name">
+      <Position>1</Position>
+      <DataType>TEXT|0</DataType>
+    </column>
+    <index id="25" parent="8" name="sqlite_autoindex_Predefined_Levels_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>level_name</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="26" parent="8">
+      <ColNames>level_name</ColNames>
+      <UnderlyingIndexName>sqlite_autoindex_Predefined_Levels_1</UnderlyingIndexName>
+    </key>
+    <column id="27" parent="9" name="quest_name">
+      <Position>1</Position>
+      <DataType>TEXT|0</DataType>
+    </column>
+    <column id="28" parent="9" name="group_name">
+      <Position>2</Position>
+      <DataType>TEXT|0</DataType>
+    </column>
+    <column id="29" parent="10" name="id">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="30" parent="10" name="quest_name">
+      <Position>2</Position>
+      <DataType>TEXT|0</DataType>
+    </column>
+    <column id="31" parent="10" name="quest_description">
+      <Position>3</Position>
+      <DataType>TEXT|0</DataType>
+    </column>
+    <column id="32" parent="10" name="quest_reward">
+      <Position>4</Position>
+      <DataType>TEXT|0</DataType>
+    </column>
+    <index id="33" parent="10" name="sqlite_autoindex_Quests_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="34" parent="10">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_Quests_1</UnderlyingIndexName>
+    </key>
+    <key id="35" parent="10">
+      <ColNames>id</ColNames>
+      <UnderlyingIndexName>sqlite_autoindex_Quests_1</UnderlyingIndexName>
+    </key>
+    <column id="36" parent="11" name="nick_name">
+      <Position>1</Position>
+      <DataType>TEXT|0</DataType>
+    </column>
+    <column id="37" parent="11" name="artifact">
+      <Position>2</Position>
+      <DataType>TEXT|0</DataType>
+    </column>
+    <column id="38" parent="11" name="artifact_used">
+      <Position>3</Position>
+      <DataType>TEXT|0</DataType>
+    </column>
+    <index id="39" parent="11" name="sqlite_autoindex_User_Artifacts_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>nick_name</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="40" parent="11" name="sqlite_autoindex_User_Artifacts_2">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>artifact</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="41" parent="11">
+      <ColNames>nick_name</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_User_Artifacts_1</UnderlyingIndexName>
+    </key>
+    <key id="42" parent="11">
+      <ColNames>artifact</ColNames>
+      <UnderlyingIndexName>sqlite_autoindex_User_Artifacts_2</UnderlyingIndexName>
+    </key>
+    <column id="43" parent="12" name="nick_name">
+      <Position>1</Position>
+      <DataType>TEXT|0</DataType>
+    </column>
+    <column id="44" parent="12" name="experience_level">
+      <Position>2</Position>
+      <DataType>INTEGER|0</DataType>
+    </column>
+    <index id="45" parent="12" name="sqlite_autoindex_User_Experience_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>nick_name</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="46" parent="12">
+      <ColNames>nick_name</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_User_Experience_1</UnderlyingIndexName>
+    </key>
+    <column id="47" parent="13" name="nick_name">
+      <Position>1</Position>
+      <DataType>TEXT|0</DataType>
+    </column>
+    <column id="48" parent="13" name="group_name">
+      <Position>2</Position>
+      <DataType>TEXT|0</DataType>
+    </column>
+    <column id="49" parent="14" name="nick_name">
+      <Position>1</Position>
+      <DataType>TEXT|0</DataType>
+    </column>
+    <column id="50" parent="14" name="password">
+      <Position>2</Position>
+      <DataType>TEXT|0</DataType>
+    </column>
+    <column id="51" parent="14" name="email">
+      <Position>3</Position>
+      <DataType>TEXT|0</DataType>
+    </column>
+    <column id="52" parent="14" name="role">
+      <Position>4</Position>
+      <DataType>TEXT|0</DataType>
+    </column>
+    <index id="53" parent="14" name="sqlite_autoindex_Users_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>nick_name</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="54" parent="14">
+      <ColNames>nick_name</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_Users_1</UnderlyingIndexName>
+    </key>
+    <column id="55" parent="15" name="type">
+      <Position>1</Position>
+      <DataType>text|0</DataType>
+    </column>
+    <column id="56" parent="15" name="name">
+      <Position>2</Position>
+      <DataType>text|0</DataType>
+    </column>
+    <column id="57" parent="15" name="tbl_name">
+      <Position>3</Position>
+      <DataType>text|0</DataType>
+    </column>
+    <column id="58" parent="15" name="rootpage">
+      <Position>4</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <column id="59" parent="15" name="sql">
+      <Position>5</Position>
+      <DataType>text|0</DataType>
+    </column>
+    <column id="60" parent="16" name="name">
+      <Position>1</Position>
+    </column>
+    <column id="61" parent="16" name="seq">
+      <Position>2</Position>
+    </column>
+  </database-model>
+</dataSource>
