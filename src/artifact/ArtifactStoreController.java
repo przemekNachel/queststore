@@ -160,20 +160,17 @@ public class ArtifactStoreController{
         // get group which will crowd-fund the artifact
         Group<CodecoolerModel> codecoolers = null;
         boolean providedExistentGroupName = false;
-        boolean wantToBuyAlone = true;
+        boolean wantToBuyAlone = false;
         do {
-            String consumerGroupName = view.getStringFromUserInput(view.chooseGroup);
+            String consumerGroupName = "ALONE";//= view.getStringFromUserInput(view.chooseGroup);
             if (allowedGroupNames.contains(consumerGroupName)) {
                 try{
                     Group<User> users = userDao.getUserGroup(consumerGroupName);
                     // buy the artifact as a group
                     codecoolers = new Group<>("Codecooler(s) buying an artifact");
                     for (User currentUser : users) {
-                        if(currentUser.getName().equals(codecooler.getName())){
-                            codecoolers.add(codecooler);
-                        }else{
-                            codecoolers.add((CodecoolerModel)currentUser);
-                        }
+
+                        codecoolers.add((CodecoolerModel)currentUser);
                     }
                 } catch (SQLException e) {
                     view.printSQLException(e);
@@ -213,11 +210,8 @@ public class ArtifactStoreController{
         try {
 
             for (User user : consumers) {
-                if(user.getName().equals(codecooler.getName())){
-                    userDao.updateUser(user);
-                }else{
-                    userDao.updateOnlyWallet((CodecoolerModel) user);
-                }
+
+                userDao.updateUser(user);
             }
         } catch (SQLException e) {
             view.printSQLException(e);
