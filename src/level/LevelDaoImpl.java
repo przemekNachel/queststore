@@ -18,6 +18,10 @@ public class LevelDaoImpl {
                 String levelName = rs.getString("level_name");
                 levels.put(levelThreshold, levelName);
             }
+            databaseConnection.commit();
+            rs.close();
+            statement.close();
+            databaseConnection.close();
             return levels;
 
         } catch (Exception e) {

@@ -9,6 +9,7 @@ public class Level{
 
     public static void addLevel(String name, Integer treshold){
         LevelService service = new LevelService();
+        service.initializeLevels();
         levels.put(treshold, name);
         service.saveLevels(levels);
     }
