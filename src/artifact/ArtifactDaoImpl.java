@@ -18,8 +18,6 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
         String db_path = "jdbc:sqlite:database/database.db";
         return DriverManager.getConnection(db_path);
-
-
     }
 
 
@@ -57,7 +55,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
     }
 
     @Override
-    public void addArtifact(ArtifactModel artifact) throws SQLException {
+    public void addArtifact(ArtifactModel artifact, String groupName) throws SQLException {
         String artName = artifact.getName();
         String artDesc = artifact.getDescription();
         float artPrice = artifact.getPrice();
