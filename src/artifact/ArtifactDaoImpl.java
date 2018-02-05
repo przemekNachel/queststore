@@ -169,12 +169,28 @@ public class ArtifactDaoImpl implements ArtifactDao{
         Objects.requireNonNull(con).setAutoCommit(false);
         Statement stmt = con.createStatement();
 
-        String sql = ("INSERT INTO group_names (group_name) VALUES ('" + group.getName() + "');");
+        String sql = "INSERT INTO group_names (group_name) VALUES ('" + group.getName() + "');";
         stmt.executeUpdate(sql);
 
         con.commit();
 
         stmt.close();
+    }
+
+    @Override
+    public void addArtifactAdherence(String name, String groupName) throws SQLException {
+        Connection con = connectToDatabase();
+        Objects.requireNonNull(con).setAutoCommit(false);
+        Statement stmt = con.createStatement();
+
+        String sql = "INSERT INTO artifact_associations(artifact_id, group_id) " +
+                "VALUES ((SELECT artifact_id FROM artifact_store WHERE name='"+name+"'), " +
+                "(SELECT group_id FROM group_names WHERE group_name='"+groupName+"'));";
+        stmt.executeUpdate(sql);
+
+        con.commit();
+
         stmt.close();
+
     }
 }
