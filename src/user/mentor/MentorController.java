@@ -105,7 +105,6 @@ public class MentorController {
         Integer price = getInt(view.artifactPriceQuestion);
 
         try {
-
             artifactDao.addArtifact(new ArtifactModel(name, desc, price));
         } catch (SQLException e) {
 
