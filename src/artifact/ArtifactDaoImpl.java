@@ -57,7 +57,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
     }
 
     @Override
-    public void addArtifact(ArtifactModel artifact, String groupName) throws SQLException {
+    public void addArtifact(ArtifactModel artifact) throws SQLException {
         String artName = artifact.getName();
         String artDesc = artifact.getDescription();
         float artPrice = artifact.getPrice();

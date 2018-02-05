@@ -106,7 +106,7 @@ public class MentorController {
 
         try {
 
-            artifactDao.addArtifact(new ArtifactModel(name, desc, price), "basic");
+            artifactDao.addArtifact(new ArtifactModel(name, desc, price));
         } catch (SQLException e) {
 
             view.printSQLException(e);
