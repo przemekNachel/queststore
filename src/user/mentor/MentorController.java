@@ -17,6 +17,7 @@ import user.user.UserDaoImpl;
 import user.wallet.*;
 
 import java.sql.*;
+import java.util.Iterator;
 
 public class MentorController {
     private MentorView view;
@@ -103,10 +104,15 @@ public class MentorController {
         String name = view.getStringFromUserInput(view.artifactNameQuestion);
         String desc = view.getStringFromUserInput(view.artifactDescQuestion);
         Integer price = getInt(view.artifactPriceQuestion);
-        String groupName = view.getStringFromUserInput(view.artifactGroupAssignmentQuestion);
         ArtifactModel newArtifact = new ArtifactModel(name, desc, price);
 
         try {
+            Group<String> availableGroups = artifactDao.getArtifactGroupNames();
+            view.printLine(availableGroups.toString());
+            // TODO: remove "artifacts" from printed results
+
+            String groupName = view.getStringFromUserInput(view.artifactGroupAssignmentQuestion);
+
             artifactDao.addArtifact(newArtifact);
             artifactDao.addArtifactAdherence(name, "artifacts");
             artifactDao.addArtifactAdherence(name, groupName);

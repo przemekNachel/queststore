@@ -118,7 +118,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
     @Override
     public Group<String> getArtifactGroupNames() throws SQLException {
-        Group<String> groupsNames = new Group<>("generic_group.Group name");
+        Group<String> groupsNames = new Group<>("Group name");
 
         Connection con = connectToDatabase();
         Statement stmt = Objects.requireNonNull(con).createStatement();
