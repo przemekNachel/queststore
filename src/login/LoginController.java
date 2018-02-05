@@ -41,7 +41,7 @@ public class LoginController {
                 break;
             }
 
-            password = view.getStringFromUserInput(view.loginPasswordQuestion);
+            password = view.getPassword();
 
             User user = login(nickname, password);
             if (user == null) {

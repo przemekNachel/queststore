@@ -2,6 +2,8 @@ package login;
 
 import console.menu.AbstractConsoleView;
 import console.menu.Menu;
+import java.io.Console;
+
 
 public class LoginView extends AbstractConsoleView {
 
@@ -14,5 +16,9 @@ public class LoginView extends AbstractConsoleView {
 
     LoginView(Menu menu) {
         this.menu = menu;
+    }
+
+    public String getPassword(){
+        return new String(System.console().readPassword(loginPasswordQuestion));
     }
 }
