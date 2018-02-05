@@ -1,6 +1,12 @@
 # Compiled class file
 *.class
 
+# intelliJ crap
+.idea/*.xml
+.idea/*/*.xml
+.idea/*/*/*/*/*/*.xml
+
+
 # Log file
 *.log
 
