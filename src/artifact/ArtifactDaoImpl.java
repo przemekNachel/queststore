@@ -177,5 +177,4 @@ public class ArtifactDaoImpl implements ArtifactDao{
         stmt.close();
         stmt.close();
     }
-
 }
