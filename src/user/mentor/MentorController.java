@@ -104,12 +104,12 @@ public class MentorController {
         String desc = view.getStringFromUserInput(view.artifactDescQuestion);
         Integer price = getInt(view.artifactPriceQuestion);
         String groupName = view.getStringFromUserInput(view.artifactGroupAssignmentQuestion);
-        ArtifactModel newArtifact = new ArtifactModel(name, desc, price)
+        ArtifactModel newArtifact = new ArtifactModel(name, desc, price);
 
         try {
             artifactDao.addArtifact(newArtifact);
-            artifactDao.assignArtifactAdherence(name, "artifacts");
-            artifactDao.assignArtifactAdherence(name, groupName);
+            artifactDao.addArtifactAdherence(name, "artifacts");
+            artifactDao.addArtifactAdherence(name, groupName);
         } catch (SQLException e) {
 
             view.printSQLException(e);
