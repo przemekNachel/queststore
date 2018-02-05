@@ -2,9 +2,9 @@
 *.class
 
 # intelliJ crap
-.idea/*.xml
-.idea/*/*.xml
-.idea/*/*/*/*/*/*.xml
+.idea/*
+bin/*/.idea/*
+*.iml
 
 
 # Log file
