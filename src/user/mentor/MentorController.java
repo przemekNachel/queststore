@@ -77,6 +77,58 @@ public class MentorController {
         }
     }
 
+    private void displayAllArtifacts() {
+        ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
+
+        try {
+            Group<Group<ArtifactModel>> artifactCollection = artifactDao.getAllArtifacts();
+            view.printLine("\n--- Available artifacts ---");
+            for(Group<ArtifactModel> artifactGroups : artifactCollection) {
+                for (ArtifactModel artifact : artifactGroups) {
+                    view.printLine(artifact.getName());
+                }
+            }
+        } catch (SQLException e) {
+            view.printSQLException(e);
+        }
+    }
+
+    private void assignCodecoolerToGroup() {
+        UserDaoImpl userDao = new UserDaoImpl();
+
+        String nickname = view.getStringFromUserInput(view.userNicknameQuestion);
+        String groupName = view.getStringFromUserInput(view.userGroupQuestion);
+
+        User user = null;
+        try {
+
+            user = userDao.getUser(nickname);
+        } catch (SQLException e) {
+
+            view.printSQLException(e);
+        }
+
+        boolean addUserAdherenceSuccess = false;
+        try{
+            addUserAdherenceSuccess = userDao.addUserAdherence(user, groupName);
+        } catch (SQLException e) {
+            view.printSQLException(e);
+        }
+
+        if(!addUserAdherenceSuccess) {
+
+            view.printLine(view.codecoolerAlreadyInGroupOrGroupAbsent);
+        } else {
+
+            Group<Group<User>> associatedGroups = user.getAssociatedGroups();
+            try{
+                associatedGroups.add(userDao.getUserGroup(groupName));
+            } catch (SQLException e) {
+                view.printSQLException(e);
+            }
+            user.setAssociatedGroups(associatedGroups);
+        }
+    }
 
     private void createArtifact() {
 
@@ -182,69 +234,6 @@ public class MentorController {
         } catch (SQLException e) {
             view.printSQLException(e);
         }
-    }
-
-    private void assignCodecoolerToGroup() {
-        UserDaoImpl userDao = new UserDaoImpl();
-
-        String nickname = view.getStringFromUserInput(view.userNicknameQuestion);
-        String groupName = view.getStringFromUserInput(view.userGroupQuestion);
-
-        User user = null;
-        try {
-
-            user = userDao.getUser(nickname);
-        } catch (SQLException e) {
-
-            view.printSQLException(e);
-        }
-
-        boolean addUserAdherenceSuccess = false;
-        try{
-            addUserAdherenceSuccess = userDao.addUserAdherence(user, groupName);
-        } catch (SQLException e) {
-            view.printSQLException(e);
-        }
-
-        if(!addUserAdherenceSuccess) {
-
-            view.printLine(view.codecoolerAlreadyInGroupOrGroupAbsent);
-        } else {
-
-            Group<Group<User>> associatedGroups = user.getAssociatedGroups();
-            try{
-                associatedGroups.add(userDao.getUserGroup(groupName));
-            } catch (SQLException e) {
-                view.printSQLException(e);
-            }
-            user.setAssociatedGroups(associatedGroups);
-        }
-    }
-
-    private CodecoolerModel getCodecooler() {
-
-        UserDaoImpl userDao = new UserDaoImpl();
-        boolean validNameProvided = false;
-        User user = null;
-        do {
-
-            String name = view.getStringFromUserInput(view.userNicknameQuestion);
-            try {
-
-              user = userDao.getUser(name);
-            } catch (SQLException sqle) {
-                view.printLine(sqle.getMessage());
-                return null;
-            }
-
-            if (user != null && user.getRole() == Role.CODECOOLER) {
-                validNameProvided = true;
-            } else {
-                view.printLine(view.invalidNickname);
-            }
-        } while (!validNameProvided);
-
-        return (CodecoolerModel)user;
     }
 
     private void markCodecoolerQuestCompletion() {
@@ -394,6 +383,32 @@ public class MentorController {
           view.printSQLException(e);
       }
 
+    }
+
+    private CodecoolerModel getCodecooler() {
+
+        UserDaoImpl userDao = new UserDaoImpl();
+        boolean validNameProvided = false;
+        User user = null;
+        do {
+
+            String name = view.getStringFromUserInput(view.userNicknameQuestion);
+            try {
+
+                user = userDao.getUser(name);
+            } catch (SQLException sqle) {
+                view.printLine(sqle.getMessage());
+                return null;
+            }
+
+            if (user != null && user.getRole() == Role.CODECOOLER) {
+                validNameProvided = true;
+            } else {
+                view.printLine(view.invalidNickname);
+            }
+        } while (!validNameProvided);
+
+        return (CodecoolerModel)user;
     }
 
     private Integer getInt(String prompt) { // Remove this and where getInt is used, add userView method "getIntFromUserInput"
