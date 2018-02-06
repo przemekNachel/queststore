@@ -1,7 +1,6 @@
 package user.user;
 
 import generic_group.Group;
-import user.RawUser;
 
 import java.util.Iterator;
 import java.sql.*;
@@ -13,7 +12,7 @@ public class UserDaoImpl implements UserDao{
 
     private static String JDBC = "jdbc:sqlite:database/database.db";
 
-    public User getUser(String nickname) throws SQLException{
+    public RawUser getUser(String nickname) throws SQLException{
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
 
@@ -60,7 +59,7 @@ public class UserDaoImpl implements UserDao{
 
         userId = getUserId(userName);
         userPrivilegeLevelId = getUserPrivilegeLevelId(role);
-        groupIds = getUserGroupIds(getUserGroupName(userId));
+        groupIds = getUserGroupIds(userId);
 
         /* execute updates */
 
@@ -84,10 +83,9 @@ public class UserDaoImpl implements UserDao{
         email = user.getEmail();
 
         userId = getUserId(userName);
-        groupIds = getUserGroupIds(getUserGroupNames(userId);
+        groupIds = getUserGroupIds(userId);
 
         upgradeCredentials(password, email, userId);
-        upgradePrivilages(userPrivilegeLevelId, userId);
         upgradeUserAssociations(groupIds, userId);
 
         close(connect, statement);
@@ -196,7 +194,7 @@ public class UserDaoImpl implements UserDao{
 
       results.close();
       close(connect, statement);
-      return tempUsr;
+      return user;
     }
 
     private void insertUsersTo(Group<User> group) throws SQLException{
@@ -224,7 +222,7 @@ public class UserDaoImpl implements UserDao{
             email = results.getString("email");
             role = convertRole(results.getString("privilege_name"));
 
-            group.add(new RawUser(role, name, email, password, group));
+            group.add(new RawUser(role, name, email, password, getUserGroups(results.getInt("user_id"))));
         }
         results.close();
         close(connect, statement);
