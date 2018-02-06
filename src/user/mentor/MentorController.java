@@ -25,10 +25,10 @@ public class MentorController {
     public MentorController() {
         Menu mentorMenu = new Menu(
                 new MenuOption("0", "Exit"),
-                new MenuOption("1", "Create a user.codecooler"),
-                new MenuOption("2", "Assign a user.codecooler to a group"),
-                new MenuOption("3", "Mark user.codecooler's quest completion"),
-                new MenuOption("4", "Mark user.codecooler's artifact usage"),
+                new MenuOption("1", "Create a codecooler"),
+                new MenuOption("2", "Assign a codecooler to a group"),
+                new MenuOption("3", "Mark codecooler's quest completion"),
+                new MenuOption("4", "Mark codecooler's artifact usage"),
                 new MenuOption("5", "Create artifact"),
                 new MenuOption("6", "Create quest")
         );
@@ -360,7 +360,7 @@ public class MentorController {
       // get artifact to be marked
       Group<String> allowedArtifactNames = new Group<>("allowed artifact name user input");
       Group<ArtifactModel> userArtifacts = codecooler.getCodecoolerArtifacts();
-      String artifactsFormatted = "Artifacts of user.codecooler " + codecooler.getName() + "\n\n:";
+      String artifactsFormatted = "Artifacts of codecooler " + codecooler.getName() + "\n\n:";
       for (ArtifactModel currentArtifact : userArtifacts) {
 
         artifactsFormatted += "*" + currentArtifact + "\n";

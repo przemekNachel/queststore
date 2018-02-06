@@ -26,7 +26,7 @@ public class MentorView extends AbstractConsoleView {
   public String markArtifactUsedQuestion = "Provide name of used artifact: ";
   public String codecoolerAlreadyInGroupOrGroupAbsent = "The codecooler *had* been added to the given group or the group does not exist.";
   public String availableQuests = "Available quests: ";
-  public String invalidNickname = "user not in database or not a user.codecooler.";
+  public String invalidNickname = "user not in database or not a codecooler.";
   public String artifactNotFoundError = "No such artifact found!";
   public String artifactNameQuestion = "Provide artifact name: ";
   public String artifactDescQuestion = "Provide artifact description: ";
