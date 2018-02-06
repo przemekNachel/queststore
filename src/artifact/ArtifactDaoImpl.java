@@ -16,8 +16,8 @@ public class ArtifactDaoImpl implements ArtifactDao{
     @Override
     public Connection connectToDatabase() throws SQLException {
 
-        String db_path = "jdbc:sqlite:database/database.db";
-        return DriverManager.getConnection(db_path);
+        String dbPath = "jdbc:sqlite:database/database.db";
+        return DriverManager.getConnection(dbPath);
     }
 
 
@@ -186,6 +186,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
         String sql = "INSERT INTO artifact_associations(artifact_id, group_id) " +
                 "VALUES ((SELECT artifact_id FROM artifact_store WHERE name='"+name+"'), " +
                 "(SELECT group_id FROM group_names WHERE group_name='"+groupName+"'));";
+        System.out.println("Test1");
         stmt.executeUpdate(sql);
 
         con.commit();

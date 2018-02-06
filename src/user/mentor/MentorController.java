@@ -108,8 +108,13 @@ public class MentorController {
 
         try {
             Group<String> availableGroups = artifactDao.getArtifactGroupNames();
-            view.printLine(availableGroups.toString());
-            // TODO: remove "artifacts" from printed results
+            view.printLine("\n--- Available groups ---");
+            for (String s : availableGroups) {
+                if (!s.equals("artifacts")) {
+                    view.printLine(s);
+                }
+            }
+            view.print("\n");
 
             String groupName = view.getStringFromUserInput(view.artifactGroupAssignmentQuestion);
 
@@ -146,7 +151,7 @@ public class MentorController {
         String password = view.getStringFromUserInput(view.userPasswordQuestion);
 
         // TODO Default level 0 -- next sprint
-        // TODO level.level object -- next sprint
+        // TODO level object -- next sprint
 
         Group<User> studentsGroup = null;
         try{
