@@ -60,8 +60,22 @@ public class CodecoolerController {
         store.buyProductProcess(currentUser);
     }
 
+    private String codecoolerArtifactsToString(CodecoolerModel codecooler) {
+
+        String result = "";
+        for (ArtifactModel artifact : codecooler.getCodecoolerArtifacts()) {
+
+            result += "  " + artifact.getName() + "\n";
+        }
+        return result;
+    }
+
     public void useArtifact() {
+
+        view.printLine("\n Artifacts to choose from:\n\n" + codecoolerArtifactsToString(currentUser));
+
         String artifactName = view.getStringFromUserInput(view.artifactNameQuestion);
+
         ArtifactModel artifact = currentUser.getArtifact(artifactName);
 
         if (artifact != null) {
