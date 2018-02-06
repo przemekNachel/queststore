@@ -104,7 +104,7 @@ public class ArtifactStoreController{
         do {
 
             artifactName = view.getStringFromUserInput(view.artifactNameQuestion);
-            if (allowedArtifactNames.contains(artifactName)) {
+            if (allowedArtifactNames.contains(artifactName) || artifactName.equals(view.magicExitString)) {
 
                 providedValidArtifactName = true;
             } else {
@@ -135,7 +135,7 @@ public class ArtifactStoreController{
         boolean providedExistentGroupName = false;
         boolean wantToBuyAlone = false;
         do {
-            String consumerGroupName = "ALONE";//= view.getStringFromUserInput(view.chooseGroup);
+            String consumerGroupName = view.getStringFromUserInput(view.chooseGroup);
             if (allowedGroupNames.contains(consumerGroupName)) {
                 try{
                     Group<User> users = userDao.getUserGroup(consumerGroupName);
@@ -152,10 +152,15 @@ public class ArtifactStoreController{
                 providedExistentGroupName = true;
             } else {
                 if (consumerGroupName.equals("ALONE")) {
+
                     codecoolers = new Group<>("buying alone");
                     codecoolers.add(codecooler);
                     wantToBuyAlone = true;
+                } else if (consumerGroupName.equals(view.magicExitString)) {
+
+                    return null;
                 } else {
+
                     view.printLine(view.invalidGroupName);
                 }
             }
@@ -166,12 +171,20 @@ public class ArtifactStoreController{
 
     public void buyProductProcess(CodecoolerModel codecooler){
 
-        ArtifactDaoImpl dao = new ArtifactDaoImpl();
         UserDaoImpl userDao = new UserDaoImpl();
 
+        view.printLine(view.abortHint);
         String artifactName = getArtifactNameFromUserInput();
+        if (artifactName.equals(view.magicExitString)) {
+
+            return;
+        }
 
         Group<CodecoolerModel> consumers = getConsumerGroup(codecooler);
+        if (consumers == null) {
+            /* purchase process aborted as requested by user */
+            return;
+        }
 
         ArtifactModel boughtArtifact = buyArtifact(artifactName, consumers);
         if (boughtArtifact == null) {
@@ -193,7 +206,6 @@ public class ArtifactStoreController{
 
     public ArtifactModel buyArtifact(String name, Group<CodecoolerModel> consumers) {
 
-        ArtifactStoreView view = new ArtifactStoreView();
         ArtifactDaoImpl dao = new ArtifactDaoImpl();
 
         ArtifactModel artifact = null;
