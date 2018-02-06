@@ -75,6 +75,24 @@ public class ArtifactDaoImpl implements ArtifactDao{
     }
 
     @Override
+    public void updateUserArtifactsUsage(int userId, ArtifactModel artifact) throws SQLException {
+        String artName = artifact.getName();
+        String artStatus = String.valueOf(artifact.getUsageStatus());
+
+        Connection con = connectToDatabase();
+        Objects.requireNonNull(con).setAutoCommit(false);
+        Statement stmt = Objects.requireNonNull(con).createStatement();
+
+        String sql = "UPDATE user_artifacts SET used='"+artStatus+"' WHERE user_id='"+userId+"'" +
+                " AND artifact_id=(SELECT artifact_id FROM artifact_store WHERE name='"+artName+"');";
+        stmt.executeUpdate(sql);
+        con.commit();
+
+        stmt.close();
+        con.close();
+    }
+
+    @Override
     public void updateArtifact(ArtifactModel artifact)throws SQLException {
         String artName = artifact.getName();
         String artDesc = artifact.getDescription();
@@ -194,4 +212,6 @@ public class ArtifactDaoImpl implements ArtifactDao{
         con.close();
 
     }
+
+
 }
