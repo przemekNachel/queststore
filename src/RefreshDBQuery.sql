@@ -181,8 +181,8 @@ VALUES
   (1, 3),
   (2, 1),
   (2, 3),
-  (3, 2);
-  (3, 3),
+  (3, 2),
+  (3, 3);
 
 INSERT INTO quest_store
 (name, descr, reward)
