@@ -34,6 +34,7 @@ public class UserDaoImpl implements UserDao{
             groupFound = false;
             tempUsr = getUser(results.getString("nickname"));
             for(Group<User> tmpGroup : tempUsr.getAssociatedGroups()){
+              tmpGroup.add(tempUsr);
                 for(Group<User> groupInAll : allUsers){
                     if(tmpGroup.getName().equals(groupInAll.getName())){
                         groupFound = true;
@@ -56,45 +57,31 @@ public class UserDaoImpl implements UserDao{
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
 
-        String query = "SELECT * FROM users WHERE nickname='" + nickname + "';";
+        String extractRoleQuery = "SELECT users.user_id, user_privilege_levels.privilege_name "
+        + "FROM users "
+        + "LEFT JOIN ( user_roles "
+        + "JOIN user_privilege_levels "
+        + "ON user_roles.user_privilege_level_id = "
+        + "user_privilege_levels.privilege_id) "
+        + "ON users.user_id = user_roles.user_id "
+        + "WHERE nickname='" + nickname + "';";
 
-        Group<Group<User>> userGroups = getAllGroups();
-        Group<User> students = getGroup("codecoolers", userGroups);
-        Group<User> mentors = getGroup("mentors", userGroups);
-        Group<User> admins = getGroup("admins", userGroups);
+        ResultSet extractRole = statement.executeQuery(extractRoleQuery);
 
-        ResultSet results = statement.executeQuery(query);
-
-        // user credentials:
-        String name, password, email;
         Role role;
+        User tempUsr = null;
         int userId;
 
-        WalletService tmpWallet;
-        Group<Group<User>> tmpGroup;
-        User tempUsr = null;
-        Group<Group<User>> tmpGroups;
+        boolean userFound = false;
+        while(extractRole.next()){
+          userFound = true;
+          role = convertRole(extractRole.getString("privilege_name"));
+          userId = extractRole.getInt("user_id");
 
-        while(results.next()){
-            //get user data
-            tmpGroup = new Group<Group<User>>("associated groups");
-            role = convertRole(getRole(results.getInt("user_id")));
-            name = results.getString("nickname");
-            password = results.getString("password");
-            email = results.getString("email");
-            userId = getUserId(name);
-
-            if(role == ADMIN){
-                tempUsr = new AdminModel(name, password, admins);
-            }else if(role == MENTOR){
-                tempUsr = new MentorModel(name, email, password, mentors);
-            }else if(role == CODECOOLER){
-                tmpWallet = getWallet(userId);
-                tempUsr = new CodecoolerModel(name, email,  password, tmpWallet, students);
-                retriveUserArtifacts((CodecoolerModel) tempUsr, userId);
-            }
-            tempUsr.setAssociatedGroups(getUserGroups(results.getInt("user_id"), userGroups));
+          tempUsr = createUser(role, userId);
+          tempUsr.setAssociatedGroups(getUserGroups(userId));
         }
+        extractRole.close();
         close(connect, statement);
         return tempUsr;
     }
@@ -107,7 +94,6 @@ public class UserDaoImpl implements UserDao{
         int userId = 0, userPrivilegeLevelId = 0, balance = 0;//, expGained = 0, ;
         ArrayList<Integer> groupIds;
 
-        // get basic user credentials (all strings + role)
         userName = user.getName();
         password = user.getPassword();
         email = user.getEmail();
@@ -116,9 +102,7 @@ public class UserDaoImpl implements UserDao{
         updateCredentials(userName, password, email);
 
         userId = getUserId(userName);
-
         userPrivilegeLevelId = getUserPrivilegeLevelId(role);
-
         groupIds = getUserGroupIds(getUserGroupNamesFrom(user.getAssociatedGroups()), userId);
 
         if(role.equals("codecooler")){
@@ -130,7 +114,6 @@ public class UserDaoImpl implements UserDao{
         /* execute updates */
 
         updatePrivileges(userId, userPrivilegeLevelId);
-
         updateUserAssociations(groupIds, userId);
 
         // update wallet
@@ -156,9 +139,7 @@ public class UserDaoImpl implements UserDao{
         role = convertRole(user.getRole());
 
         userId = getUserId(userName);
-
         userPrivilegeLevelId = getUserPrivilegeLevelId(role);
-
         groupIds = getUserGroupIds(getUserGroupNamesFrom(user.getAssociatedGroups()), userId);
 
         if(role.equals("codecooler")){
@@ -168,23 +149,14 @@ public class UserDaoImpl implements UserDao{
             //expGained = user.getExp() ???
         }
 
-
-
-        /* execute queries to update */
-
         upgradeCredentials(password, email, userId);
-
         upgradePrivilages(userPrivilegeLevelId, userId);
-
         upgradeUserAssociations(groupIds, userId);
 
-        // update wallet and artifacts
         if(role.equals("codecooler")){
             upgradeWallet(balance, userId);
             upgradeArtifacts(currentArtifacts, userId);
-
         }
-
         close(connect, statement);
     }
 
@@ -196,25 +168,18 @@ public class UserDaoImpl implements UserDao{
         int userId = 0;//, expGained = 0, ;
         ArrayList<Integer> groupIds;
 
-        // get basic user credentials (all strings + role)
         role = convertRole(user.getRole());
         userName = user.getName();
         groupIds = getUserGroupIds(getUserGroupNamesFrom(user.getAssociatedGroups()), userId);
-
         userId = getUserId(userName);
 
-        /* execute queries to update */
-
         removeCredentials(userId);
-
         removePrivileges(userId);
-
         removeUserAssociations(userId, groupIds);
-        // update wallet
+
         if(role.equals("codecooler")){
 
             removeWallet(userId);
-
             removeArtifacts(userId);
         }
         close(connect, statement);
@@ -222,12 +187,23 @@ public class UserDaoImpl implements UserDao{
     }
 
     public Group<String> getUserGroupNames() throws SQLException{
-        Group<String> groupsNames = new Group<>("generic_group.Group names");
-        Group<Group<User>> users = getAllGroups();
 
-        for(Group<User> group : users){
-            groupsNames.add(group.getName());
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        Group<String> groupsNames = new Group<>("generic_group.Group names");
+        String query = "SELECT DISTINCT group_names.group_name " +
+        "FROM user_associations " +
+        "LEFT JOIN group_names " +
+        "ON user_associations.group_id = group_names.group_id ;";
+
+        ResultSet results = statement.executeQuery(query);
+
+        while(results.next()){
+            groupsNames.add(results.getString("group_name"));
         }
+        results.close();
+        close(connect, statement);
         return groupsNames;
     }
 
@@ -290,7 +266,45 @@ public class UserDaoImpl implements UserDao{
 
     // helper methods for pubic methods
 
+    private User createUser(Role role, int userId)  throws SQLException{
 
+      Connection connect = establishConnection();
+      Statement statement = connect.createStatement();
+
+      String name = "", password = "", email = "";
+      Group<User> tmpGroup = new Group<>("");
+      WalletService tmpWallet = null;
+      User tempUsr = null;
+
+      String MentorAdminQuery = "SELECT * FROM users WHERE user_id="
+      + userId + " ;";
+
+      String CodecoolerQuery = "SELECT user_wallet.balance FROM users "
+      + "JOIN user_wallet ON users.user_id = user_wallet.user_id "
+      + "WHERE user_id =" + userId + " ;";
+
+      ResultSet results = statement.executeQuery(MentorAdminQuery);
+      while(results.next()){
+        name = results.getString("nickname");
+        password = results.getString("password");
+        email = results.getString("email");
+      }
+
+      if(role == ADMIN){
+        tempUsr = new AdminModel(name, password, tmpGroup);
+      }else if(role == MENTOR){
+        tempUsr = new MentorModel(name, email, password, tmpGroup);
+      }else if(role == CODECOOLER){
+        results = statement.executeQuery(CodecoolerQuery);
+        while(results.next()){
+          tmpWallet = new WalletService(results.getInt("balance"));
+        }
+        tempUsr = new CodecoolerModel(name, email, password, tmpWallet, tmpGroup);
+      }
+      results.close();
+      close(connect, statement);
+      return tempUsr;
+    }
 
     private void insertUsersTo(Group<User> group) throws SQLException{
 
@@ -352,24 +366,6 @@ public class UserDaoImpl implements UserDao{
         results.close();
         close(connect, statement);
         return artifact;
-    }
-
-    private WalletService getWallet(int userId) throws SQLException{
-
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
-
-        String query = "SELECT balance FROM user_wallet WHERE user_id=" + userId + " ;";
-        ResultSet results = statement.executeQuery(query);
-
-        int balance = 0;
-        while(results.next()){
-            balance = results.getInt("balance");
-            break;
-        }
-        results.close();
-        close(connect, statement);
-        return new WalletService(balance);
     }
 
     private void updateCredentials(String userName, String password, String email) throws SQLException{
@@ -522,40 +518,7 @@ public class UserDaoImpl implements UserDao{
         return id;
     }
 
-    private Group<Group<User>> getAllGroups() throws SQLException{
-
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
-        Group<Group<User>> associatedGroups = new Group<Group<User>>("all groups");
-        String query = "SELECT group_name " +
-                "FROM user_associations " +
-                "LEFT JOIN group_names  " +
-                "ON user_associations.group_id=group_names.group_id;";
-
-        ResultSet results = statement.executeQuery(query);
-
-        String groupName;
-        boolean groupFound = false;
-
-        while(results.next()){
-            groupName = results.getString("group_name");
-            groupFound = false;
-            for(Group<User> currentGroup : associatedGroups){
-                String currentName = currentGroup.getName();
-                if(groupName.equals(currentName)){
-                    groupFound = true;
-                }
-            }
-            if(!groupFound){
-                associatedGroups.add(new Group<User>(groupName));
-            }
-        }
-        close(connect, statement);
-        return associatedGroups;
-
-    }
-
-    private Group<Group<User>> getUserGroups(int userId, Group<Group<User>> allGroups) throws SQLException{
+    private Group<Group<User>> getUserGroups(int userId) throws SQLException{ //fixed unnescessary iteration through all groups existing
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
@@ -574,35 +537,13 @@ public class UserDaoImpl implements UserDao{
         String resultGroupName;
         while(results.next()){
 
-            groupIterator = allGroups.getIterator();
             resultGroupName = results.getString("group_name");
-            while(groupIterator.hasNext()){
-
-                currentGroup = groupIterator.next();
-
-                if(currentGroup.getName().equals(resultGroupName)){
-                    associatedGroups.add(currentGroup);
-                }
-
-            }
+            currentGroup = new Group<User>(resultGroupName);
+            associatedGroups.add(currentGroup);
         }
         results.close();
         close(connect, statement);
         return associatedGroups;
-    }
-
-    private Group<User> getGroup(String groupName,
-                                 Group<Group<User>> userGroups){
-
-        Iterator<Group<User>> userGroupIterator = userGroups.getIterator();
-        while(userGroupIterator.hasNext()){
-            Group<User> userGroup = userGroupIterator.next();
-
-            if(userGroup.getName().equals(groupName)){
-                return userGroup;
-            }
-        }
-        return null;
     }
 
     private Role convertRole(String roleName){
