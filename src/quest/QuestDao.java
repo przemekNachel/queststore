@@ -14,4 +14,5 @@ public interface QuestDao {
     void addQuest(QuestModel quest) throws SQLException;
     void updateQuest(QuestModel quest) throws SQLException;
     void deleteQuest(QuestModel quest) throws SQLException;
+    void addQuestAdherence(String Name, String groupName) throws SQLException;
 }

@@ -131,11 +131,11 @@ CREATE TABLE predefined_levels(
 INSERT INTO artifact_store
 (name, descr, price)
 VALUES
-  ('Magiczny Uran', 'Uran Łowsiaka z Czeczenii', 1000),
-  ('Łyse Pole', 'Pole memów', 400),
-  ('Epicki Ziemniak', 'Tego nie ugotujesz', 10000),
-  ('Chiński Kapitalizm', 'Tak naprawdę komunizm', 4000),
-  ('Sikorka', 'Bo nie dzięciął', 1000);
+  ('Sample artifact 1', 'Sample description 1', 1000),
+  ('Sample artifact 2', 'Sample description 2', 400),
+  ('Sample artifact 3', 'Sample description 3', 10000),
+  ('Sample artifact 4', 'Sample description 4', 4000),
+  ('Sample artifact 5', 'Sample description 5', 1000);
 
 INSERT INTO artifact_associations
 (artifact_id, group_id)
@@ -151,21 +151,23 @@ INSERT INTO group_names
 VALUES
   ('quest_basic'),
   ('quest_extra'),
+  ('quests'),
   ('artifact_basic'),
   ('artifact_magic'),
+  ('artifacts'),
   ('codecoolers'),
   ('mentors'),
   ('admins');
 
 INSERT INTO predefined_levels
 VALUES
-  (0, 'Plebeian'),
-  (100, 'Acolyte'),
-  (200, 'Adept'),
-  (300, 'Curate'),
-  (400, 'Warden'),
-  (500, 'Inquisitor'),
-  (600, 'Paladin');
+  (0, 'Level 1'),
+  (100, 'Level 2'),
+  (200, 'Level 3'),
+  (300, 'Level 4'),
+  (400, 'Level 5'),
+  (500, 'Level 6'),
+  (600, 'Level 7');
 
 INSERT INTO quest_associations
 (quest_id, group_id)

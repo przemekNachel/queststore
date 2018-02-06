@@ -20,33 +20,6 @@ public class ArtifactStoreController{
       this.view = new ArtifactStoreView();
     }
 
-    public void addNewArtifact(){
-        ArtifactStoreView view = new ArtifactStoreView();
-
-        String name = view.getStringFromUserInput(view.artifactNameQuestion);
-        String description = view.getStringFromUserInput(view.artifactDescriptionQuestion);
-
-        boolean providedValidPrice;
-        Integer price = null;
-        do {
-
-            try {
-
-                providedValidPrice = true;
-                String priceStr = view.getStringFromUserInput(view.artifactPriceQuestion);
-                price = Integer.parseInt(priceStr);
-
-            } catch (NumberFormatException nfe) {
-                providedValidPrice = false;
-                view.printLine(view.invalidPrice);
-            }
-
-        } while(!providedValidPrice);
-
-        ArtifactModel artifact = new ArtifactModel(name, description, price);
-        assignArtifactToCategory(artifact);
-    }
-
     private Group<String> getAllowedArtifactNames() {
 
         ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
@@ -131,7 +104,7 @@ public class ArtifactStoreController{
         do {
 
             artifactName = view.getStringFromUserInput(view.artifactNameQuestion);
-            if (allowedArtifactNames.contains(artifactName)) {
+            if (allowedArtifactNames.contains(artifactName) || artifactName.equals(view.magicExitString)) {
 
                 providedValidArtifactName = true;
             } else {
@@ -162,7 +135,7 @@ public class ArtifactStoreController{
         boolean providedExistentGroupName = false;
         boolean wantToBuyAlone = false;
         do {
-            String consumerGroupName = "ALONE";//= view.getStringFromUserInput(view.chooseGroup);
+            String consumerGroupName = view.getStringFromUserInput(view.chooseGroup);
             if (allowedGroupNames.contains(consumerGroupName)) {
                 try{
                     Group<User> users = userDao.getUserGroup(consumerGroupName);
@@ -179,10 +152,15 @@ public class ArtifactStoreController{
                 providedExistentGroupName = true;
             } else {
                 if (consumerGroupName.equals("ALONE")) {
+
                     codecoolers = new Group<>("buying alone");
                     codecoolers.add(codecooler);
                     wantToBuyAlone = true;
+                } else if (consumerGroupName.equals(view.magicExitString)) {
+
+                    return null;
                 } else {
+
                     view.printLine(view.invalidGroupName);
                 }
             }
@@ -193,12 +171,20 @@ public class ArtifactStoreController{
 
     public void buyProductProcess(CodecoolerModel codecooler){
 
-        ArtifactDaoImpl dao = new ArtifactDaoImpl();
         UserDaoImpl userDao = new UserDaoImpl();
 
+        view.printLine(view.abortHint);
         String artifactName = getArtifactNameFromUserInput();
+        if (artifactName.equals(view.magicExitString)) {
+
+            return;
+        }
 
         Group<CodecoolerModel> consumers = getConsumerGroup(codecooler);
+        if (consumers == null) {
+            /* purchase process aborted as requested by user */
+            return;
+        }
 
         ArtifactModel boughtArtifact = buyArtifact(artifactName, consumers);
         if (boughtArtifact == null) {
@@ -220,13 +206,12 @@ public class ArtifactStoreController{
 
     public ArtifactModel buyArtifact(String name, Group<CodecoolerModel> consumers) {
 
-        ArtifactStoreView view = new ArtifactStoreView();
         ArtifactDaoImpl dao = new ArtifactDaoImpl();
 
         ArtifactModel artifact = null;
         try {
 
-            artifact = dao.getArtifact(name);
+            artifact = dao.getArtifactByName(name);
         } catch (SQLException e) {
             view.printSQLException(e);
         }
@@ -279,7 +264,7 @@ public class ArtifactStoreController{
         ArtifactModel artifact = null;
         try {
 
-            artifact = dao.getArtifact(artName);
+            artifact = dao.getArtifactByName(artName);
         } catch (SQLException e) {
             view.printSQLException(e);
         }
@@ -337,36 +322,4 @@ public class ArtifactStoreController{
         }
     }
 
-    public void assignArtifactToCategory(ArtifactModel artifact){
-        ArtifactStoreView view = new ArtifactStoreView();
-        ArtifactDaoImpl dao = new ArtifactDaoImpl();
-
-        Group<String> possibleGroupNames = null;
-        try {
-
-            possibleGroupNames = dao.getArtifactGroupNames();
-        } catch (SQLException e) {
-
-            view.printSQLException(e);
-        }
-
-        Iterator<String> iter = possibleGroupNames.getIterator();
-        view.printLine(view.chooseGroup);
-
-        String groupsToChooseFrom = "";
-        int index = 0;
-        while(iter.hasNext()){
-            groupsToChooseFrom += Integer.toString(index) + " " + iter.next() + "\n";
-            index++;
-        }
-
-        view.printLine(groupsToChooseFrom);
-        String desiredGroupName = view.getStringFromUserInput(view.artifactNameQuestion);
-        try {
-
-            dao.addArtifact(artifact, desiredGroupName);
-        } catch (SQLException e) {
-            view.printSQLException(e);
-        }
-    }
 }
