@@ -116,7 +116,7 @@ public class MentorController {
             }
             view.print("\n");
 
-            String groupName = view.getStringFromUserInput(view.artifactGroupAssignmentQuestion);
+            String groupName = view.getStringFromUserInput(view.GroupAssignmentQuestion);
 
             artifactDao.addArtifact(newArtifact);
             artifactDao.addArtifactAdherence(name, "artifacts");
@@ -133,10 +133,23 @@ public class MentorController {
         String name = view.getStringFromUserInput(view.questNameQuestion);
         String desc = view.getStringFromUserInput(view.questDescQuestion);
         Integer reward = getInt(view.questPriceQuestion);
+        QuestModel newQuest = new QuestModel(name, desc, reward);
 
         try {
+            Group<String> availableGroups = questDao.getQuestGroupNames();
+            view.printLine("\n--- Available groups ---");
+            for (String s : availableGroups) {
+                if (!s.equals("quests")) {
+                    view.printLine(s);
+                }
+            }
+            view.print("\n");
 
-            questDao.addQuest(new QuestModel(name, desc, reward));
+            String groupName = view.getStringFromUserInput(view.GroupAssignmentQuestion);
+
+            questDao.addQuest(newQuest);
+            questDao.addQuestAdherence(name, "quests");
+            questDao.addQuestAdherence(name, groupName);
         } catch (SQLException e) {
 
             view.printSQLException(e);

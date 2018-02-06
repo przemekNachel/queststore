@@ -151,6 +151,7 @@ INSERT INTO group_names
 VALUES
   ('quest_basic'),
   ('quest_extra'),
+  ('quests'),
   ('artifact_basic'),
   ('artifact_magic'),
   ('artifacts'),

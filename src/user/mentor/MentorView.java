@@ -31,7 +31,7 @@ public class MentorView extends AbstractConsoleView {
   public String artifactNameQuestion = "Provide artifact name: ";
   public String artifactDescQuestion = "Provide artifact description: ";
   public String artifactPriceQuestion = "Provide artifact price: ";
-  public String artifactGroupAssignmentQuestion = "Choose from available groups: ";
+  public String GroupAssignmentQuestion = "Choose from availtble groups: ";
   public String questNameQuestion = "Provide quest name: ";
   public String questDescQuestion = "Provide quest description: ";
   public String questPriceQuestion = "Provide quest price: ";

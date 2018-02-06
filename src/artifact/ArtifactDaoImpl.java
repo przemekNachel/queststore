@@ -186,12 +186,12 @@ public class ArtifactDaoImpl implements ArtifactDao{
         String sql = "INSERT INTO artifact_associations(artifact_id, group_id) " +
                 "VALUES ((SELECT artifact_id FROM artifact_store WHERE name='"+name+"'), " +
                 "(SELECT group_id FROM group_names WHERE group_name='"+groupName+"'));";
-        System.out.println("Test1");
         stmt.executeUpdate(sql);
 
         con.commit();
 
         stmt.close();
+        con.close();
 
     }
 }

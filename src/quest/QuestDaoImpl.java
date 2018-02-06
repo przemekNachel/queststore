@@ -153,4 +153,21 @@ public class QuestDaoImpl implements QuestDao {
 
         return group;
     }
+    @Override
+    public void addQuestAdherence(String name, String groupName) throws SQLException {
+        Connection con = connectToDatabase();
+        Objects.requireNonNull(con).setAutoCommit(false);
+        Statement stmt = con.createStatement();
+
+        String sql = "INSERT INTO quest_associations(quest_id, group_id) " +
+                "VALUES ((SELECT quest_id FROM quest_store WHERE name='"+name+"'), " +
+                "(SELECT group_id FROM group_names WHERE group_name='"+groupName+"'));";
+        stmt.executeUpdate(sql);
+
+        con.commit();
+
+        stmt.close();
+        con.close();
+
+    }
 }
