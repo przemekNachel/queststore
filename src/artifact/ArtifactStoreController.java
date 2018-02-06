@@ -211,7 +211,7 @@ public class ArtifactStoreController{
         ArtifactModel artifact = null;
         try {
 
-            artifact = dao.getArtifact(name);
+            artifact = dao.getArtifactByName(name);
         } catch (SQLException e) {
             view.printSQLException(e);
         }
@@ -264,7 +264,7 @@ public class ArtifactStoreController{
         ArtifactModel artifact = null;
         try {
 
-            artifact = dao.getArtifact(artName);
+            artifact = dao.getArtifactByName(artName);
         } catch (SQLException e) {
             view.printSQLException(e);
         }
