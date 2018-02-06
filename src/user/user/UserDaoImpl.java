@@ -6,6 +6,7 @@ import user.codecooler.CodecoolerModel;
 import generic_group.Group;
 import user.mentor.MentorModel;
 import user.wallet.WalletService;
+import artifact.ArtifactDaoImpl;
 
 import java.util.Iterator;
 import java.util.ArrayList;
@@ -130,7 +131,6 @@ public class UserDaoImpl implements UserDao{
         String userName = null, password = null, email = null, role = null;
         int userId = 0, userPrivilegeLevelId = 0, balance = 0;//, expGained = 0, ;
         ArrayList<Integer> groupIds = null;
-        ArrayList<String[]> currentArtifacts = null;
 
         // get basic user credentials (all strings + role)
         userName = user.getName();
@@ -145,7 +145,6 @@ public class UserDaoImpl implements UserDao{
         if(role.equals("codecooler")){
             CodecoolerModel tmpUser = (CodecoolerModel) user;
             balance = tmpUser.getWallet().getBalance();
-            currentArtifacts = getUserArtifactsList((CodecoolerModel) user);
             //expGained = user.getExp() ???
         }
 
@@ -155,7 +154,6 @@ public class UserDaoImpl implements UserDao{
 
         if(role.equals("codecooler")){
             upgradeWallet(balance, userId);
-            upgradeArtifacts(currentArtifacts, userId);
         }
         close(connect, statement);
     }
@@ -180,7 +178,6 @@ public class UserDaoImpl implements UserDao{
         if(role.equals("codecooler")){
 
             removeWallet(userId);
-            removeArtifacts(userId);
         }
         close(connect, statement);
         return true;
@@ -257,6 +254,23 @@ public class UserDaoImpl implements UserDao{
         upgradeWallet(user.getWallet().getBalance(), userId);
     }
 
+    public int getUserId(String userName) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String query = "SELECT user_id FROM users WHERE nickname='" + userName + "';";
+        ResultSet results = statement.executeQuery(query);
+        int id = -1;
+        while(results.next()){
+            id = results.getInt("user_id");
+            break;
+        }
+        results.close();
+        close(connect, statement);
+        return id;
+    }
+
     // helper methods for pubic methods
 
     private User createUser(Role role, int userId)  throws SQLException{
@@ -328,140 +342,6 @@ public class UserDaoImpl implements UserDao{
         close(connect, statement);
     }
 
-    private void retriveUserArtifacts(CodecoolerModel user, int userId) throws SQLException{
-
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
-
-        String artifactIdQuery = "SELECT artifact_id FROM user_artifacts WHERE user_id=" + userId + " ;";
-        ResultSet results = statement.executeQuery(artifactIdQuery);
-
-        while(results.next()){
-            user.addArtifact(getArtifact(results.getInt("artifact_id")));
-        }
-        results.close();
-        close(connect, statement);
-    }
-
-    private ArtifactModel getArtifact(int artifactId) throws SQLException{ //should not be here
-
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
-
-        String ArtifactQuery = "SELECT name, descr, price FROM artifact_store WHERE artifact_id =" + artifactId + " ;";
-        ResultSet results = statement.executeQuery(ArtifactQuery);
-
-        ArtifactModel artifact = null;
-        while(results.next()){
-            artifact = new ArtifactModel(results.getString("name"), results.getString("descr"), results.getInt("price"));
-            break;
-        }
-        results.close();
-        close(connect, statement);
-        return artifact;
-    }
-
-    private void updateCredentials(String userName, String password, String email) throws SQLException{
-
-
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
-
-        String updateUsers = "INSERT INTO users(nickname, password, email) " +
-                "VALUES ('" + userName + "', '" + password + "', '" + email + "');";
-        statement.executeUpdate(updateUsers);
-        connect.commit();
-        close(connect, statement);
-    }
-
-    private ArrayList<String[]> getUserArtifactsList(CodecoolerModel user) throws SQLException{
-
-        ArrayList<String[]> userArtifacts = new ArrayList<>();
-        ArtifactModel currentArtifact;
-        String currentArtifactName;
-        int currentArtifactId;
-        String currentArtifactState;
-
-        for(ArtifactModel artifact : user.getCodecoolerArtifacts()){
-
-                currentArtifactName = artifact.getName();
-                currentArtifactId = getArtifactId(currentArtifactName);
-                if(currentArtifactId < 1){
-                    throw new RuntimeException("FatalError : artifact not found in artifact database!!!");
-                }
-                currentArtifactState = String.valueOf(artifact.getUsageStatus());
-                String[] couple = {Integer.toString(currentArtifactId), currentArtifactState};
-                userArtifacts.add(couple);
-        }
-        return userArtifacts;
-    }
-
-    private int getArtifactId(String artifactName) throws SQLException{ //should not be here
-
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
-
-        String query = "SELECT artifact_id FROM artifact_store WHERE name='" + artifactName + "';";
-        ResultSet results = statement.executeQuery(query);
-
-        int artifactId = -1;
-        while(results.next()){
-            artifactId = results.getInt("artifact_id");
-        }
-        close(connect, statement);
-        return artifactId;
-    }
-
-    private ArrayList<Integer> getUserArtifactIds(int userId) throws SQLException{
-
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
-
-        ArrayList<Integer> groupIds = new ArrayList<Integer>();
-        String getArtifactIdsquery = "SELECT user_artifacts.artifact_id FROM user_artifacts " +
-            "WHERE user_artifacts.user_id=" + userId + ";";
-
-        ResultSet results = statement.executeQuery(getArtifactIdsquery);
-
-        while(results.next()){
-            groupIds.add(results.getInt("artifact_id"));
-        }
-
-        results.close();
-        close(connect, statement);
-        return groupIds;
-    }
-
-    private ArrayList<Integer> getUserArtifactIds(ArrayList<String> groupNames, int userId) throws SQLException{
-
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
-
-        ArrayList<Integer> groupIds = new ArrayList<Integer>();
-        String getArtifactIdsquery = "SELECT artifact_store.artifact_id FROM user_artifacts " +
-            "LEFT JOIN artifact_store ON user_artifacts.artifact_id=artifact_store.artifact_id " +
-            "WHERE user_artifacts.user_id=" + userId + ";";
-
-        ResultSet results = statement.executeQuery(getArtifactIdsquery);
-
-        while(results.next()){
-            groupIds.add(results.getInt("artifact_id"));
-        }
-
-        results.close();
-        close(connect, statement);
-        return groupIds;
-    }
-
-    private ArrayList<String> getUserArtifactNames(Group<ArtifactModel> userArtifacts){
-
-        ArrayList<String> artifactNames = new ArrayList<String>();
-        for(ArtifactModel artifact : userArtifacts){
-            artifactNames.add(artifact.getName());
-        }
-        return artifactNames;
-    }
-
     private int getGroupId(String groupName) throws SQLException{
 
         Connection connect = establishConnection();
@@ -482,24 +362,7 @@ public class UserDaoImpl implements UserDao{
         return id;
     }
 
-    private int getUserId(String userName) throws SQLException{
-
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
-
-        String query = "SELECT user_id FROM users WHERE nickname='" + userName + "';";
-        ResultSet results = statement.executeQuery(query);
-        int id = -1;
-        while(results.next()){
-            id = results.getInt("user_id");
-            break;
-        }
-        results.close();
-        close(connect, statement);
-        return id;
-    }
-
-    private Group<Group<User>> getUserGroups(int userId) throws SQLException{ //fixed unnescessary iteration through all groups existing
+    private Group<Group<User>> getUserGroups(int userId) throws SQLException{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
@@ -525,30 +388,6 @@ public class UserDaoImpl implements UserDao{
         results.close();
         close(connect, statement);
         return associatedGroups;
-    }
-
-    private Role convertRole(String roleName){
-        switch(roleName){
-            case "codecooler":
-                return CODECOOLER;
-            case "mentor":
-                return MENTOR;
-            case "admin":
-                return ADMIN;
-        }
-        return null;
-    }
-
-    private String convertRole(Role role){
-        switch(role){
-            case CODECOOLER:
-                return "codecooler";
-            case MENTOR:
-                return "mentor";
-            case ADMIN:
-                return "admin";
-        }
-        return null;
     }
 
     private ArrayList<String> getUserGroupNamesFrom(Group<Group<User>> userGroups){
@@ -604,6 +443,45 @@ public class UserDaoImpl implements UserDao{
         return userPrivilegeLevelId;
     }
 
+    private Role convertRole(String roleName){
+        switch(roleName){
+            case "codecooler":
+                return CODECOOLER;
+            case "mentor":
+                return MENTOR;
+            case "admin":
+                return ADMIN;
+        }
+        return null;
+    }
+
+    private String convertRole(Role role){
+        switch(role){
+            case CODECOOLER:
+                return "codecooler";
+            case MENTOR:
+                return "mentor";
+            case ADMIN:
+                return "admin";
+        }
+        return null;
+    }
+
+    // updaters
+
+    private void updateCredentials(String userName, String password, String email) throws SQLException{
+
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+
+        String updateUsers = "INSERT INTO users(nickname, password, email) " +
+                "VALUES ('" + userName + "', '" + password + "', '" + email + "');";
+        statement.executeUpdate(updateUsers);
+        connect.commit();
+        close(connect, statement);
+    }
+
     private void updatePrivileges(int userId, int userPrivilegeLevelId) throws SQLException{
 
         Connection connect = establishConnection();
@@ -644,6 +522,8 @@ public class UserDaoImpl implements UserDao{
         connect.commit();
         close(connect, statement);
     }
+
+    // upgraders
 
     private void upgradeCredentials(String password, String email, int userId) throws SQLException{
 
@@ -701,45 +581,7 @@ public class UserDaoImpl implements UserDao{
         close(connect, statement);
     }
 
-    private void upgradeArtifacts(ArrayList<String[]> currentGroups, int userId) throws SQLException{
-
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
-
-        if(!currentGroups.isEmpty()){
-            String updateArtifact = null;
-            for(String[] artifactIdAndState : currentGroups){
-                int currentArtifactId = Integer.parseInt(artifactIdAndState[0]);
-                String currentArtifactState = artifactIdAndState[1];
-                String getArtifactQuery = "SELECT * FROM user_artifacts " +
-                    "WHERE user_id=" + userId + " AND artifact_id=" +
-                    currentArtifactId + " ;";
-                ResultSet results = statement.executeQuery(getArtifactQuery);
-
-                String used = null ;
-                while(results.next()){
-                    used = results.getString("used");
-                }
-                results.close();
-
-                if(!currentArtifactState.equals(used) && used != null){
-                    updateArtifact = "UPDATE user_artifacts " +
-                        "SET used='" + currentArtifactState + "' " +
-                        "WHERE user_id=" + userId + " AND artifact_id=" +
-                        currentArtifactId + " ;";
-                }else if(used == null){
-                    updateArtifact = "INSERT INTO user_artifacts(user_id, artifact_id, used) " +
-                        "VALUES(" + userId + " , " + currentArtifactId + " , '" + currentArtifactState + "');";
-                }
-
-                if(updateArtifact != null){
-                    statement.executeUpdate(updateArtifact);
-                    connect.commit();
-                }
-            }
-        }
-        close(connect, statement);
-    }
+    // removers
 
     private void removeCredentials(int userId) throws SQLException{
 
@@ -795,19 +637,6 @@ public class UserDaoImpl implements UserDao{
         close(connect, statement);
     }
 
-    private void removeArtifacts(int userId) throws SQLException{
-
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
-
-        String updateArtifacts = "DELETE IF EXISTS FROM user_artifacts " +
-                "WHERE user_id=" + userId + " ;";
-
-        statement.executeUpdate(updateArtifacts);
-        connect.commit();
-        close(connect, statement);
-    }
-
     // ----- basic database operations -----/
 
     private Connection establishConnection() throws SQLException{
@@ -830,4 +659,5 @@ public class UserDaoImpl implements UserDao{
             connect.close();
         }
     }
+
 }
