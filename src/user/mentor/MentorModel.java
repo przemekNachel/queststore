@@ -1,27 +1,16 @@
 package user.mentor;
 
-import generic_group.Group;
+import user.user.RawUser;
 import user.user.Role;
-import user.user.User;
 
-public class MentorModel extends User {
+public class MentorModel extends RawUser {
 
-    public MentorModel(String nickname, String email, String password, Group<User> mentorGroup) {
-        role = Role.MENTOR;
-        this.nickname = nickname;
-        this.email = email;
-        this.password = password;
+    public MentorModel(RawUser rawUser) {
+        super(Role.MENTOR,
+                rawUser.getName(),
+                rawUser.getEmail(),
+                rawUser.getPassword(),
+                rawUser.getAssociatedGroupNames());
 
-        associatedGroups = new Group<Group<User>>("Groups to which adheres");
-        associatedGroups.add(mentorGroup);
-    }
-    @Override
-    public Role getRole() {
-        return role;
-    }
-
-    @Override
-    public void setRole(Role role) {
-        this.role = role;
     }
 }
