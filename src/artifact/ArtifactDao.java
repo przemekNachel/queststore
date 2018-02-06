@@ -17,4 +17,5 @@ public interface ArtifactDao{
     void addArtifactGroup(Group<ArtifactModel> group) throws SQLException;
     boolean deleteArtifact(ArtifactModel artifact) throws SQLException;
     void addArtifactAdherence(String name, String groupName) throws SQLException;
+    void updateUserArtifactsUsage(int userId, ArtifactModel artifact) throws SQLException;
 }
