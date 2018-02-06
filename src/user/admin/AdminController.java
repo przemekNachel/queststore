@@ -230,6 +230,7 @@ public class AdminController{
         }
         String lvlName = view.getStringFromUserInput(view.levelNameQuestion);
         Integer thr = getInt(view.levelTresholdQuestion);
+        Level.addLevel(lvlName, thr);
     }
 
     private Integer getInt(String prompt) {
