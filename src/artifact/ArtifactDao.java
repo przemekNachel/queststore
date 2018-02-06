@@ -10,6 +10,7 @@ public interface ArtifactDao{
     Connection connectToDatabase() throws SQLException;
     Group<Group<ArtifactModel>> getAllArtifacts() throws SQLException;
     ArtifactModel getArtifactByName(String name) throws SQLException;
+    ArtifactModel getArtifactById(int artifactId) throws SQLException;
     Group<String> getArtifactGroupNames() throws SQLException;
     Group<ArtifactModel> getArtifactGroup(String groupName) throws SQLException;
     void addArtifact(ArtifactModel artifact) throws SQLException ;
@@ -17,5 +18,4 @@ public interface ArtifactDao{
     void addArtifactGroup(Group<ArtifactModel> group) throws SQLException;
     boolean deleteArtifact(ArtifactModel artifact) throws SQLException;
     void addArtifactAdherence(String name, String groupName) throws SQLException;
-    Group<ArtifactModel> getArtifactById(int artifactId) throws SQLException;
 }

@@ -55,6 +55,25 @@ public class ArtifactDaoImpl implements ArtifactDao{
     }
 
     @Override
+    public ArtifactModel getArtifactById(int artifactId) throws SQLException {
+        Connection con = connectToDatabase();
+        Statement stmt = Objects.requireNonNull(con).createStatement();
+
+        String sql = ("SELECT * FROM artifact_store WHERE artifact_id=" + artifactId + ";");
+        ResultSet rs = stmt.executeQuery(sql);
+
+
+        String artName = rs.getString("name");
+        String artDesc = rs.getString("descr");
+        Integer artPrice = rs.getInt("price");
+
+        stmt.close();
+        rs.close();
+        con.close();
+
+        return new ArtifactModel(artName, artDesc, artPrice);
+    }
+    @Override
     public void addArtifact(ArtifactModel artifact) throws SQLException {
         String artName = artifact.getName();
         String artDesc = artifact.getDescription();
