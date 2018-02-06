@@ -6,6 +6,7 @@ import generic_group.Group;
 import user.mentor.MentorModel;
 import user.user.Role;
 import user.user.User;
+import user.user.RawUser;
 import user.user.UserDao;
 import user.user.UserDaoImpl;
 import level.Level;
@@ -39,8 +40,9 @@ public class AdminController{
         String password = this.view.getStringFromUserInput(view.mentorPasswordQuestion);
 
         try {
-            Group<User> mentorsGroup = dao.getUserGroup("mentors");
-            MentorModel mentor = new MentorModel(name, email, password, mentorsGroup);
+            Group<String> mentorGroups = new Group<>("mentor groups");
+            mentorGroups.add("mentors");
+            MentorModel mentor = new MentorModel(new RawUser(Role.MENTOR, name, email, password, mentorGroups));
 
             dao.addUser(mentor);
 //            mentorsGroup.add(mentor);
@@ -122,18 +124,6 @@ public class AdminController{
 
         if (!userAddedtoGroup || user == null) {
             view.printLine(view.assignMentorToFroupError);
-        } else {
-
-            try {
-                Group<Group<User>> associatedGroups = user
-                        .getAssociatedGroups();
-
-                associatedGroups.add(userDao.getUserGroup(groupName));
-
-                user.setAssociatedGroups(associatedGroups);
-            } catch (SQLException e) {
-                view.printSQLException(e);
-            }
         }
     }
 

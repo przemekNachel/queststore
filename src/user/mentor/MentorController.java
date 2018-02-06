@@ -10,10 +10,7 @@ import console.menu.Menu;
 import console.menu.MenuOption;
 import user.codecooler.CodecoolerModel;
 import generic_group.Group;
-import user.user.Role;
-import user.user.User;
-import user.user.UserDao;
-import user.user.UserDaoImpl;
+import user.user.*;
 import user.wallet.*;
 
 import java.sql.*;
@@ -122,15 +119,6 @@ public class MentorController {
         if(!addUserAdherenceSuccess) {
 
             view.printLine(view.codecoolerAlreadyInGroupOrGroupAbsent);
-        } else {
-
-            Group<Group<User>> associatedGroups = user.getAssociatedGroups();
-            try{
-                associatedGroups.add(userDao.getUserGroup(groupName));
-            } catch (SQLException e) {
-                view.printSQLException(e);
-            }
-            user.setAssociatedGroups(associatedGroups);
         }
     }
 
@@ -202,27 +190,14 @@ public class MentorController {
         // TODO Default level 0 -- next sprint
         // TODO level object -- next sprint
 
-        Group<User> studentsGroup = null;
-        try{
-            studentsGroup = userDao.getUserGroup("codecoolers");
-        } catch (SQLException e) {
-
-            view.printSQLException(e);
-        }
-
-        if (studentsGroup == null) {
-
-            Group<User> newStudentsGroup = new Group<>("codecoolers");
-            try{
-                userDao.addUserGroup(newStudentsGroup);
-            } catch (SQLException e) {
-                view.printSQLException(e);
-            }
-            studentsGroup = newStudentsGroup;
-        }
 
         WalletService wallet = new WalletService(0);
-        CodecoolerModel codecooler = new CodecoolerModel(nickname, email, password, wallet, studentsGroup); // TODO add level to the object -- next sprint
+
+        Group<String> studentGroups = new Group<>("student groups");
+        studentGroups.add("codecoolers");
+
+        Group<ArtifactModel> artifacts = new Group<>("user artifacts");
+        CodecoolerModel codecooler = new CodecoolerModel(new RawUser(Role.CODECOOLER, nickname, email, password, studentGroups), wallet, artifacts);
 
         User user = null;
         try {
