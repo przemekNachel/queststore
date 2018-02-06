@@ -1,9 +1,12 @@
 package user.codecooler;
 
 import artifact.ArtifactStoreController;
+import artifact.ArtifactModel;
 import console.menu.Menu;
 import console.menu.MenuOption;
 import user.user.UserDaoImpl;
+
+import java.sql.SQLException;
 
 public class CodecoolerController {
     public CodecoolerView view;
@@ -57,10 +60,50 @@ public class CodecoolerController {
         store.buyProductProcess(currentUser);
     }
 
+    private String codecoolerArtifactsToString(CodecoolerModel codecooler) {
+
+        String result = "";
+        for (ArtifactModel artifact : codecooler.getCodecoolerArtifacts()) {
+
+            result += "  " + artifact.getName() + "\n";
+        }
+        return result;
+    }
+
     public void useArtifact() {
+
+        view.printLine("\n Artifacts to choose from:\n\n" + codecoolerArtifactsToString(currentUser));
+
         String artifactName = view.getStringFromUserInput(view.artifactNameQuestion);
-        currentUser.getArtifact(artifactName);
-        view.printLine("artifact has been used!");
+
+        ArtifactModel artifact = currentUser.getArtifact(artifactName);
+
+        if (artifact != null) {
+
+            artifact.setUsageStatus(true);
+
+            boolean updated = true;
+            try {
+
+                new UserDaoImpl().updateUser(currentUser);
+            } catch (SQLException e) {
+
+                updated = false;
+                view.printSQLException(e);
+            }
+
+            if(updated) {
+
+                view.printLine("\n  Used artifact " + artifact.getName() + " by " + currentUser.getName());
+            } else {
+
+                view.printLine(view.artifactUsageUpdateFailure);
+            }
+
+        } else {
+
+            view.printLine(view.artifactNoSuch);
+        }
     }
 
 }
