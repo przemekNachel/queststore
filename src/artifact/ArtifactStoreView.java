@@ -30,4 +30,6 @@ class ArtifactStoreView extends AbstractConsoleView {
     public String shopMaintenanceMsg = "Shop under maintenance. Come back later!";
     public String invalidPrice = "Invalid price.";
     public String invalidGroupName = "The provided group name does not exist or is invalid.";
+    public String magicExitString = "EXIT";
+    public String abortHint = "Type " + magicExitString + " anywhere during the purchase process to abort.";
 }
