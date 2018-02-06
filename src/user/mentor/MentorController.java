@@ -77,28 +77,8 @@ public class MentorController {
         }
     }
 
-    private Integer getInt(String prompt) {
 
-      Integer result = null;
-      boolean validInputProvided;
-      do {
-
-        validInputProvided = true;
-        try {
-
-          result = Integer.valueOf(view.getStringFromUserInput(prompt));
-
-        } catch (NumberFormatException nfe) {
-
-            validInputProvided = false;
-            view.printLine("  Invalid input.");
-        }
-      } while(!validInputProvided);
-
-      return result;
-    }
-
-    public void createArtifact() {
+    private void createArtifact() {
 
         ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
         String name = view.getStringFromUserInput(view.artifactNameQuestion);
@@ -127,7 +107,7 @@ public class MentorController {
         }
     }
 
-    public void createQuest() {
+    private void createQuest() {
 
         QuestDaoImpl questDao = new QuestDaoImpl();
         String name = view.getStringFromUserInput(view.questNameQuestion);
@@ -156,7 +136,7 @@ public class MentorController {
         }
     }
 
-    public void createCodecooler() {
+    private void createCodecooler() {
         UserDaoImpl userDao = new UserDaoImpl();
 
         String nickname = view.getStringFromUserInput(view.userNicknameQuestion);
@@ -204,7 +184,7 @@ public class MentorController {
         }
     }
 
-    public void assignCodecoolerToGroup() {
+    private void assignCodecoolerToGroup() {
         UserDaoImpl userDao = new UserDaoImpl();
 
         String nickname = view.getStringFromUserInput(view.userNicknameQuestion);
@@ -267,7 +247,7 @@ public class MentorController {
         return (CodecoolerModel)user;
     }
 
-    public void markCodecoolerQuestCompletion() {
+    private void markCodecoolerQuestCompletion() {
 
       UserDaoImpl userDao = new UserDaoImpl();
       quest.QuestDaoImpl questDao = new quest.QuestDaoImpl();
@@ -363,7 +343,7 @@ public class MentorController {
         }
     }
 
-    public void markCodecoolerArtifactUsage() {
+    private void markCodecoolerArtifactUsage() {
 
       MentorView view = new MentorView();
 
@@ -416,4 +396,24 @@ public class MentorController {
 
     }
 
+    private Integer getInt(String prompt) { // Remove this and where getInt is used, add userView method "getIntFromUserInput"
+
+        Integer result = null;
+        boolean validInputProvided;
+        do {
+
+            validInputProvided = true;
+            try {
+
+                result = Integer.valueOf(view.getStringFromUserInput(prompt));
+
+            } catch (NumberFormatException nfe) {
+
+                validInputProvided = false;
+                view.printLine("  Invalid input.");
+            }
+        } while(!validInputProvided);
+
+        return result;
+    }
 }
