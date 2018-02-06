@@ -206,11 +206,7 @@ public class UserDaoImpl implements UserDao{
 
     public Group<User> getUserGroup(String groupName) throws SQLException{
 
-      Connection connect = establishConnection();
-      Statement statement = connect.createStatement();
-
       Group<User> userGroup = new Group<>(groupName);
-
       insertUsersTo(userGroup);
       return userGroup;
     }
@@ -392,10 +388,9 @@ public class UserDaoImpl implements UserDao{
 
     private ArrayList<String> getUserGroupNamesFrom(Group<Group<User>> userGroups){
 
-        ArrayList<String> groupNames = new ArrayList<String>();
-        Iterator<Group<User>> groupsIterator = userGroups.getIterator();
-        while(groupsIterator.hasNext()){
-            String groupName = groupsIterator.next().getName();
+      ArrayList<String> groupNames = new ArrayList<String>();
+        for(Group<User> group : userGroups){
+            String groupName = group.getName();
             groupNames.add(groupName);
         }
         return groupNames;
