@@ -30,7 +30,8 @@ public class MentorController {
                 new MenuOption("3", "Mark codecooler's quest completion"),
                 new MenuOption("4", "Mark codecooler's artifact usage"),
                 new MenuOption("5", "Create artifact"),
-                new MenuOption("6", "Create quest")
+                new MenuOption("6", "Create quest"),
+                new MenuOption("7", "Display all artifacts")
         );
 
         view = new MentorView(mentorMenu);
