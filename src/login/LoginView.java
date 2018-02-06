@@ -19,6 +19,6 @@ public class LoginView extends AbstractConsoleView {
     }
 
     public String getPassword(){
-        return new String(System.console().readPassword(loginPasswordQuestion));
+        return getStringFromUserInput(loginPasswordQuestion);
     }
 }
