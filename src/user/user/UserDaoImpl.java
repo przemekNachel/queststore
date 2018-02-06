@@ -34,7 +34,6 @@ public class UserDaoImpl implements UserDao{
             groupFound = false;
             tempUsr = getUser(results.getString("nickname"));
             for(Group<User> tmpGroup : tempUsr.getAssociatedGroups()){
-              tmpGroup.add(tempUsr);
                 for(Group<User> groupInAll : allUsers){
                     if(tmpGroup.getName().equals(groupInAll.getName())){
                         groupFound = true;
@@ -45,6 +44,7 @@ public class UserDaoImpl implements UserDao{
                 }
                 if(!groupFound){
                     allUsers.add(tmpGroup);
+                    insertUsersTo(tmpGroup);
                 }
             }
         }
@@ -209,17 +209,13 @@ public class UserDaoImpl implements UserDao{
 
     public Group<User> getUserGroup(String groupName) throws SQLException{
 
+      Connection connect = establishConnection();
+      Statement statement = connect.createStatement();
 
-        Group<User> usersFromGroup = null;
-        Group<Group<User>> users = getAllUsers();
-        for(Group<User> group : users){
-            if(group.getName().equals(groupName)){
-                insertUsersTo(group);
-                usersFromGroup = group;
-                break;
-            }
-        }
-        return usersFromGroup;
+      Group<User> userGroup = new Group<>(groupName);
+
+      insertUsersTo(userGroup);
+      return userGroup;
     }
 
     public boolean addUserAdherence(User user, String groupName) throws SQLException{
@@ -227,10 +223,8 @@ public class UserDaoImpl implements UserDao{
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
 
-
         int userId = getUserId(user.getName());
         int groupId = getGroupId(groupName);
-
 
         if(userId > 0 && groupId > 0){
             String query = "INSERT INTO user_associations(user_id, group_id) " +
@@ -260,7 +254,6 @@ public class UserDaoImpl implements UserDao{
     public void updateOnlyWallet(CodecoolerModel user) throws SQLException{
 
         int userId = getUserId(user.getName());
-
         upgradeWallet(user.getWallet().getBalance(), userId);
     }
 
@@ -281,7 +274,7 @@ public class UserDaoImpl implements UserDao{
 
       String CodecoolerQuery = "SELECT user_wallet.balance FROM users "
       + "JOIN user_wallet ON users.user_id = user_wallet.user_id "
-      + "WHERE user_id =" + userId + " ;";
+      + "WHERE users.user_id =" + userId + " ;";
 
       ResultSet results = statement.executeQuery(MentorAdminQuery);
       while(results.next()){
@@ -350,7 +343,7 @@ public class UserDaoImpl implements UserDao{
         close(connect, statement);
     }
 
-    private ArtifactModel getArtifact(int artifactId) throws SQLException{
+    private ArtifactModel getArtifact(int artifactId) throws SQLException{ //should not be here
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
@@ -383,16 +376,13 @@ public class UserDaoImpl implements UserDao{
 
     private ArrayList<String[]> getUserArtifactsList(CodecoolerModel user) throws SQLException{
 
-              // artif_id , artif_state
         ArrayList<String[]> userArtifacts = new ArrayList<>();
         ArtifactModel currentArtifact;
         String currentArtifactName;
         int currentArtifactId;
         String currentArtifactState;
 
-
         for(ArtifactModel artifact : user.getCodecoolerArtifacts()){
-
 
                 currentArtifactName = artifact.getName();
                 currentArtifactId = getArtifactId(currentArtifactName);
@@ -406,13 +396,12 @@ public class UserDaoImpl implements UserDao{
         return userArtifacts;
     }
 
-    private int getArtifactId(String artifactName) throws SQLException{
+    private int getArtifactId(String artifactName) throws SQLException{ //should not be here
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
 
         String query = "SELECT artifact_id FROM artifact_store WHERE name='" + artifactName + "';";
-
         ResultSet results = statement.executeQuery(query);
 
         int artifactId = -1;
@@ -429,7 +418,6 @@ public class UserDaoImpl implements UserDao{
         Statement statement = connect.createStatement();
 
         ArrayList<Integer> groupIds = new ArrayList<Integer>();
-
         String getArtifactIdsquery = "SELECT user_artifacts.artifact_id FROM user_artifacts " +
             "WHERE user_artifacts.user_id=" + userId + ";";
 
@@ -440,9 +428,7 @@ public class UserDaoImpl implements UserDao{
         }
 
         results.close();
-
         close(connect, statement);
-
         return groupIds;
     }
 
@@ -452,7 +438,6 @@ public class UserDaoImpl implements UserDao{
         Statement statement = connect.createStatement();
 
         ArrayList<Integer> groupIds = new ArrayList<Integer>();
-
         String getArtifactIdsquery = "SELECT artifact_store.artifact_id FROM user_artifacts " +
             "LEFT JOIN artifact_store ON user_artifacts.artifact_id=artifact_store.artifact_id " +
             "WHERE user_artifacts.user_id=" + userId + ";";
@@ -464,11 +449,8 @@ public class UserDaoImpl implements UserDao{
         }
 
         results.close();
-
         close(connect, statement);
-
         return groupIds;
-
     }
 
     private ArrayList<String> getUserArtifactNames(Group<ArtifactModel> userArtifacts){
@@ -485,8 +467,8 @@ public class UserDaoImpl implements UserDao{
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
 
-        String query = "SELECT group_id FROM group_names WHERE group_name='" + groupName + "';";
-
+        String query = "SELECT group_id FROM group_names WHERE group_name='"
+        + groupName + "';";
         ResultSet results = statement.executeQuery(query);
 
         int id = -1;
@@ -506,7 +488,6 @@ public class UserDaoImpl implements UserDao{
         Statement statement = connect.createStatement();
 
         String query = "SELECT user_id FROM users WHERE nickname='" + userName + "';";
-
         ResultSet results = statement.executeQuery(query);
         int id = -1;
         while(results.next()){
@@ -568,31 +549,6 @@ public class UserDaoImpl implements UserDao{
                 return "admin";
         }
         return null;
-
-    }
-
-    private String getRole(int userId) throws SQLException{
-
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
-
-        String query = "SELECT privilege_name " +
-            "FROM user_privilege_levels " +
-            "LEFT JOIN user_roles  " +
-            "ON user_privilege_levels.privilege_id" +
-            "=user_roles.user_privilege_level_id " +
-            "WHERE user_roles.user_id = " + userId + ";";
-
-        ResultSet results = statement.executeQuery(query);
-
-        String privilege = null;
-        while(results.next()){
-            privilege = results.getString("privilege_name");
-        }
-        results.close();
-        close(connect, statement);
-        return privilege;
-
     }
 
     private ArrayList<String> getUserGroupNamesFrom(Group<Group<User>> userGroups){
@@ -763,7 +719,6 @@ public class UserDaoImpl implements UserDao{
                 String used = null ;
                 while(results.next()){
                     used = results.getString("used");
-
                 }
                 results.close();
 
