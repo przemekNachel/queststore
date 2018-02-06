@@ -9,7 +9,7 @@ public abstract class User {
     protected String nickname;
     protected String password;
     protected String email;
-    protected Group<Group<User>> associatedGroups;
+    protected Group<String> associatedGroupNames;
 
     public String getName() {
         return nickname;
@@ -35,12 +35,8 @@ public abstract class User {
         this.email = email;
     }
 
-    public Group<Group<User>> getAssociatedGroups() {
-        return associatedGroups;
-    }
-
-    public void setAssociatedGroups(Group<Group<User>> associatedGroups) {
-        this.associatedGroups = associatedGroups;
+    public Group<String> getAssociatedGroupNames() {
+        return associatedGroupNames;
     }
 
     public abstract Role getRole();
@@ -49,10 +45,9 @@ public abstract class User {
     public String toString() {
 
         String strGroups = "";
-        Iterator<Group<User>> iter = associatedGroups.getIterator();
-        while (iter.hasNext()) {
-            Group<User> tmp = iter.next();
-            strGroups += tmp.getName() + ";";
+        for (String groupName : associatedGroupNames) {
+
+            strGroups += groupName + ";";
         }
         strGroups = removeLastChar(strGroups);
         return role + "|" + nickname + "|" + email  + "|" + password + "|" + strGroups  + "|";
