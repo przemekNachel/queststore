@@ -13,6 +13,7 @@ import level.LevelService;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class AdminController{
     AdminView view;
@@ -221,9 +222,10 @@ public class AdminController{
         LevelService levelService = new LevelService();
         levelService.initializeLevels();
         HashMap<Integer, String> levels = Level.getLevels();
+        Map<Integer, String> segregatedLevels = new TreeMap<>(levels);
 
         view.printLine(view.currentLevelsText);
-        for (Map.Entry<Integer, String> entry : levels.entrySet()) {
+        for (Map.Entry<Integer, String> entry : segregatedLevels.entrySet()) {
             view.printLine(Integer.toString(entry.getKey()) + "   " + entry.getValue());
         }
         String lvlName = view.getStringFromUserInput(view.levelNameQuestion);
