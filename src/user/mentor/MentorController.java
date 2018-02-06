@@ -17,6 +17,7 @@ import user.user.UserDaoImpl;
 import user.wallet.*;
 
 import java.sql.*;
+import java.util.Iterator;
 
 public class MentorController {
     private MentorView view;
@@ -24,10 +25,10 @@ public class MentorController {
     public MentorController() {
         Menu mentorMenu = new Menu(
                 new MenuOption("0", "Exit"),
-                new MenuOption("1", "Create a user.codecooler"),
-                new MenuOption("2", "Assign a user.codecooler to a group"),
-                new MenuOption("3", "Mark user.codecooler's quest completion"),
-                new MenuOption("4", "Mark user.codecooler's artifact usage"),
+                new MenuOption("1", "Create a codecooler"),
+                new MenuOption("2", "Assign a codecooler to a group"),
+                new MenuOption("3", "Mark codecooler's quest completion"),
+                new MenuOption("4", "Mark codecooler's artifact usage"),
                 new MenuOption("5", "Create artifact"),
                 new MenuOption("6", "Create quest")
         );
@@ -103,10 +104,23 @@ public class MentorController {
         String name = view.getStringFromUserInput(view.artifactNameQuestion);
         String desc = view.getStringFromUserInput(view.artifactDescQuestion);
         Integer price = getInt(view.artifactPriceQuestion);
+        ArtifactModel newArtifact = new ArtifactModel(name, desc, price);
 
         try {
+            Group<String> availableGroups = artifactDao.getArtifactGroupNames();
+            view.printLine("\n--- Available groups ---");
+            for (String s : availableGroups) {
+                if (!s.equals("artifacts")) {
+                    view.printLine(s);
+                }
+            }
+            view.print("\n");
 
-            artifactDao.addArtifact(new ArtifactModel(name, desc, price), "basic");
+            String groupName = view.getStringFromUserInput(view.artifactGroupAssignmentQuestion);
+
+            artifactDao.addArtifact(newArtifact);
+            artifactDao.addArtifactAdherence(name, "artifacts");
+            artifactDao.addArtifactAdherence(name, groupName);
         } catch (SQLException e) {
 
             view.printSQLException(e);
@@ -137,7 +151,7 @@ public class MentorController {
         String password = view.getStringFromUserInput(view.userPasswordQuestion);
 
         // TODO Default level 0 -- next sprint
-        // TODO level.level object -- next sprint
+        // TODO level object -- next sprint
 
         Group<User> studentsGroup = null;
         try{
@@ -346,7 +360,7 @@ public class MentorController {
       // get artifact to be marked
       Group<String> allowedArtifactNames = new Group<>("allowed artifact name user input");
       Group<ArtifactModel> userArtifacts = codecooler.getCodecoolerArtifacts();
-      String artifactsFormatted = "Artifacts of user.codecooler " + codecooler.getName() + "\n\n:";
+      String artifactsFormatted = "Artifacts of codecooler " + codecooler.getName() + "\n\n:";
       for (ArtifactModel currentArtifact : userArtifacts) {
 
         artifactsFormatted += "*" + currentArtifact + "\n";

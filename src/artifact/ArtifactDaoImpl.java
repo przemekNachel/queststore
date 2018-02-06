@@ -16,10 +16,8 @@ public class ArtifactDaoImpl implements ArtifactDao{
     @Override
     public Connection connectToDatabase() throws SQLException {
 
-        String db_path = "jdbc:sqlite:database/database.db";
-        return DriverManager.getConnection(db_path);
-
-
+        String dbPath = "jdbc:sqlite:database/database.db";
+        return DriverManager.getConnection(dbPath);
     }
 
 
@@ -57,7 +55,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
     }
 
     @Override
-    public void addArtifact(ArtifactModel artifact, String groupName) throws SQLException {
+    public void addArtifact(ArtifactModel artifact) throws SQLException {
         String artName = artifact.getName();
         String artDesc = artifact.getDescription();
         float artPrice = artifact.getPrice();
@@ -120,7 +118,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
     @Override
     public Group<String> getArtifactGroupNames() throws SQLException {
-        Group<String> groupsNames = new Group<>("generic_group.Group name");
+        Group<String> groupsNames = new Group<>("Group name");
 
         Connection con = connectToDatabase();
         Statement stmt = Objects.requireNonNull(con).createStatement();
@@ -171,13 +169,29 @@ public class ArtifactDaoImpl implements ArtifactDao{
         Objects.requireNonNull(con).setAutoCommit(false);
         Statement stmt = con.createStatement();
 
-        String sql = ("INSERT INTO group_names (group_name) VALUES ('" + group.getName() + "');");
+        String sql = "INSERT INTO group_names (group_name) VALUES ('" + group.getName() + "');";
         stmt.executeUpdate(sql);
 
         con.commit();
 
         stmt.close();
-        stmt.close();
     }
 
+    @Override
+    public void addArtifactAdherence(String name, String groupName) throws SQLException {
+        Connection con = connectToDatabase();
+        Objects.requireNonNull(con).setAutoCommit(false);
+        Statement stmt = con.createStatement();
+
+        String sql = "INSERT INTO artifact_associations(artifact_id, group_id) " +
+                "VALUES ((SELECT artifact_id FROM artifact_store WHERE name='"+name+"'), " +
+                "(SELECT group_id FROM group_names WHERE group_name='"+groupName+"'));";
+        System.out.println("Test1");
+        stmt.executeUpdate(sql);
+
+        con.commit();
+
+        stmt.close();
+
+    }
 }

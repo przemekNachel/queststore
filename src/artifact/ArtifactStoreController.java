@@ -20,33 +20,6 @@ public class ArtifactStoreController{
       this.view = new ArtifactStoreView();
     }
 
-    public void addNewArtifact(){
-        ArtifactStoreView view = new ArtifactStoreView();
-
-        String name = view.getStringFromUserInput(view.artifactNameQuestion);
-        String description = view.getStringFromUserInput(view.artifactDescriptionQuestion);
-
-        boolean providedValidPrice;
-        Integer price = null;
-        do {
-
-            try {
-
-                providedValidPrice = true;
-                String priceStr = view.getStringFromUserInput(view.artifactPriceQuestion);
-                price = Integer.parseInt(priceStr);
-
-            } catch (NumberFormatException nfe) {
-                providedValidPrice = false;
-                view.printLine(view.invalidPrice);
-            }
-
-        } while(!providedValidPrice);
-
-        ArtifactModel artifact = new ArtifactModel(name, description, price);
-        assignArtifactToCategory(artifact);
-    }
-
     private Group<String> getAllowedArtifactNames() {
 
         ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
@@ -337,36 +310,4 @@ public class ArtifactStoreController{
         }
     }
 
-    public void assignArtifactToCategory(ArtifactModel artifact){
-        ArtifactStoreView view = new ArtifactStoreView();
-        ArtifactDaoImpl dao = new ArtifactDaoImpl();
-
-        Group<String> possibleGroupNames = null;
-        try {
-
-            possibleGroupNames = dao.getArtifactGroupNames();
-        } catch (SQLException e) {
-
-            view.printSQLException(e);
-        }
-
-        Iterator<String> iter = possibleGroupNames.getIterator();
-        view.printLine(view.chooseGroup);
-
-        String groupsToChooseFrom = "";
-        int index = 0;
-        while(iter.hasNext()){
-            groupsToChooseFrom += Integer.toString(index) + " " + iter.next() + "\n";
-            index++;
-        }
-
-        view.printLine(groupsToChooseFrom);
-        String desiredGroupName = view.getStringFromUserInput(view.artifactNameQuestion);
-        try {
-
-            dao.addArtifact(artifact, desiredGroupName);
-        } catch (SQLException e) {
-            view.printSQLException(e);
-        }
-    }
 }

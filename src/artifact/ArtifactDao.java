@@ -12,8 +12,9 @@ public interface ArtifactDao{
     ArtifactModel getArtifact(String name) throws SQLException;
     Group<String> getArtifactGroupNames() throws SQLException;
     Group<ArtifactModel> getArtifactGroup(String groupName) throws SQLException;
-    void addArtifact(ArtifactModel artifact, String groupName) throws SQLException ;
+    void addArtifact(ArtifactModel artifact) throws SQLException ;
     void updateArtifact(ArtifactModel artifact) throws SQLException;
     void addArtifactGroup(Group<ArtifactModel> group) throws SQLException;
     boolean deleteArtifact(ArtifactModel artifact) throws SQLException;
+    void addArtifactAdherence(String name, String groupName) throws SQLException;
 }

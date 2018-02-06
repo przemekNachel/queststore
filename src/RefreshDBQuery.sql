@@ -153,6 +153,7 @@ VALUES
   ('quest_extra'),
   ('artifact_basic'),
   ('artifact_magic'),
+  ('artifacts'),
   ('codecoolers'),
   ('mentors'),
   ('admins');
