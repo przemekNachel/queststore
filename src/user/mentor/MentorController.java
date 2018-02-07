@@ -94,6 +94,22 @@ public class MentorController {
         }
     }
 
+    private void displayAllQuests() {
+        QuestDaoImpl questDao = new QuestDaoImpl();
+
+        try {
+            Group<Group<QuestModel>> questCollection = questDao.getAllQuests();
+            view.printLine("\n--- Available Quests ---");
+            for(Group<QuestModel> questGroups : questCollection) {
+                for (QuestModel quest : questGroups) {
+                    view.printLine(quest.getName());
+                }
+            }
+        } catch (SQLException e) {
+            view.printSQLException(e);
+        }
+    }
+
     private void assignCodecoolerToGroup() {
         UserDaoImpl userDao = new UserDaoImpl();
 
@@ -312,7 +328,6 @@ public class MentorController {
     }
 
     private void markCodecoolerArtifactUsage() {
-
         MentorView view = new MentorView();
 
         // get user.codecooler artifact usage of whom is to be marked
