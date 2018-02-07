@@ -33,7 +33,7 @@ public class AdminController{
         view = new AdminView(adminMenu);
     }
 
-    public void createMentor() {
+    private void createMentor() {
 
         UserDaoImpl dao = new UserDaoImpl();
         String name = this.view.getStringFromUserInput(view.mentorNameQuestion);
@@ -46,7 +46,7 @@ public class AdminController{
             MentorModel mentor = new MentorModel(new RawUser(Role.MENTOR, name, email, password, mentorGroups));
 
             dao.addUser(mentor);
-//            mentorsGroup.add(mentor);
+            mentorsGroup.add(mentor);
         } catch (SQLException e) {
             view.printSQLException(e);
         }
@@ -120,6 +120,7 @@ public class AdminController{
     public void createGroup() {
 
         UserService userSvc = new UserService();
+
         String groupName = view.getStringFromUserInput(view.groupNameQuestion);
         Group<User> newGroup = new Group<>(groupName);
         userSvc.addUserGroup(newGroup);
@@ -153,7 +154,6 @@ public class AdminController{
         userSvc.updateUser(mentor);
     }
 
-
     public String getGroupsDisplay(){
         UserService userSvc = new UserService();
         Group<String> groupNames = userSvc.getUserGroupNames();
@@ -167,6 +167,7 @@ public class AdminController{
 
     public String getMentorDisplay() {
         UserService userSvc = new UserService();
+  
         String mentorName = view.getStringFromUserInput(view.mentorNameQuestion);
 
         User mentor = userSvc.getUser(mentorName);
@@ -177,7 +178,7 @@ public class AdminController{
         return view.noMentorOfSuchName;
     }
 
-    public void createLevel() {
+    private void createLevel() {
 
         LevelService levelService = new LevelService();
         levelService.initializeLevels();
@@ -188,27 +189,7 @@ public class AdminController{
             view.printLine(Integer.toString(entry.getKey()) + "   " + entry.getValue());
         }
         String lvlName = view.getStringFromUserInput(view.levelNameQuestion);
-        Integer thr = getInt(view.levelTresholdQuestion);
+        Integer thr = view.getIntFromUserInput(view.levelTresholdQuestion); // might need to be in loop in case of ivalid int input
     }
 
-    private Integer getInt(String prompt) {
-
-      Integer result = null;
-      boolean validInputProvided;
-      do {
-
-        validInputProvided = true;
-        try {
-
-          result = Integer.valueOf(view.getStringFromUserInput(prompt));
-
-        } catch (NumberFormatException nfe) {
-
-            validInputProvided = false;
-            view.printLine("  Invalid input.");
-        }
-      } while(!validInputProvided);
-
-      return result;
-    }
 }

@@ -29,7 +29,12 @@ public class MentorController {
                 new MenuOption("4", "Mark codecooler's artifact usage"),
                 new MenuOption("5", "Create artifact"),
                 new MenuOption("6", "Create quest"),
-                new MenuOption("7", "Display all artifacts")
+                new MenuOption("7", "Display all artifacts"),
+                new MenuOption("8", "Update artifact"),
+                new MenuOption("9", "Remove artifact"),
+                new MenuOption("10", "Display all quests"),
+                new MenuOption("11", "Update quest"),
+                new MenuOption("12", "Delete quest")
         );
 
         view = new MentorView(mentorMenu);
@@ -76,6 +81,20 @@ public class MentorController {
             case "7":
                 displayAllArtifacts();
                 break;
+            case "8":
+                updateArtifact();
+            case "9":
+                removeArtifact();
+                break;
+            case "10":
+                displayAllQuests();
+                break;
+            case "11":
+                updateQuest();
+                break;
+            case "12":
+                removeQuest();
+                break;
         }
     }
 
@@ -88,6 +107,22 @@ public class MentorController {
             for(Group<ArtifactModel> artifactGroups : artifactCollection) {
                 for (ArtifactModel artifact : artifactGroups) {
                     view.printLine(artifact.getName());
+                }
+            }
+        } catch (SQLException e) {
+            view.printSQLException(e);
+        }
+    }
+
+    private void displayAllQuests() {
+        QuestDaoImpl questDao = new QuestDaoImpl();
+
+        try {
+            Group<Group<QuestModel>> questCollection = questDao.getAllQuests();
+            view.printLine("\n--- Available Quests ---");
+            for(Group<QuestModel> questGroups : questCollection) {
+                for (QuestModel quest : questGroups) {
+                    view.printLine(quest.getName());
                 }
             }
         } catch (SQLException e) {
@@ -111,12 +146,30 @@ public class MentorController {
         }
     }
 
+    // Right now forces user to update both description and price. Can be improved to choose one or another with switch case.
+    private void updateArtifact() {
+        ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
+        displayAllArtifacts();
+        try {
+            ArtifactModel artifact = artifactDao.getArtifactByName(view.getStringFromUserInput(view.chooseArtifactNameQuestion));
+
+            String artifactDesc = view.getStringFromUserInput(view.artifactDescQuestion);
+            Integer artifactPrice = view.getIntFromUserInput(view.artifactPriceQuestion);
+
+            ArtifactModel updatedArtifact = new ArtifactModel(artifact.getName(), artifactDesc, artifactPrice);
+            artifactDao.updateArtifact(updatedArtifact);
+
+        } catch (SQLException e){
+            view.printSQLException(e);
+        }
+    }
+
     private void createArtifact() {
 
         ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
         String name = view.getStringFromUserInput(view.artifactNameQuestion);
         String desc = view.getStringFromUserInput(view.artifactDescQuestion);
-        Integer price = getInt(view.artifactPriceQuestion);
+        Integer price = view.getIntFromUserInput(view.artifactPriceQuestion);
         ArtifactModel newArtifact = new ArtifactModel(name, desc, price);
 
         try {
@@ -140,12 +193,52 @@ public class MentorController {
         }
     }
 
+    private void removeArtifact() {
+        ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
+        displayAllArtifacts();
+        try {
+            ArtifactModel artifact = artifactDao.getArtifactByName(view.getStringFromUserInput(view.artifactNameQuestion));
+            artifactDao.deleteArtifact(artifact);
+        } catch (SQLException e) {
+            view.printSQLException(e);
+        }
+    }
+
+    private void removeQuest() {
+        QuestDaoImpl questDao = new QuestDaoImpl();
+        displayAllQuests();
+        try {
+            QuestModel quest = questDao.getQuest(view.getStringFromUserInput(view.questNameQuestion));
+            questDao.deleteQuest(quest);
+        } catch (SQLException e) {
+            view.printSQLException(e);
+        }
+    }
+
+    private void updateQuest() {
+        QuestDaoImpl questDao = new QuestDaoImpl();
+        displayAllArtifacts();
+        try {
+            QuestModel quest = questDao.getQuest(view.getStringFromUserInput(view.chooseQuestNameQuestion));
+
+            String questDesc = view.getStringFromUserInput(view.questDescQuestion);
+            Integer questPrice = view.getIntFromUserInput(view.questPriceQuestion);
+
+            QuestModel updatedQuest = new QuestModel(quest.getName(), questDesc, questPrice);
+            questDao.updateQuest(updatedQuest);
+
+        } catch (SQLException e){
+            view.printSQLException(e);
+        }
+
+    }
+
     private void createQuest() {
 
         QuestDaoImpl questDao = new QuestDaoImpl();
         String name = view.getStringFromUserInput(view.questNameQuestion);
         String desc = view.getStringFromUserInput(view.questDescQuestion);
-        Integer reward = getInt(view.questPriceQuestion);
+        Integer reward = view.getIntFromUserInput(view.questPriceQuestion);
         QuestModel newQuest = new QuestModel(name, desc, reward);
 
         try {
@@ -199,73 +292,73 @@ public class MentorController {
 
     private void markCodecoolerQuestCompletion() {
 
-      UserDaoImpl userDao = new UserDaoImpl();
-      quest.QuestDaoImpl questDao = new quest.QuestDaoImpl();
+        UserDaoImpl userDao = new UserDaoImpl();
+        quest.QuestDaoImpl questDao = new quest.QuestDaoImpl();
 
-      // get quest group names ...
-      Group<String> allowedQuestNames = new Group<>("allowed quest name user input");
-      Group<String> questGroupNames = null;
-      try {
+        // get quest group names ...
+        Group<String> allowedQuestNames = new Group<>("allowed quest name user input");
+        Group<String> questGroupNames = null;
+        try {
 
-        questGroupNames = questDao.getQuestGroupNames();
-      } catch (SQLException sqle) {
+            questGroupNames = questDao.getQuestGroupNames();
+        } catch (SQLException sqle) {
 
-        view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
-        return;
-      }
+            view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+            return;
+        }
 
-      // ... to retrieve particular quest names
-      String groupsFormatted = "";
-      for (String groupName : questGroupNames) {
+        // ... to retrieve particular quest names
+        String groupsFormatted = "";
+        for (String groupName : questGroupNames) {
 
-          Group<quest.QuestModel> questGroup;
-          try {
+            Group<quest.QuestModel> questGroup;
+            try {
 
-              questGroup = questDao.getQuestGroup(groupName);
-          } catch (SQLException sqle) {
+                questGroup = questDao.getQuestGroup(groupName);
+            } catch (SQLException sqle) {
 
-              view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
-              return;
-          }
+                view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+                return;
+            }
 
-          groupsFormatted += "\n" + groupName + " :\n";
-          for (quest.QuestModel currentQuest : questGroup) {
+            groupsFormatted += "\n" + groupName + " :\n";
+            for (quest.QuestModel currentQuest : questGroup) {
 
-              groupsFormatted += "*" + currentQuest.getName() + "\n";
-              allowedQuestNames.add(currentQuest.getName());
-          }
-      }
+                groupsFormatted += "*" + currentQuest.getName() + "\n";
+                allowedQuestNames.add(currentQuest.getName());
+            }
+        }
 
-      view.printLine(view.availableQuests);
-      view.printLine(groupsFormatted);
+        view.printLine(view.availableQuests);
+        view.printLine(groupsFormatted);
 
-      // get the quest to be checked
-      String questName = null;
-      boolean providedValidQuestName = false;
-      do {
+        // get the quest to be checked
+        String questName = null;
+        boolean providedValidQuestName = false;
+        do {
 
-         questName = view.getStringFromUserInput(view.markQuestNameQuestion);
-         if (allowedQuestNames.contains(questName)) {
+            questName = view.getStringFromUserInput(view.markQuestNameQuestion);
+            if (allowedQuestNames.contains(questName)) {
 
-            providedValidQuestName = true;
-         } else {
-            view.printLine(view.questNotFoundError);
-         }
-      } while(!providedValidQuestName);
+                providedValidQuestName = true;
+            } else {
+                view.printLine(view.questNotFoundError);
+            }
+        } while(!providedValidQuestName);
 
-      // get quest to be marked
-      quest.QuestModel quest;
-      try {
+        // get quest to be marked
+        quest.QuestModel quest;
+        try {
 
-        quest = questDao.getQuest(questName);
-      } catch (SQLException sqle) {
-          view.printLine(sqle.getMessage());
-          return;
-      }
-      // get a user.codecooler to be marked
-      CodecoolerModel codecooler = getCodecooler();
+            quest = questDao.getQuest(questName);
+        } catch (SQLException sqle) {
+            view.printLine(sqle.getMessage());
+            return;
+        }
+        // get a user.codecooler to be marked
+        CodecoolerModel codecooler = getCodecooler();
 
-      markQuest(codecooler, quest);
+        markQuest(codecooler, quest);
     }
 
     private void markQuest(CodecoolerModel codecooler, quest.QuestModel quest) {
@@ -284,7 +377,7 @@ public class MentorController {
             UserDaoImpl userDao = new UserDaoImpl();
             try {
 
-              userDao.updateUser(codecooler);
+                userDao.updateUser(codecooler);
             } catch (SQLException e) {
                 view.printLine(e.getMessage());
             }
@@ -294,55 +387,54 @@ public class MentorController {
     }
 
     private void markCodecoolerArtifactUsage() {
+        MentorView view = new MentorView();
 
-      MentorView view = new MentorView();
+        // get user.codecooler artifact usage of whom is to be marked
+        CodecoolerModel codecooler = getCodecooler();
 
-      // get user.codecooler artifact usage of whom is to be marked
-      CodecoolerModel codecooler = getCodecooler();
+        // get artifact to be marked
+        Group<String> allowedArtifactNames = new Group<>("allowed artifact name user input");
+        Group<ArtifactModel> userArtifacts = codecooler.getCodecoolerArtifacts();
+        String artifactsFormatted = "Artifacts of codecooler " + codecooler.getName() + "\n\n:";
+        for (ArtifactModel currentArtifact : userArtifacts) {
 
-      // get artifact to be marked
-      Group<String> allowedArtifactNames = new Group<>("allowed artifact name user input");
-      Group<ArtifactModel> userArtifacts = codecooler.getCodecoolerArtifacts();
-      String artifactsFormatted = "Artifacts of codecooler " + codecooler.getName() + "\n\n:";
-      for (ArtifactModel currentArtifact : userArtifacts) {
+            artifactsFormatted += "*" + currentArtifact + "\n";
+            allowedArtifactNames.add(currentArtifact.getName());
+        }
 
-        artifactsFormatted += "*" + currentArtifact + "\n";
-        allowedArtifactNames.add(currentArtifact.getName());
-      }
+        view.printLine(artifactsFormatted);
 
-      view.printLine(artifactsFormatted);
+        // get the name of the artifact to be marked
+        String artifactName = null;
+        boolean providedValidArtifactName = false;
+        do {
 
-      // get the name of the artifact to be marked
-      String artifactName = null;
-      boolean providedValidArtifactName = false;
-      do {
+            artifactName = view.getStringFromUserInput(view.artifactNameQuestion);
+            if (allowedArtifactNames.contains(artifactName)) {
 
-          artifactName = view.getStringFromUserInput(view.artifactNameQuestion);
-          if (allowedArtifactNames.contains(artifactName)) {
+                providedValidArtifactName = true;
+            } else {
+                view.printLine(view.artifactNotFoundError);
+            }
 
-              providedValidArtifactName = true;
-          } else {
-              view.printLine(view.artifactNotFoundError);
-          }
+        } while(!providedValidArtifactName);
 
-      } while(!providedValidArtifactName);
+        String input = "";
+        while (!input.equals("Y") && !input.equals("N")) {
 
-      String input = "";
-      while (!input.equals("Y") && !input.equals("N")) {
+            input = view.getStringFromUserInput("  Provide Y to mark as used, N as unused: ");
+        }
 
-          input = view.getStringFromUserInput("  Provide Y to mark as used, N as unused: ");
-      }
+        boolean usageStatus = input.equals("Y");
+        codecooler.getArtifact(artifactName).setUsageStatus(usageStatus);
+        UserDaoImpl userDao = new UserDaoImpl();
+        try {
 
-      boolean usageStatus = input.equals("Y");
-      codecooler.getArtifact(artifactName).setUsageStatus(usageStatus);
-      UserDaoImpl userDao = new UserDaoImpl();
-      try {
+            userDao.updateUser(codecooler);
+        } catch (SQLException e) {
 
-          userDao.updateUser(codecooler);
-      } catch (SQLException e) {
-
-          view.printSQLException(e);
-      }
+            view.printSQLException(e);
+        }
 
     }
 
@@ -366,24 +458,4 @@ public class MentorController {
         return (CodecoolerModel)user;
     }
 
-    private Integer getInt(String prompt) { // Remove this and where getInt is used, add userView method "getIntFromUserInput"
-
-        Integer result = null;
-        boolean validInputProvided;
-        do {
-
-            validInputProvided = true;
-            try {
-
-                result = Integer.valueOf(view.getStringFromUserInput(prompt));
-
-            } catch (NumberFormatException nfe) {
-
-                validInputProvided = false;
-                view.printLine("  Invalid input.");
-            }
-        } while(!validInputProvided);
-
-        return result;
-    }
 }
