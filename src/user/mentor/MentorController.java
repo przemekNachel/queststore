@@ -240,73 +240,73 @@ public class MentorController {
 
     private void markCodecoolerQuestCompletion() {
 
-      UserDaoImpl userDao = new UserDaoImpl();
-      quest.QuestDaoImpl questDao = new quest.QuestDaoImpl();
+        UserDaoImpl userDao = new UserDaoImpl();
+        quest.QuestDaoImpl questDao = new quest.QuestDaoImpl();
 
-      // get quest group names ...
-      Group<String> allowedQuestNames = new Group<>("allowed quest name user input");
-      Group<String> questGroupNames = null;
-      try {
+        // get quest group names ...
+        Group<String> allowedQuestNames = new Group<>("allowed quest name user input");
+        Group<String> questGroupNames = null;
+        try {
 
-        questGroupNames = questDao.getQuestGroupNames();
-      } catch (SQLException sqle) {
+            questGroupNames = questDao.getQuestGroupNames();
+        } catch (SQLException sqle) {
 
-        view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
-        return;
-      }
+            view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+            return;
+        }
 
-      // ... to retrieve particular quest names
-      String groupsFormatted = "";
-      for (String groupName : questGroupNames) {
+        // ... to retrieve particular quest names
+        String groupsFormatted = "";
+        for (String groupName : questGroupNames) {
 
-          Group<quest.QuestModel> questGroup;
-          try {
+            Group<quest.QuestModel> questGroup;
+            try {
 
-              questGroup = questDao.getQuestGroup(groupName);
-          } catch (SQLException sqle) {
+                questGroup = questDao.getQuestGroup(groupName);
+            } catch (SQLException sqle) {
 
-              view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
-              return;
-          }
+                view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
+                return;
+            }
 
-          groupsFormatted += "\n" + groupName + " :\n";
-          for (quest.QuestModel currentQuest : questGroup) {
+            groupsFormatted += "\n" + groupName + " :\n";
+            for (quest.QuestModel currentQuest : questGroup) {
 
-              groupsFormatted += "*" + currentQuest.getName() + "\n";
-              allowedQuestNames.add(currentQuest.getName());
-          }
-      }
+                groupsFormatted += "*" + currentQuest.getName() + "\n";
+                allowedQuestNames.add(currentQuest.getName());
+            }
+        }
 
-      view.printLine(view.availableQuests);
-      view.printLine(groupsFormatted);
+        view.printLine(view.availableQuests);
+        view.printLine(groupsFormatted);
 
-      // get the quest to be checked
-      String questName = null;
-      boolean providedValidQuestName = false;
-      do {
+        // get the quest to be checked
+        String questName = null;
+        boolean providedValidQuestName = false;
+        do {
 
-         questName = view.getStringFromUserInput(view.markQuestNameQuestion);
-         if (allowedQuestNames.contains(questName)) {
+            questName = view.getStringFromUserInput(view.markQuestNameQuestion);
+            if (allowedQuestNames.contains(questName)) {
 
-            providedValidQuestName = true;
-         } else {
-            view.printLine(view.questNotFoundError);
-         }
-      } while(!providedValidQuestName);
+                providedValidQuestName = true;
+            } else {
+                view.printLine(view.questNotFoundError);
+            }
+        } while(!providedValidQuestName);
 
-      // get quest to be marked
-      quest.QuestModel quest;
-      try {
+        // get quest to be marked
+        quest.QuestModel quest;
+        try {
 
-        quest = questDao.getQuest(questName);
-      } catch (SQLException sqle) {
-          view.printLine(sqle.getMessage());
-          return;
-      }
-      // get a user.codecooler to be marked
-      CodecoolerModel codecooler = getCodecooler();
+            quest = questDao.getQuest(questName);
+        } catch (SQLException sqle) {
+            view.printLine(sqle.getMessage());
+            return;
+        }
+        // get a user.codecooler to be marked
+        CodecoolerModel codecooler = getCodecooler();
 
-      markQuest(codecooler, quest);
+        markQuest(codecooler, quest);
     }
 
     private void markQuest(CodecoolerModel codecooler, quest.QuestModel quest) {
@@ -325,7 +325,7 @@ public class MentorController {
             UserDaoImpl userDao = new UserDaoImpl();
             try {
 
-              userDao.updateUser(codecooler);
+                userDao.updateUser(codecooler);
             } catch (SQLException e) {
                 view.printLine(e.getMessage());
             }
@@ -336,54 +336,54 @@ public class MentorController {
 
     private void markCodecoolerArtifactUsage() {
 
-      MentorView view = new MentorView();
+        MentorView view = new MentorView();
 
-      // get user.codecooler artifact usage of whom is to be marked
-      CodecoolerModel codecooler = getCodecooler();
+        // get user.codecooler artifact usage of whom is to be marked
+        CodecoolerModel codecooler = getCodecooler();
 
-      // get artifact to be marked
-      Group<String> allowedArtifactNames = new Group<>("allowed artifact name user input");
-      Group<ArtifactModel> userArtifacts = codecooler.getCodecoolerArtifacts();
-      String artifactsFormatted = "Artifacts of codecooler " + codecooler.getName() + "\n\n:";
-      for (ArtifactModel currentArtifact : userArtifacts) {
+        // get artifact to be marked
+        Group<String> allowedArtifactNames = new Group<>("allowed artifact name user input");
+        Group<ArtifactModel> userArtifacts = codecooler.getCodecoolerArtifacts();
+        String artifactsFormatted = "Artifacts of codecooler " + codecooler.getName() + "\n\n:";
+        for (ArtifactModel currentArtifact : userArtifacts) {
 
-        artifactsFormatted += "*" + currentArtifact + "\n";
-        allowedArtifactNames.add(currentArtifact.getName());
-      }
+            artifactsFormatted += "*" + currentArtifact + "\n";
+            allowedArtifactNames.add(currentArtifact.getName());
+        }
 
-      view.printLine(artifactsFormatted);
+        view.printLine(artifactsFormatted);
 
-      // get the name of the artifact to be marked
-      String artifactName = null;
-      boolean providedValidArtifactName = false;
-      do {
+        // get the name of the artifact to be marked
+        String artifactName = null;
+        boolean providedValidArtifactName = false;
+        do {
 
-          artifactName = view.getStringFromUserInput(view.artifactNameQuestion);
-          if (allowedArtifactNames.contains(artifactName)) {
+            artifactName = view.getStringFromUserInput(view.artifactNameQuestion);
+            if (allowedArtifactNames.contains(artifactName)) {
 
-              providedValidArtifactName = true;
-          } else {
-              view.printLine(view.artifactNotFoundError);
-          }
+                providedValidArtifactName = true;
+            } else {
+                view.printLine(view.artifactNotFoundError);
+            }
 
-      } while(!providedValidArtifactName);
+        } while(!providedValidArtifactName);
 
-      String input = "";
-      while (!input.equals("Y") && !input.equals("N")) {
+        String input = "";
+        while (!input.equals("Y") && !input.equals("N")) {
 
-          input = view.getStringFromUserInput("  Provide Y to mark as used, N as unused: ");
-      }
+            input = view.getStringFromUserInput("  Provide Y to mark as used, N as unused: ");
+        }
 
-      boolean usageStatus = input.equals("Y");
-      codecooler.getArtifact(artifactName).setUsageStatus(usageStatus);
-      UserDaoImpl userDao = new UserDaoImpl();
-      try {
+        boolean usageStatus = input.equals("Y");
+        codecooler.getArtifact(artifactName).setUsageStatus(usageStatus);
+        UserDaoImpl userDao = new UserDaoImpl();
+        try {
 
-          userDao.updateUser(codecooler);
-      } catch (SQLException e) {
+            userDao.updateUser(codecooler);
+        } catch (SQLException e) {
 
-          view.printSQLException(e);
-      }
+            view.printSQLException(e);
+        }
 
     }
 
