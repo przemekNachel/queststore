@@ -122,13 +122,15 @@ public class ArtifactStoreController{
         UserService userSvc = new UserService();
 
         // get all user groups to choose from and display them
-        Group<String> allowedGroupNames = userSvc.getUserGroupNames();
+        Group<String> allowedGroupNames = codecooler.getAssociatedGroupNames();
 
         // get group which will crowd-fund the artifact
         Group<CodecoolerModel> codecoolers = null;
         boolean providedExistentGroupName = false;
         boolean wantToBuyAlone = false;
+        String groupsDisplay = "\n\n  Groups that can crowd-fund this purchase: \n\n   " + codecooler.getCodecoolerGroupDisplay() + "\n";
         do {
+            view.printLine(groupsDisplay);
             String consumerGroupName = view.getStringFromUserInput(view.chooseGroup);
             if (allowedGroupNames.contains(consumerGroupName)) {
 
@@ -210,13 +212,12 @@ public class ArtifactStoreController{
         Integer alignedPrice = artifactPrice - (artifactPrice % divideAmong);
         Integer share = alignedPrice / divideAmong;
 
-        Iterator<CodecoolerModel> iter = consumers.getIterator();
         boolean allCanAfford = true;
-        while (iter.hasNext()) {
+        for (CodecoolerModel codecooler : consumers) {
 
-            WalletService currentWallet = iter.next().getWallet();
-            allCanAfford &= currentWallet.canAfford(share);
+            allCanAfford &= codecooler.getWallet().canAfford(share);
         }
+
 
         if (!allCanAfford) {
 
@@ -224,11 +225,9 @@ public class ArtifactStoreController{
             return null;
         }
 
-        iter = consumers.getIterator();
-        while (iter.hasNext()) {
+        for (CodecoolerModel codecooler : consumers) {
 
-            WalletService currentWallet = iter.next().getWallet();
-            currentWallet.withdraw(share);
+            codecooler.getWallet().withdraw(share);
         }
         return artifact;
     }
