@@ -31,7 +31,8 @@ public class MentorController {
                 new MenuOption("7", "Display all artifacts"),
                 new MenuOption("8", "Update artifact"),
                 new MenuOption("9", "Remove artifact"),
-                new MenuOption("10", "Display all quests")
+                new MenuOption("10", "Display all quests"),
+                new MenuOption("11", "Update quests")
         );
 
         view = new MentorView(mentorMenu);
