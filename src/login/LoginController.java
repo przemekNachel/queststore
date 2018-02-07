@@ -6,6 +6,7 @@ import user.codecooler.CodecoolerController;
 import user.codecooler.CodecoolerModel;
 import console.menu.AbstractConsoleView;
 import user.mentor.MentorController;
+import user.service.UserService;
 import user.user.Role;
 import user.user.User;
 import user.user.UserDao;
@@ -82,17 +83,9 @@ public class LoginController {
 
     public User login(String nickname, String password) {
 
-        UserDao userDao = new UserDaoImpl();
+        UserService userSvc = new UserService();
 
-        User user;
-        try {
-
-            user = userDao.getUser(nickname);
-        } catch (SQLException sqle) {
-
-            System.err.println( sqle.getClass().getName() + ": " + sqle.getMessage() );
-            return null;
-        }
+        User user = userSvc.getUser(nickname);
 
         if (user != null && user.getPassword().equals(password)) {
             return user;
