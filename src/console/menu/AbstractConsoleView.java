@@ -45,13 +45,15 @@ public abstract class AbstractConsoleView {
         System.err.println(e.getClass().getName() + ": " + e.getMessage());
     }
 
-    public int getIntFromUserInput(String prompt) {
+    public Integer getIntFromUserInput(String prompt) {
         print(prompt);
+        Integer userInput = null;
         try {
-            return Integer.valueOf(getStringFromUserInput(prompt));
+             userInput = Integer.valueOf(getStringFromUserInput(prompt));
         } catch (Exception e) {
            System.out.println("Invalid Integer input.");
         }
+        return userInput;
     }
 
     public String getStringFromUserInput(String prompt) {
