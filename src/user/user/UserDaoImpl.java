@@ -38,7 +38,7 @@ public class UserDaoImpl implements UserDao{
           role = convertRole(extractRole.getString("privilege_name"));
           userId = extractRole.getInt("user_id");
 
-          tempUsr = createUser(role, userId);
+          tempUsr = createUserObject(role, userId);
         }
 
 
@@ -138,7 +138,7 @@ public class UserDaoImpl implements UserDao{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
-
+        boolean addedAdherence = false;
         try{
         int userId = getUserId(user.getName());
         int groupId = getGroupId(groupName);
@@ -148,13 +148,12 @@ public class UserDaoImpl implements UserDao{
                 "VALUES (" + userId + ", " + groupId + ");";
             statement.executeUpdate(query);
             connect.commit();
-            close(connect, statement);
-            return true;
+            addedAdherence =  true;
         }
       }finally{
         close(connect, statement);
       }
-        return false;
+        return addedAdherence;
     }
 
     public void addUserGroup(Group<User> group) throws SQLException{
@@ -195,7 +194,7 @@ public class UserDaoImpl implements UserDao{
 
     // helper methods for pubic methods
 
-    private RawUser createUser(Role role, int userId)  throws SQLException{
+    private RawUser createUserObject(Role role, int userId)  throws SQLException{
 
       Connection connect = establishConnection();
       Statement statement = connect.createStatement();
@@ -289,7 +288,7 @@ public class UserDaoImpl implements UserDao{
       try{
         String query = "SELECT DISTINCT group_name " +
                 "FROM group_names " +
-                "LEFT JOIN user_associations  " +
+                "JOIN user_associations  " +
                 "ON group_names.group_id=user_associations.group_id " +
                 "WHERE user_associations.user_id=" + userId +";";
 
@@ -297,7 +296,6 @@ public class UserDaoImpl implements UserDao{
 
         String resultGroupName;
         while(results.next()){
-
             resultGroupName = results.getString("group_name");
             associatedGroups.add(resultGroupName);
         }
