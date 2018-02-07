@@ -75,6 +75,9 @@ public class MentorController {
             case "7":
                 displayAllArtifacts();
                 break;
+            case "9":
+                removeArtifact();
+                break;
         }
     }
 
