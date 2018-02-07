@@ -83,6 +83,7 @@ public class MentorController {
                 break;
             case "8":
                 updateArtifact();
+                break;
             case "9":
                 removeArtifact();
                 break;
@@ -217,7 +218,7 @@ public class MentorController {
 
     private void updateQuest() {
         QuestDaoImpl questDao = new QuestDaoImpl();
-        displayAllArtifacts();
+        displayAllQuests();
         try {
             QuestModel quest = questDao.getQuest(view.getStringFromUserInput(view.chooseQuestNameQuestion));
 
