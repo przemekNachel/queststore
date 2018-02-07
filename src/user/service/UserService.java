@@ -65,7 +65,7 @@ public class UserService {
         return newUser;
     }
 
-    public void updateUser(User user) {
+    public boolean updateUser(User user) {
 
         UserDaoImpl userDao = new UserDaoImpl();
         int userID = -1;
@@ -75,6 +75,7 @@ public class UserService {
             userID = userDao.getUserId(user.getName());
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
 
         if (user.getRole() == Role.CODECOOLER) {
@@ -89,12 +90,13 @@ public class UserService {
                     artifactDao.updateUserArtifactsUsage(userID, artifact);
                 } catch (SQLException e) {
                     e.printStackTrace();
+                    return false;
                 }
             }
 
             new WalletDaoImpl().updateWallet(userID, codecooler.getWallet());
         }
-
+        return true;
     }
 
     private Group<User> getCastGroup(Group<User> beforeCast) {
@@ -109,30 +111,33 @@ public class UserService {
         return afterCast;
     }
 
+    public Group<User> getUserGroup(String groupName) {
+
+        Group<User> specializedGroup = null;
+        try {
+            specializedGroup = getCastGroup(new UserDaoImpl().getUserGroup(groupName));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return specializedGroup;
+    }
+
     public Group<Group<User>> getAllUsers() {
 
         Group<Group<User>> allUsers = new Group<>("all users");
 
-        UserDaoImpl userDao = new UserDaoImpl();
-
         Group<String> groupNames = null;
         try {
 
-            groupNames = userDao.getUserGroupNames();
+            groupNames = new UserDaoImpl().getUserGroupNames();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         for (String groupName : groupNames) {
 
-            try {
-                Group<User> specializedGroup = getCastGroup(userDao.getUserGroup(groupName));
-
-                allUsers.add(specializedGroup);
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            allUsers.add(getUserGroup(groupName));
         }
         return allUsers;
     }
