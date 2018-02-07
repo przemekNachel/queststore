@@ -5,6 +5,9 @@ import artifact.ArtifactDaoImpl;
 import user.user.UserDaoImpl;
 import user.user.User;
 import user.codecooler.CodecoolerModel;
+import user.mentor.MentorModel;
+import user.admin.AdminModel;
+
 import generic_group.Group;
 import user.wallet.WalletService;
 import user.wallet.WalletDaoImpl;
@@ -18,26 +21,29 @@ public class UserService {
 
         UserDaoImpl userDao = new UserDaoImpl();
         // todo: get user via user dao
-        RawUser user = null;//userDao.getUser(nickname);
+        RawUser rawUser = userDao.getUser(nickname);
+        int userID = userDao.getUserId(nickname);
+        User newUser = null;
 
-        switch (user.getRole()) {
+        switch (rawUser.getRole()) {
             case CODECOOLER:
-                // todo: get user artifacts via artifactdao if a codecooler
-                String userID = "";//userDao.getUserId(nickname);
+
                 Group<ArtifactModel> artifacts = null;//new ArtifactDaoImpl().getUserArtifacts(userID);
 
-                // todo: get user wallet via walletdao if a codecooler
                 WalletService wallet = new WalletDaoImpl().getWallet(userID);
 
-                user = new CodecoolerModel(user, wallet, artifacts);
+                newUser = new CodecoolerModel(rawUser, wallet, artifacts);
                 break;
 
             case MENTOR:
+                newUser = new MentorModel(rawUser);
+                break;
 
-
+            case ADMIN:
+                newUser = new AdminModel(rawUser);
                 break;
         }
-        return user;
+        return newUser;
     }
 
     public void updateUser(User user)  throws SQLException {
@@ -47,5 +53,30 @@ public class UserService {
         // todo: update user via artifactdao if a codecooler
 
         // todo: update user via walletdao if a codecooler
+    }
+
+    public Group<Group<User>> getAllUsers() {
+
+        Group<Group<User>> allUsers = new Group<>("all users");
+
+        UserDaoImpl userDao = new UserDaoImpl();
+
+        Group<String> groupNames = null;
+        try {
+
+            groupNames = userDao.getUserGroupNames();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        for (String groupName : groupNames) {
+
+            try {
+                allUsers.add(userDao.getUserGroup(groupName));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return allUsers;
     }
 }
