@@ -39,4 +39,6 @@ public class MentorView extends AbstractConsoleView {
     public String questPriceQuestion = "Provide quest price: ";
     public String questNotFoundError = "quest name not found";
     public String markQuestNameQuestion = "Provide quest name: ";
+    public String totalCoolcoins = "\n\n Total coolcoins owned: ";
+    public String avarageBalance = "\n Average coolcoins owned: ";
 }
