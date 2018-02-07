@@ -8,6 +8,7 @@ import user.user.Role;
 import user.user.User;
 import user.user.RawUser;
 import user.user.UserDao;
+import user.service.UserService;
 import user.user.UserDaoImpl;
 import level.Level;
 import level.LevelService;
@@ -102,83 +103,60 @@ public class AdminController{
         }
     }
 
-    private void assignMentorToGroup() {
-        UserDaoImpl userDao = new UserDaoImpl();
+    public void assignMentorToGroup() {
+        UserService userSvc = new UserService();
 
         String name = view.getStringFromUserInput(view.mentorNameQuestion);
         String groupName = view.getStringFromUserInput(view.groupNameQuestion);
-        User user = null;
-        try {
+        User user = userSvc.getUser(name);
 
-            user = userDao.getUser(name);
-        } catch (SQLException e) {
-            view.printSQLException(e);
-        }
-
-        boolean userAddedtoGroup = false;
-        try {
-            userAddedtoGroup = userDao.addUserAdherence(user, groupName);
-        } catch (SQLException e) {
-            view.printSQLException(e);
-        }
+        boolean userAddedtoGroup = userSvc.addUserAdherence(user, groupName);
 
         if (!userAddedtoGroup || user == null) {
             view.printLine(view.assignMentorToFroupError);
         }
     }
 
-    private void createGroup() {
-        UserDaoImpl userDao = new UserDaoImpl();
+    public void createGroup() {
+
+        UserService userSvc = new UserService();
+
         String groupName = view.getStringFromUserInput(view.groupNameQuestion);
-        Group<User> tmp = new Group<>(groupName);
-        try {
-            userDao.addUserGroup(tmp);
-        } catch (SQLException e) {
-            view.printSQLException(e);
-        }
+        Group<User> newGroup = new Group<>(groupName);
+        userSvc.addUserGroup(newGroup);
     }
 
-    private void editMentor() {
-        UserDaoImpl dao = new UserDaoImpl();
+    public void editMentor() {
+        UserService userSvc = new UserService();
+
         String mentorName = view.getStringFromUserInput(view.mentorNameQuestion);
 
-        User mentor = null;
-        try {
-
-            mentor = dao.getUser(mentorName);
-        } catch (SQLException e) {
-            view.printSQLException(e);
-        }
+        User mentor = userSvc.getUser(mentorName);
 
         String choice = view.getStringFromUserInput(view.mentorChangeQuestion);
-        if (choice.equals("1")) {
-            String name = view.getStringFromUserInput(view.mentorNameQuestion);
-            mentor.setName(name);
-        } else if (choice.equals("2")) {
-            String email = view.getStringFromUserInput(view.mentorEmailQuestion);
-            mentor.setEmail(email);
-        } else if (choice.equals("3")) {
-            String password = view.getStringFromUserInput(view.mentorPasswordQuestion);
-            mentor.setPassword(password);
-        } else {
-            view.printLine(view.noSuchOption);
+        switch (choice) {
+            case "1":
+                String name = view.getStringFromUserInput(view.mentorNameQuestion);
+                mentor.setName(name);
+                break;
+            case "2":
+                String email = view.getStringFromUserInput(view.mentorEmailQuestion);
+                mentor.setEmail(email);
+                break;
+            case "3":
+                String password = view.getStringFromUserInput(view.mentorPasswordQuestion);
+                mentor.setPassword(password);
+                break;
+            default:
+                view.printLine(view.noSuchOption);
+                break;
         }
-        try {
-
-            dao.updateUser(mentor);
-        } catch (SQLException e) {
-            view.printSQLException(e);
-        }
+        userSvc.updateUser(mentor);
     }
 
-    private String getGroupsDisplay(){
-        UserDaoImpl dao = new UserDaoImpl();
-        Group<String> groupNames = null;
-        try {
-            groupNames = dao.getUserGroupNames();
-        } catch (SQLException e) {
-            view.printSQLException(e);
-        }
+    public String getGroupsDisplay(){
+        UserService userSvc = new UserService();
+        Group<String> groupNames = userSvc.getUserGroupNames();
 
         String groupsFormatted = "";
         for (String name : groupNames) {
@@ -187,17 +165,12 @@ public class AdminController{
         return groupsFormatted;
     }
 
-    private String getMentorDisplay() {
-        UserDaoImpl dao = new UserDaoImpl();
+    public String getMentorDisplay() {
+        UserService userSvc = new UserService();
+  
         String mentorName = view.getStringFromUserInput(view.mentorNameQuestion);
 
-        User mentor = null;
-        try {
-
-            mentor = dao.getUser(mentorName);
-        } catch (SQLException e) {
-            view.printSQLException(e);
-        }
+        User mentor = userSvc.getUser(mentorName);
 
         if (mentor != null && mentor.getRole() == Role.MENTOR) {
             return mentor.toString();
