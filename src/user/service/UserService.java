@@ -2,6 +2,7 @@ package user.service;
 
 import artifact.ArtifactModel;
 import artifact.ArtifactDaoImpl;
+import user.user.Role;
 import user.user.UserDaoImpl;
 import user.user.User;
 import user.codecooler.CodecoolerModel;
@@ -55,11 +56,44 @@ public class UserService {
 
     public void updateUser(User user) {
 
+        UserDaoImpl userDao = new UserDaoImpl();
+        int userID = -1;
         // todo: update user via user dao
+        try {
+            userDao.updateUser(user);
+            userID = userDao.getUserId(user.getName());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-        // todo: update user via artifactdao if a codecooler
+        if (user.getRole() == Role.CODECOOLER) {
 
-        // todo: update user via walletdao if a codecooler
+            ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
+
+            CodecoolerModel codecooler = (CodecoolerModel)user;
+            // update codecooler artifacts
+            for (ArtifactModel artifact : codecooler.getCodecoolerArtifacts()) {
+
+                //artifactDao.updateUserArtifact(userID, artifact);
+            }
+
+            new WalletDaoImpl().updateWallet(userID, codecooler.getWallet());
+
+        }
+
+    }
+
+    private Group<User> getCastGroup(Group<User> beforeCast) {
+
+        Group<User> afterCast = new Group<>(beforeCast.getName());
+
+        for (User user : beforeCast) {
+
+            afterCast.add(getUser(user.getName()));
+            System.out.println(beforeCast.getName() + "   " + user.getName() + "   " + user.getRole());
+        }
+
+        return afterCast;
     }
 
     public Group<Group<User>> getAllUsers() {
@@ -79,7 +113,10 @@ public class UserService {
         for (String groupName : groupNames) {
 
             try {
-                allUsers.add(userDao.getUserGroup(groupName));
+                Group<User> specializedGroup = getCastGroup(userDao.getUserGroup(groupName));
+
+                allUsers.add(specializedGroup);
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
