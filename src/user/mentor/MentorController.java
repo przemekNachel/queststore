@@ -211,6 +211,17 @@ public class MentorController {
         }
     }
 
+    private void removeQuest() {
+        QuestDaoImpl questDao = new QuestDaoImpl();
+        displayAllQuests();
+        try {
+            QuestModel quest = questDao.getQuest(view.getStringFromUserInput(view.questNameQuestion));
+            questDao.deleteQuest(quest);
+        } catch (SQLException e) {
+            view.printSQLException(e);
+        }
+    }
+
     private void updateQuest() {
         QuestDaoImpl questDao = new QuestDaoImpl();
         displayAllArtifacts();
