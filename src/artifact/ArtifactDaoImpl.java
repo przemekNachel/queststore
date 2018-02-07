@@ -162,7 +162,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
     }
 
     @Override
-    public boolean deleteArtifact(ArtifactModel artifact) throws SQLException {
+    public void deleteArtifact(ArtifactModel artifact) throws SQLException {
         String artName = artifact.getName();
 
         Connection con = connectToDatabase();
@@ -176,7 +176,6 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
         stmt.close();
         con.close();
-        return true;
     }
 
     @Override
