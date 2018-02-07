@@ -35,21 +35,17 @@ public class AdminController{
 
     private void createMentor() {
 
-        UserDaoImpl dao = new UserDaoImpl();
+        UserService userSvc = new UserService();
         String name = this.view.getStringFromUserInput(view.mentorNameQuestion);
         String email = this.view.getStringFromUserInput(view.mentorEmailQuestion);
         String password = this.view.getStringFromUserInput(view.mentorPasswordQuestion);
 
-        try {
-            Group<String> mentorGroups = new Group<>("mentor groups");
-            mentorGroups.add("mentors");
-            MentorModel mentor = new MentorModel(new RawUser(Role.MENTOR, name, email, password, mentorGroups));
+        Group<String> mentorGroups = new Group<>("mentor groups");
+        mentorGroups.add("mentors");
+        MentorModel mentor = new MentorModel(new RawUser(Role.MENTOR, name, email, password, mentorGroups));
 
-            dao.addUser(mentor);
-            mentorsGroup.add(mentor);
-        } catch (SQLException e) {
-            view.printSQLException(e);
-        }
+        userSvc.addUser(mentor);
+
     }
 
     public void start() {
