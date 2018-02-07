@@ -31,6 +31,12 @@ public class UserService {
             e.printStackTrace();
         }
 
+        boolean userExists = rawUser != null;
+        if (!userExists) {
+
+            return null;
+        }
+
         User newUser = null;
 
         switch (rawUser.getRole()) {
@@ -75,7 +81,7 @@ public class UserService {
 
             ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
 
-            CodecoolerModel codecooler = (CodecoolerModel)user;
+            CodecoolerModel codecooler = (CodecoolerModel) user;
             // update codecooler artifacts
             for (ArtifactModel artifact : codecooler.getCodecoolerArtifacts()) {
 

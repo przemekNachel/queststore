@@ -39,7 +39,7 @@ public class WalletDaoImpl implements WalletDao {
         return balance < 0 ? null : new WalletService(balance);
     }
 
-    public void updateWallet(int userID, WalletService wallet) {
+    private void executeWalletUpdate(String updateQuery) {
 
         boolean succeeded = true;
         Connection connect = null;
@@ -49,10 +49,7 @@ public class WalletDaoImpl implements WalletDao {
             connect = establishConnection();
             statement = connect.createStatement();
 
-            String updateWallet = "INSERT INTO user_wallet(user_id, balance) " +
-                    "VALUES (" + userID + ", " + wallet.getBalance() + ");";
-
-            statement.executeUpdate(updateWallet);
+            statement.executeUpdate(updateQuery);
 
         } catch (SQLException e) {
 
@@ -72,20 +69,24 @@ public class WalletDaoImpl implements WalletDao {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void addWallet(int userID, WalletService wallet) {
+
+        String add = "INSERT INTO user_wallet(user_id, balance) " +
+                "VALUES (" + userID + ", " + wallet.getBalance() + ");";
+
+        executeWalletUpdate(add);
 
     }
 
-    private void upgradeWallet(int balance, int userId) throws SQLException{
+    public void updateWallet(int userID, WalletService wallet) {
 
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
 
-        String updateWallet = "UPDATE user_wallet " +
-                "SET balance=" + balance + " WHERE user_id=" + userId + ";";
+        String update = "UPDATE user_wallet " +
+                "SET balance=" + wallet.getBalance() + " WHERE user_id=" + userID + ";";
 
-        statement.executeUpdate(updateWallet);
-        connect.commit();
-        close(connect, statement);
+        executeWalletUpdate(update);
     }
 
     private Connection establishConnection() throws SQLException {
