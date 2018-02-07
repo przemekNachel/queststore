@@ -32,7 +32,8 @@ public class MentorController {
                 new MenuOption("8", "Update artifact"),
                 new MenuOption("9", "Remove artifact"),
                 new MenuOption("10", "Display all quests"),
-                new MenuOption("11", "Update quests")
+                new MenuOption("11", "Update quest"),
+                new MenuOption("12", "Delete quest")
         );
 
         view = new MentorView(mentorMenu);
@@ -89,6 +90,9 @@ public class MentorController {
                 break;
             case "11":
                 updateQuest();
+                break;
+            case "12":
+                removeQuest();
                 break;
         }
     }
