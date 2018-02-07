@@ -17,12 +17,19 @@ import java.sql.SQLException;
 
 public class UserService {
 
-    public User getUser(String nickname) throws SQLException {
+    public User getUser(String nickname) {
 
         UserDaoImpl userDao = new UserDaoImpl();
-        // todo: get user via user dao
-        RawUser rawUser = userDao.getUser(nickname);
-        int userID = userDao.getUserId(nickname);
+
+        RawUser rawUser = null;
+        int userID = 0;
+        try {
+            rawUser = userDao.getUser(nickname);
+            userID = userDao.getUserId(nickname);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         User newUser = null;
 
         switch (rawUser.getRole()) {
@@ -46,7 +53,7 @@ public class UserService {
         return newUser;
     }
 
-    public void updateUser(User user)  throws SQLException {
+    public void updateUser(User user) {
 
         // todo: update user via user dao
 
@@ -78,5 +85,46 @@ public class UserService {
             }
         }
         return allUsers;
+    }
+
+    public boolean addUserAdherence(User user, String groupName) {
+
+        boolean added = true;
+        try {
+            added = new UserDaoImpl().addUserAdherence(user, groupName);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            added = false;
+        }
+        return added;
+    }
+
+    public void addUserGroup(Group<User> newGroup) {
+
+        try {
+            new UserDaoImpl().addUserGroup(newGroup);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Group<String> getUserGroupNames() {
+
+        Group<String> groupNames = new Group<>("user group names");
+        try {
+            groupNames = new UserDaoImpl().getUserGroupNames();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return groupNames;
+    }
+
+    public void addUser(User user) {
+
+        try {
+            new UserDaoImpl().addUser(user);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

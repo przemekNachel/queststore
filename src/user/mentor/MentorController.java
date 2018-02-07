@@ -12,6 +12,7 @@ import user.codecooler.CodecoolerModel;
 import generic_group.Group;
 import user.user.*;
 import user.wallet.*;
+import user.service.UserService;
 
 import java.sql.*;
 import java.util.Iterator;
@@ -95,26 +96,14 @@ public class MentorController {
     }
 
     private void assignCodecoolerToGroup() {
-        UserDaoImpl userDao = new UserDaoImpl();
+        UserService userSvc = new UserService();
 
         String nickname = view.getStringFromUserInput(view.userNicknameQuestion);
         String groupName = view.getStringFromUserInput(view.userGroupQuestion);
 
-        User user = null;
-        try {
+        User user = userSvc.getUser(nickname);
 
-            user = userDao.getUser(nickname);
-        } catch (SQLException e) {
-
-            view.printSQLException(e);
-        }
-
-        boolean addUserAdherenceSuccess = false;
-        try{
-            addUserAdherenceSuccess = userDao.addUserAdherence(user, groupName);
-        } catch (SQLException e) {
-            view.printSQLException(e);
-        }
+        boolean addUserAdherenceSuccess = userSvc.addUserAdherence(user, groupName);
 
         if(!addUserAdherenceSuccess) {
 
@@ -181,7 +170,7 @@ public class MentorController {
     }
 
     private void createCodecooler() {
-        UserDaoImpl userDao = new UserDaoImpl();
+        UserService userSvc = new UserService();
 
         String nickname = view.getStringFromUserInput(view.userNicknameQuestion);
         String email = view.getStringFromUserInput(view.userEmailQuestion);
@@ -199,19 +188,12 @@ public class MentorController {
         Group<ArtifactModel> artifacts = new Group<>("user artifacts");
         CodecoolerModel codecooler = new CodecoolerModel(new RawUser(Role.CODECOOLER, nickname, email, password, studentGroups), wallet, artifacts);
 
-        User user = null;
-        try {
-
-            user = userDao.getUser(nickname);
-            // If user getter doesn't find given user, return null
-            if (user == null) {
-                userDao.addUser(codecooler);
-            }
-            else {
-                view.printLine(view.userAlreadyInDatabase);
-            }
-        } catch (SQLException e) {
-            view.printSQLException(e);
+        User user = userSvc.getUser(nickname);
+        // If user getter doesn't find given user, return null
+        if (user == null) {
+            userSvc.addUser(codecooler);
+        } else {
+            view.printLine(view.userAlreadyInDatabase);
         }
     }
 
@@ -366,19 +348,13 @@ public class MentorController {
 
     private CodecoolerModel getCodecooler() {
 
-        UserDaoImpl userDao = new UserDaoImpl();
+        UserService userSvc = new UserService();
         boolean validNameProvided = false;
         User user = null;
         do {
 
             String name = view.getStringFromUserInput(view.userNicknameQuestion);
-            try {
-
-                user = userDao.getUser(name);
-            } catch (SQLException sqle) {
-                view.printLine(sqle.getMessage());
-                return null;
-            }
+            user = userSvc.getUser(name);
 
             if (user != null && user.getRole() == Role.CODECOOLER) {
                 validNameProvided = true;

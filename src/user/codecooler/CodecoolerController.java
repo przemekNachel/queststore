@@ -55,7 +55,6 @@ public class CodecoolerController {
     }
 
     public void buyArtifact() {
-        UserDaoImpl userDao = new UserDaoImpl();
         ArtifactStoreController store = new ArtifactStoreController();
         store.buyProductProcess(currentUser);
     }
