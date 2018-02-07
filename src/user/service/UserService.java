@@ -168,10 +168,22 @@ public class UserService {
 
     public void addUser(User user) {
 
+        UserDaoImpl userDao = new UserDaoImpl();
+        int userID = -1;
         try {
-            new UserDaoImpl().addUser(user);
+            userDao.addUser(user);
+            userID = userDao.getUserId(user.getName());
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+
+        if (user.getRole() == Role.CODECOOLER) {
+
+            CodecoolerModel codecooler = (CodecoolerModel)user;
+
+            /* we don't add any artifacts - a stock codecooler does no have any*/
+
+            new WalletDaoImpl().addWallet(userID, codecooler.getWallet());
         }
     }
 }
