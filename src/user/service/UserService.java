@@ -83,6 +83,19 @@ public class UserService {
 
     }
 
+    private Group<User> getCastGroup(Group<User> beforeCast) {
+
+        Group<User> afterCast = new Group<>(beforeCast.getName());
+
+        for (User user : beforeCast) {
+
+            afterCast.add(getUser(user.getName()));
+            System.out.println(beforeCast.getName() + "   " + user.getName() + "   " + user.getRole());
+        }
+
+        return afterCast;
+    }
+
     public Group<Group<User>> getAllUsers() {
 
         Group<Group<User>> allUsers = new Group<>("all users");
@@ -100,7 +113,10 @@ public class UserService {
         for (String groupName : groupNames) {
 
             try {
-                allUsers.add(userDao.getUserGroup(groupName));
+                Group<User> specializedGroup = getCastGroup(userDao.getUserGroup(groupName));
+
+                allUsers.add(specializedGroup);
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
