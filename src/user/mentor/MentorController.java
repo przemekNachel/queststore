@@ -28,7 +28,8 @@ public class MentorController {
                 new MenuOption("4", "Mark codecooler's artifact usage"),
                 new MenuOption("5", "Create artifact"),
                 new MenuOption("6", "Create quest"),
-                new MenuOption("7", "Display all artifacts")
+                new MenuOption("7", "Display all artifacts"),
+                new MenuOption("9", "Remove artifact")
         );
 
         view = new MentorView(mentorMenu);
@@ -154,6 +155,16 @@ public class MentorController {
         }
     }
 
+    private void removeArtifact() {
+        ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
+        displayAllArtifacts();
+        try {
+            ArtifactModel artifact = artifactDao.getArtifactByName(view.getStringFromUserInput(view.artifactNameQuestion));
+            artifactDao.deleteArtifact(artifact);
+        } catch (SQLException e) {
+            view.printSQLException(e);
+        }
+    }
     private void createQuest() {
 
         QuestDaoImpl questDao = new QuestDaoImpl();
