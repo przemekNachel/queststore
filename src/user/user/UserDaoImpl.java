@@ -13,8 +13,13 @@ public class UserDaoImpl implements UserDao{
     private static String JDBC = "jdbc:sqlite:database/database.db";
 
     public RawUser getUser(String nickname) throws SQLException{
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
+
+      Connection connect = establishConnection();
+      Statement statement = connect.createStatement();
+      ResultSet extractRole = null;
+      RawUser tempUsr = null;
+
+      try{
 
         String extractRoleQuery = "SELECT users.user_id, user_privilege_levels.privilege_name "
         + "FROM users "
@@ -25,10 +30,8 @@ public class UserDaoImpl implements UserDao{
         + "ON users.user_id = user_roles.user_id "
         + "WHERE nickname='" + nickname + "';";
 
-        ResultSet extractRole = statement.executeQuery(extractRoleQuery);
-
+        extractRole = statement.executeQuery(extractRoleQuery);
         Role role;
-        RawUser tempUsr = null;
         int userId;
 
         while(extractRole.next()){
@@ -37,9 +40,13 @@ public class UserDaoImpl implements UserDao{
 
           tempUsr = createUser(role, userId);
         }
-        extractRole.close();
+
+
+      }finally{
+        close(extractRole);
         close(connect, statement);
-        return tempUsr;
+      }
+      return tempUsr;
     }
 
     public void addUser(User user) throws SQLException{
@@ -467,6 +474,12 @@ public class UserDaoImpl implements UserDao{
         if(connect != null){
             connect.close();
         }
+    }
+
+    private void close(ResultSet results) throws SQLException{
+      if(results != null){
+        results.close();
+      }
     }
 
 }
