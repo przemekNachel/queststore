@@ -35,7 +35,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
     }
 
     @Override
-    public ArtifactModel getArtifactByName(String name) throws SQLException {
+public ArtifactModel getArtifactByName(String name) throws SQLException {
         Connection con = connectToDatabase();
         Statement stmt = Objects.requireNonNull(con).createStatement();
 

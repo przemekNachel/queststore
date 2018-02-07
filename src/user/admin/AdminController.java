@@ -6,6 +6,7 @@ import generic_group.Group;
 import user.mentor.MentorModel;
 import user.user.Role;
 import user.user.User;
+import user.user.RawUser;
 import user.user.UserDao;
 import user.user.UserDaoImpl;
 import level.Level;
@@ -31,7 +32,7 @@ public class AdminController{
         view = new AdminView(adminMenu);
     }
 
-    public void createMentor() {
+    private void createMentor() {
 
         UserDaoImpl dao = new UserDaoImpl();
         String name = this.view.getStringFromUserInput(view.mentorNameQuestion);
@@ -39,11 +40,12 @@ public class AdminController{
         String password = this.view.getStringFromUserInput(view.mentorPasswordQuestion);
 
         try {
-            Group<User> mentorsGroup = dao.getUserGroup("mentors");
-            MentorModel mentor = new MentorModel(name, email, password, mentorsGroup);
+            Group<String> mentorGroups = new Group<>("mentor groups");
+            mentorGroups.add("mentors");
+            MentorModel mentor = new MentorModel(new RawUser(Role.MENTOR, name, email, password, mentorGroups));
 
             dao.addUser(mentor);
-//            mentorsGroup.add(mentor);
+            mentorsGroup.add(mentor);
         } catch (SQLException e) {
             view.printSQLException(e);
         }
@@ -100,7 +102,7 @@ public class AdminController{
         }
     }
 
-    public void assignMentorToGroup() {
+    private void assignMentorToGroup() {
         UserDaoImpl userDao = new UserDaoImpl();
 
         String name = view.getStringFromUserInput(view.mentorNameQuestion);
@@ -122,22 +124,10 @@ public class AdminController{
 
         if (!userAddedtoGroup || user == null) {
             view.printLine(view.assignMentorToFroupError);
-        } else {
-
-            try {
-                Group<Group<User>> associatedGroups = user
-                        .getAssociatedGroups();
-
-                associatedGroups.add(userDao.getUserGroup(groupName));
-
-                user.setAssociatedGroups(associatedGroups);
-            } catch (SQLException e) {
-                view.printSQLException(e);
-            }
         }
     }
 
-    public void createGroup() {
+    private void createGroup() {
         UserDaoImpl userDao = new UserDaoImpl();
         String groupName = view.getStringFromUserInput(view.groupNameQuestion);
         Group<User> tmp = new Group<>(groupName);
@@ -148,7 +138,7 @@ public class AdminController{
         }
     }
 
-    public void editMentor() {
+    private void editMentor() {
         UserDaoImpl dao = new UserDaoImpl();
         String mentorName = view.getStringFromUserInput(view.mentorNameQuestion);
 
@@ -181,8 +171,7 @@ public class AdminController{
         }
     }
 
-
-    public String getGroupsDisplay(){
+    private String getGroupsDisplay(){
         UserDaoImpl dao = new UserDaoImpl();
         Group<String> groupNames = null;
         try {
@@ -198,7 +187,7 @@ public class AdminController{
         return groupsFormatted;
     }
 
-    public String getMentorDisplay() {
+    private String getMentorDisplay() {
         UserDaoImpl dao = new UserDaoImpl();
         String mentorName = view.getStringFromUserInput(view.mentorNameQuestion);
 
@@ -216,7 +205,7 @@ public class AdminController{
         return view.noMentorOfSuchName;
     }
 
-    public void createLevel() {
+    private void createLevel() {
 
         LevelService levelService = new LevelService();
         levelService.initializeLevels();
@@ -227,27 +216,7 @@ public class AdminController{
             view.printLine(Integer.toString(entry.getKey()) + "   " + entry.getValue());
         }
         String lvlName = view.getStringFromUserInput(view.levelNameQuestion);
-        Integer thr = getInt(view.levelTresholdQuestion);
+        Integer thr = view.getIntFromUserInput(view.levelTresholdQuestion); // might need to be in loop in case of ivalid int input
     }
 
-    private Integer getInt(String prompt) {
-
-      Integer result = null;
-      boolean validInputProvided;
-      do {
-
-        validInputProvided = true;
-        try {
-
-          result = Integer.valueOf(view.getStringFromUserInput(prompt));
-
-        } catch (NumberFormatException nfe) {
-
-            validInputProvided = false;
-            view.printLine("  Invalid input.");
-        }
-      } while(!validInputProvided);
-
-      return result;
-    }
 }
