@@ -36,7 +36,12 @@ public class UserService {
         switch (rawUser.getRole()) {
             case CODECOOLER:
 
-                Group<ArtifactModel> artifacts = null;//new ArtifactDaoImpl().getUserArtifacts(userID);
+                Group<ArtifactModel> artifacts = null;
+                try {
+                    artifacts = new ArtifactDaoImpl().getUserArtifacts(userID);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
 
                 WalletService wallet = new WalletDaoImpl().getWallet(userID);
 
@@ -58,7 +63,7 @@ public class UserService {
 
         UserDaoImpl userDao = new UserDaoImpl();
         int userID = -1;
-        // todo: update user via user dao
+
         try {
             userDao.updateUser(user);
             userID = userDao.getUserId(user.getName());
@@ -74,11 +79,14 @@ public class UserService {
             // update codecooler artifacts
             for (ArtifactModel artifact : codecooler.getCodecoolerArtifacts()) {
 
-                //artifactDao.updateUserArtifact(userID, artifact);
+                try {
+                    artifactDao.updateUserArtifactsUsage(userID, artifact);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
 
             new WalletDaoImpl().updateWallet(userID, codecooler.getWallet());
-
         }
 
     }
