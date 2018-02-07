@@ -34,7 +34,8 @@ public class MentorController {
                 new MenuOption("9", "Remove artifact"),
                 new MenuOption("10", "Display all quests"),
                 new MenuOption("11", "Update quest"),
-                new MenuOption("12", "Delete quest")
+                new MenuOption("12", "Delete quest"),
+                new MenuOption("13", "View codecoolers wallets")
         );
 
         view = new MentorView(mentorMenu);
@@ -94,6 +95,9 @@ public class MentorController {
                 break;
             case "12":
                 removeQuest();
+                break;
+            case "13":
+                showCodecoolerWalletsBalance();
                 break;
         }
     }
@@ -457,5 +461,40 @@ public class MentorController {
 
         return (CodecoolerModel)user;
     }
+    public void showCodecoolerWalletsBalance(){
+        MentorView view = new MentorView();
+        UserService userService = new UserService();
+        int totalBalance = 0;
+        int numberOfCodecoolers = 0;
+        int averageCodecoolerBalance;
+
+        try {
+            Group<Group<User>> userGroups = userService.getAllUsers();
+            String codecoolerGroupName = "codecoolers";
+
+            for(Group<User> group: userGroups ) {
+                while (group.getName().equals(codecoolerGroupName)) {
+                    for(User user: group){
+                        WalletService wallet;
+                        RawUser rawUser = (RawUser) user;
+                        CodecoolerModel codecooler = (CodecoolerModel) rawUser;
+                        wallet = codecooler.getWallet();
+                        view.print(codecooler.getName() + " " + wallet.toString() + "\n");
+                        totalBalance += wallet.getBalance();
+                        numberOfCodecoolers += 1;
+                    }
+                    break;
+                }
+            }
+            averageCodecoolerBalance  = totalBalance/numberOfCodecoolers;
+            view.print(view.totalCoolcoins + String.valueOf(totalBalance));
+            view.print(view.avarageBalance + String.valueOf(averageCodecoolerBalance));
+        }
+        catch(java.lang.ArithmeticException e){
+            view.print("No codecoolers found");
+        }
+    }
+
+
 
 }
