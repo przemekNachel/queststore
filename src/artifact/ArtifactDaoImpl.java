@@ -35,6 +35,32 @@ public class ArtifactDaoImpl implements ArtifactDao{
     }
 
     @Override
+    public Group<ArtifactModel> getUserArtifacts(int userId) throws SQLException {
+        Group<ArtifactModel> group = new Group<>("User's artifacts: ");
+        Connection con = connectToDatabase();
+        Statement stmt = Objects.requireNonNull(con).createStatement();
+
+        String sql = "SELECT name, descr, price FROM artifact_store " +
+                "JOIN user_artifacts USING (artifact_id) " +
+                "WHERE user_id="+userId+"";
+
+        ResultSet rs = stmt.executeQuery(sql);
+
+        while(rs.next()) {
+            String artName = rs.getString("name");
+            String artDescr = rs.getString("descr");
+            Integer artPrice = rs.getInt("price");
+            group.add(new ArtifactModel(artName, artDescr, artPrice));
+        }
+
+        stmt.close();
+        con.close();
+        rs.close();
+
+        return group;
+    }
+    
+    @Override
 public ArtifactModel getArtifactByName(String name) throws SQLException {
         Connection con = connectToDatabase();
         Statement stmt = Objects.requireNonNull(con).createStatement();
