@@ -48,7 +48,6 @@ public abstract class AbstractConsoleView {
     }
 
     public Integer getIntFromUserInput(String prompt) {
-        print(prompt);
         Integer userInput = null;
 
         try {

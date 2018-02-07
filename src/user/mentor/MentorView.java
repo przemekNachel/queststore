@@ -35,7 +35,7 @@ public class MentorView extends AbstractConsoleView {
     public String GroupAssignmentQuestion = "Choose from availtble groups: ";
     public String questNameQuestion = "Provide quest name: ";
     public String chooseQuestNameQuestion = "Choose quest: ";
-    public String questDescQuestion = "Provide quest descriptuion: ";
+    public String questDescQuestion = "Provide quest description: ";
     public String questPriceQuestion = "Provide quest price: ";
     public String questNotFoundError = "quest name not found";
     public String markQuestNameQuestion = "Provide quest name: ";
