@@ -141,10 +141,15 @@ INSERT INTO artifact_associations
 (artifact_id, group_id)
 VALUES
   (1, 3),
+  (1, 6),
   (2, 3),
+  (2, 6),
   (3, 3),
-  (4, 4),
-  (5, 3);
+  (3, 6),
+  (4, 3),
+  (4, 6),
+  (5, 3),
+  (5, 6);
 
 INSERT INTO group_names
 (group_name)
@@ -173,8 +178,11 @@ INSERT INTO quest_associations
 (quest_id, group_id)
 VALUES
   (1, 1),
+  (1, 3),
   (2, 1),
-  (3, 1);
+  (2, 3),
+  (3, 2),
+  (3, 3);
 
 INSERT INTO quest_store
 (name, descr, reward)

@@ -83,6 +83,7 @@ public class MentorController {
                 break;
             case "8":
                 updateArtifact();
+                break;
             case "9":
                 removeArtifact();
                 break;
