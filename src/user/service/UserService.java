@@ -90,7 +90,6 @@ public class UserService {
         for (User user : beforeCast) {
 
             afterCast.add(getUser(user.getName()));
-            System.out.println(beforeCast.getName() + "   " + user.getName() + "   " + user.getRole());
         }
 
         return afterCast;
