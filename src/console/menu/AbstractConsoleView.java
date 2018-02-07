@@ -40,10 +40,19 @@ public abstract class AbstractConsoleView {
 
         printLine(menu.toString());
     }
+
     public void printSQLException(SQLException e) {
         System.err.println(e.getClass().getName() + ": " + e.getMessage());
     }
 
+    public int getIntFromUserInput(String prompt) {
+        print(prompt);
+        try {
+            return Integer.valueOf(getStringFromUserInput(prompt));
+        } catch (Exception e) {
+           System.out.println("Invalid Integer input.");
+        }
+    }
 
     public String getStringFromUserInput(String prompt) {
 
