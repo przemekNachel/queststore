@@ -29,6 +29,7 @@ public class MentorView extends AbstractConsoleView {
   public String invalidNickname = "user not in database or not a codecooler.";
   public String artifactNotFoundError = "No such artifact found!";
   public String artifactNameQuestion = "Provide artifact name: ";
+  public String chooseArtifactNameQuestion = "Choose artifact: ";
   public String artifactDescQuestion = "Provide artifact description: ";
   public String artifactPriceQuestion = "Provide artifact price: ";
   public String GroupAssignmentQuestion = "Choose from availtble groups: ";
