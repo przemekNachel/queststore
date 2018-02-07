@@ -87,6 +87,9 @@ public class MentorController {
             case "10":
                 displayAllQuests();
                 break;
+            case "11":
+                updateQuest();
+                break;
         }
     }
 
@@ -207,6 +210,25 @@ public class MentorController {
             view.printSQLException(e);
         }
     }
+
+    private void updateQuest() {
+        QuestDaoImpl questDao = new QuestDaoImpl();
+        displayAllArtifacts();
+        try {
+            QuestModel quest = questDao.getQuest(view.getStringFromUserInput(view.chooseQuestNameQuestion));
+
+            String questDesc = view.getStringFromUserInput(view.questDescQuestion);
+            Integer questPrice = view.getIntFromUserInput(view.questPriceQuestion);
+
+            QuestModel updatedQuest = new QuestModel(quest.getName(), questDesc, questPrice);
+            questDao.updateQuest(updatedQuest);
+
+        } catch (SQLException e){
+            view.printSQLException(e);
+        }
+
+    }
+
     private void createQuest() {
 
         QuestDaoImpl questDao = new QuestDaoImpl();
