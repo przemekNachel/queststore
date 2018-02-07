@@ -218,7 +218,7 @@ public class MentorController {
 
     private void updateQuest() {
         QuestDaoImpl questDao = new QuestDaoImpl();
-        displayAllArtifacts();
+        displayAllQuests();
         try {
             QuestModel quest = questDao.getQuest(view.getStringFromUserInput(view.chooseQuestNameQuestion));
 
