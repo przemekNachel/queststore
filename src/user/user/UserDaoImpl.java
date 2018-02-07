@@ -52,34 +52,36 @@ public class UserDaoImpl implements UserDao{
     public void addUser(User user) throws SQLException{
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
+        try{
+          String userName = null, password = null, email = null, role = null;
+          int userId = 0, userPrivilegeLevelId = 0, balance = 0;//, expGained = 0, ;
+          Group<Integer> groupIds;
 
-        String userName = null, password = null, email = null, role = null;
-        int userId = 0, userPrivilegeLevelId = 0, balance = 0;//, expGained = 0, ;
-        Group<Integer> groupIds;
+          userName = user.getName();
+          password = user.getPassword();
+          email = user.getEmail();
+          role = convertRole(user.getRole());
 
-        userName = user.getName();
-        password = user.getPassword();
-        email = user.getEmail();
-        role = convertRole(user.getRole());
+          updateCredentials(userName, password, email);
 
-        updateCredentials(userName, password, email);
+          userId = getUserId(userName);
+          userPrivilegeLevelId = getUserPrivilegeLevelId(role);
+          groupIds = getUserGroupIds(userId);
 
-        userId = getUserId(userName);
-        userPrivilegeLevelId = getUserPrivilegeLevelId(role);
-        groupIds = getUserGroupIds(userId);
+          /* execute updates */
 
-        /* execute updates */
-
-        updatePrivileges(userId, userPrivilegeLevelId);
-        updateUserAssociations(groupIds, userId);
-
+          updatePrivileges(userId, userPrivilegeLevelId);
+          updateUserAssociations(groupIds, userId);
+      }finally{
         close(connect, statement);
+      }
     }
 
     public void updateUser(User user) throws SQLException{
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
 
+        try{
         String userName = null, password = null, email = null;
         int userId = 0;
         Group<Integer> groupIds = null;
@@ -95,27 +97,33 @@ public class UserDaoImpl implements UserDao{
         upgradeCredentials(password, email, userId);
         upgradeUserAssociations(groupIds, userId);
 
+      }finally{
         close(connect, statement);
+      }
     }
 
     public Group<String> getUserGroupNames() throws SQLException{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
-
+        ResultSet results = null;
         Group<String> groupsNames = new Group<>("generic_group.Group names");
+
+        try{
         String query = "SELECT DISTINCT group_names.group_name " +
         "FROM user_associations " +
         "LEFT JOIN group_names " +
         "ON user_associations.group_id = group_names.group_id ;";
 
-        ResultSet results = statement.executeQuery(query);
+        results = statement.executeQuery(query);
 
         while(results.next()){
             groupsNames.add(results.getString("group_name"));
         }
-        results.close();
+      }finally{
+        close(results);
         close(connect, statement);
+      }
         return groupsNames;
     }
 
@@ -131,6 +139,7 @@ public class UserDaoImpl implements UserDao{
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
 
+        try{
         int userId = getUserId(user.getName());
         int groupId = getGroupId(groupName);
 
@@ -142,7 +151,9 @@ public class UserDaoImpl implements UserDao{
             close(connect, statement);
             return true;
         }
+      }finally{
         close(connect, statement);
+      }
         return false;
     }
 
@@ -151,28 +162,34 @@ public class UserDaoImpl implements UserDao{
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
 
+        try{
         String query = "INSERT INTO group_names(group_name) " +
             "VALUES ('" + group.getName() + "');";
 
         statement.executeUpdate(query);
         connect.commit();
+      }finally{
         close(connect, statement);
+      }
     }
 
     public int getUserId(String userName) throws SQLException{
 
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
-
+      Connection connect = establishConnection();
+      Statement statement = connect.createStatement();
+      ResultSet results = null;
+      int id = -1;
+      try{
         String query = "SELECT user_id FROM users WHERE nickname='" + userName + "';";
-        ResultSet results = statement.executeQuery(query);
-        int id = -1;
+        results = statement.executeQuery(query);
         while(results.next()){
             id = results.getInt("user_id");
             break;
         }
-        results.close();
+      }finally{
+        close(results);
         close(connect, statement);
+      }
         return id;
     }
 
@@ -182,25 +199,29 @@ public class UserDaoImpl implements UserDao{
 
       Connection connect = establishConnection();
       Statement statement = connect.createStatement();
-
-      String name, password, email;
-      Group<String> userGroups = getUserGroups(userId);
+      ResultSet results = null;
       RawUser user = null;
 
-      String query = "SELECT * FROM users WHERE user_id="
-      + userId + " ;";
+      try{
+        String name, password, email;
+        Group<String> userGroups = getUserGroups(userId);
 
-      ResultSet results = statement.executeQuery(query);
-      if(results.next()){
-        name = results.getString("nickname");
-        password = results.getString("password");
-        email = results.getString("email");
+        String query = "SELECT * FROM users WHERE user_id="
+        + userId + " ;";
 
-        user = new RawUser(role, name, email, password, userGroups);
+        results = statement.executeQuery(query);
+        if(results.next()){
+          name = results.getString("nickname");
+          password = results.getString("password");
+          email = results.getString("email");
+
+          user = new RawUser(role, name, email, password, userGroups);
+        }
+
+      }finally{
+        close(results);
+        close(connect, statement);
       }
-
-      results.close();
-      close(connect, statement);
       return user;
     }
 
@@ -208,7 +229,8 @@ public class UserDaoImpl implements UserDao{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
-
+        ResultSet results = null;
+      try{
         String name, password, email;
         Role role = null;
 
@@ -220,7 +242,7 @@ public class UserDaoImpl implements UserDao{
             "user_privilege_levels.privilege_id = user_roles.user_privilege_level_id " +
             "WHERE group_name = '" + group.getName() + "' ;" ;
 
-        ResultSet results = statement.executeQuery(query);
+        results = statement.executeQuery(query);
 
         while(results.next()){
 
@@ -231,41 +253,47 @@ public class UserDaoImpl implements UserDao{
 
             group.add(new RawUser(role, name, email, password, getUserGroups(results.getInt("user_id"))));
         }
-        results.close();
+      }finally{
+        close(results);
         close(connect, statement);
+      }
     }
 
     private int getGroupId(String groupName) throws SQLException{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
-
+        ResultSet results = null;
+        int id = -1;
+      try{
         String query = "SELECT group_id FROM group_names WHERE group_name='"
         + groupName + "';";
-        ResultSet results = statement.executeQuery(query);
+        results = statement.executeQuery(query);
 
-        int id = -1;
         if(results.next()){
             id = results.getInt("group_id");
         }
-        results.close();
+      }finally{
+        close(results);
         close(connect, statement);
+      }
         return id;
     }
 
     private Group<String> getUserGroups(int userId) throws SQLException{
 
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
-
-        Group<String> associatedGroups = new Group<>("associated user groups");
+      Connection connect = establishConnection();
+      Statement statement = connect.createStatement();
+      Group<String> associatedGroups = new Group<>("associated user groups");
+      ResultSet results = null;
+      try{
         String query = "SELECT DISTINCT group_name " +
                 "FROM group_names " +
                 "LEFT JOIN user_associations  " +
                 "ON group_names.group_id=user_associations.group_id " +
                 "WHERE user_associations.user_id=" + userId +";";
 
-        ResultSet results = statement.executeQuery(query);
+        results = statement.executeQuery(query);
 
         String resultGroupName;
         while(results.next()){
@@ -273,8 +301,10 @@ public class UserDaoImpl implements UserDao{
             resultGroupName = results.getString("group_name");
             associatedGroups.add(resultGroupName);
         }
-        results.close();
+      }finally{
+        close(results);
         close(connect, statement);
+      }
         return associatedGroups;
     }
 
@@ -282,36 +312,42 @@ public class UserDaoImpl implements UserDao{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
-
+        ResultSet results = null;
+        Group<Integer> groupIds = new Group<>("Group ids");
+      try{
         String query = "SELECT DISTINCT group_id FROM user_associations " +
                 "WHERE user_id=" + userId + " ;";
-        ResultSet results = statement.executeQuery(query);
-        Group<Integer> groupIds = new Group<>("Group ids");
+        results = statement.executeQuery(query);
         int tmp;
 
         while(results.next()){
             tmp = results.getInt("group_id");
             groupIds.add(tmp);
         }
-        results.close();
+      }finally{
+        close(results);
         close(connect, statement);
+      }
         return groupIds;
     }
 
     private int getUserPrivilegeLevelId(String role) throws SQLException{
 
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
-
-        int userPrivilegeLevelId = -1;
+      Connection connect = establishConnection();
+      Statement statement = connect.createStatement();
+      int userPrivilegeLevelId = -1;
+      ResultSet getPrivLevelResult = null;
+      try{
         String getPrivLevel = "SELECT privilege_id FROM user_privilege_levels " +
                 "WHERE privilege_name='" + role + "';";
-        ResultSet getPrivLevelResult = statement.executeQuery(getPrivLevel);
+        getPrivLevelResult = statement.executeQuery(getPrivLevel);
         while(getPrivLevelResult.next()){
             userPrivilegeLevelId = getPrivLevelResult.getInt("privilege_id");
         }
-        getPrivLevelResult.close();
+      }finally{
+        close(getPrivLevelResult);
         close(connect, statement);
+      }
         return userPrivilegeLevelId;
     }
 
