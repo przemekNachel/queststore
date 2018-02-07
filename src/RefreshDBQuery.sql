@@ -140,16 +140,16 @@ VALUES
 INSERT INTO artifact_associations
 (artifact_id, group_id)
 VALUES
-  (1, 3),
-  (1, 6),
-  (2, 3),
-  (2, 6),
-  (3, 3),
-  (3, 6),
-  (4, 3),
-  (4, 6),
-  (5, 3),
-  (5, 6);
+  (1, 4),
+  (1, 9),
+  (2, 4),
+  (2, 9),
+  (3, 4),
+  (3, 9),
+  (4, 4),
+  (4, 9),
+  (5, 4),
+  (5, 9);
 
 INSERT INTO group_names
 (group_name)
@@ -158,11 +158,13 @@ VALUES
   ('quest_extra'),
   ('quests'),
   ('artifact_basic'),
-  ('artifact_magic'),
-  ('artifacts'),
   ('codecoolers'),
   ('mentors'),
-  ('admins');
+  ('admins'),
+  ('artifact_magic'),
+  ('artifacts');
+
+
 
 INSERT INTO predefined_levels
 VALUES
@@ -254,7 +256,6 @@ VALUES
   ('Mentor1', 'password', 'five@email.com'),
   ('Mentor2', 'password', 'six@email.com'),
   ('Admin1', 'password', 'seven@email.com');
-
 
 
 
