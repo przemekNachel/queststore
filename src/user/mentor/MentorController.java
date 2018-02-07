@@ -30,7 +30,7 @@ public class MentorController {
                 new MenuOption("6", "Create quest"),
                 new MenuOption("7", "Display all artifacts"),
                 new MenuOption("8", "Update artifact")
-
+                new MenuOption("10", "Display all quests")
         );
 
         view = new MentorView(mentorMenu);
@@ -80,6 +80,9 @@ public class MentorController {
             case "8":
                 updateArtifact();
                 break;
+            case "10":
+                displayAllQuests();
+                break;
         }
     }
 
@@ -92,6 +95,22 @@ public class MentorController {
             for(Group<ArtifactModel> artifactGroups : artifactCollection) {
                 for (ArtifactModel artifact : artifactGroups) {
                     view.printLine(artifact.getName());
+                }
+            }
+        } catch (SQLException e) {
+            view.printSQLException(e);
+        }
+    }
+
+    private void displayAllQuests() {
+        QuestDaoImpl questDao = new QuestDaoImpl();
+
+        try {
+            Group<Group<QuestModel>> questCollection = questDao.getAllQuests();
+            view.printLine("\n--- Available Quests ---");
+            for(Group<QuestModel> questGroups : questCollection) {
+                for (QuestModel quest : questGroups) {
+                    view.printLine(quest.getName());
                 }
             }
         } catch (SQLException e) {
@@ -335,7 +354,6 @@ public class MentorController {
     }
 
     private void markCodecoolerArtifactUsage() {
-
         MentorView view = new MentorView();
 
         // get user.codecooler artifact usage of whom is to be marked
