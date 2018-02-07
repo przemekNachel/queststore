@@ -382,32 +382,36 @@ public class UserDaoImpl implements UserDao{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
-
+      try{
         String updateUsers = "INSERT INTO users(nickname, password, email) " +
                 "VALUES ('" + userName + "', '" + password + "', '" + email + "');";
         statement.executeUpdate(updateUsers);
         connect.commit();
+      }finally{
         close(connect, statement);
+      }
     }
 
     private void updatePrivileges(int userId, int userPrivilegeLevelId) throws SQLException{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
-
+      try{
         String updatePrivileges = "INSERT INTO user_roles" +
                 "(user_id, user_privilege_level_id) " +
                 "VALUES (" + userId + ", " + userPrivilegeLevelId + ");";
         statement.executeUpdate(updatePrivileges);
         connect.commit();
+      }finally{
         close(connect, statement);
+      }
     }
 
     private void updateUserAssociations(Group<Integer> groupIds, int userId) throws SQLException{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
-
+      try{
         String updateAssociations;
         for(Integer groupId : groupIds){
             updateAssociations = "INSERT INTO user_associations(user_id, group_id) " +
@@ -415,20 +419,24 @@ public class UserDaoImpl implements UserDao{
             statement.executeUpdate(updateAssociations);
             connect.commit();
         }
+      }finally{
         close(connect, statement);
+      }
     }
 
     private void updateWallet(int userId, int balance) throws SQLException{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
-
+        try{
         String updateWallet = "INSERT INTO user_wallet(user_id, balance) " +
                 "VALUES (" + userId + ", " + balance + ");";
 
         statement.executeUpdate(updateWallet);
         connect.commit();
+      }finally{
         close(connect, statement);
+      }
     }
 
     // upgraders
@@ -437,35 +445,39 @@ public class UserDaoImpl implements UserDao{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
-
+        try{
         String updateUsers = "UPDATE users " +
                 "SET password='" + password + "', email='" + email + "' " +
                 "WHERE user_id=" + userId + ";";
 
         statement.executeUpdate(updateUsers);
         connect.commit();
+      }finally{
         close(connect, statement);
+      }
     }
 
     private void upgradePrivilages(int userPrivilegeLevelId, int userId) throws SQLException{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
-
+        try{
         String updatePrivileges = ("UPDATE user_roles " +
                 "SET user_privilege_level_id=" + userPrivilegeLevelId + " " +
                 "WHERE user_id=" + userId + ";");
 
         statement.executeUpdate(updatePrivileges);
         connect.commit();
+      }finally{
         close(connect, statement);
+      }
     }
 
     private void upgradeUserAssociations(Group<Integer> groupIds, int userId) throws SQLException{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
-
+        try{
         String updateAssociations;
         for(Integer groupId : groupIds){
             updateAssociations = "UPDATE user_associations " +
@@ -473,33 +485,42 @@ public class UserDaoImpl implements UserDao{
             statement.executeUpdate(updateAssociations);
             connect.commit();
         }
+      }finally{
         close(connect, statement);
+      }
     }
 
     private void upgradeWallet(int balance, int userId) throws SQLException{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
-
+        try{
         String updateWallet = "UPDATE user_wallet " +
                 "SET balance=" + balance + " WHERE user_id=" + userId + ";";
 
         statement.executeUpdate(updateWallet);
         connect.commit();
+      }finally{
         close(connect, statement);
+      }
     }
 
     // ----- basic database operations -----/
 
     private Connection establishConnection() throws SQLException{
 
+      Connection connect = null;
         try{
             Class.forName("org.sqlite.JDBC");
         }catch(ClassNotFoundException e){
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
         }
-        Connection connect = DriverManager.getConnection(UserDaoImpl.JDBC);
-        connect.setAutoCommit(false);
+        try{
+          connect = DriverManager.getConnection(UserDaoImpl.JDBC);
+          connect.setAutoCommit(false);
+        }finally{
+          close(connect, null);
+        }
         return connect;
     }
 
