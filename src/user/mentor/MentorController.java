@@ -139,7 +139,7 @@ public class MentorController {
         ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
         String name = view.getStringFromUserInput(view.artifactNameQuestion);
         String desc = view.getStringFromUserInput(view.artifactDescQuestion);
-        Integer price = getInt(view.artifactPriceQuestion);
+        Integer price = view.getIntFromUserInput(view.artifactPriceQuestion);
         ArtifactModel newArtifact = new ArtifactModel(name, desc, price);
 
         try {
@@ -168,7 +168,7 @@ public class MentorController {
         QuestDaoImpl questDao = new QuestDaoImpl();
         String name = view.getStringFromUserInput(view.questNameQuestion);
         String desc = view.getStringFromUserInput(view.questDescQuestion);
-        Integer reward = getInt(view.questPriceQuestion);
+        Integer reward = view.getIntFromUserInput(view.questPriceQuestion);
         QuestModel newQuest = new QuestModel(name, desc, reward);
 
         try {
@@ -415,24 +415,4 @@ public class MentorController {
         return (CodecoolerModel)user;
     }
 
-    private Integer getInt(String prompt) { // Remove this and where getInt is used, add userView method "getIntFromUserInput"
-
-        Integer result = null;
-        boolean validInputProvided;
-        do {
-
-            validInputProvided = true;
-            try {
-
-                result = Integer.valueOf(view.getStringFromUserInput(prompt));
-
-            } catch (NumberFormatException nfe) {
-
-                validInputProvided = false;
-                view.printLine("  Invalid input.");
-            }
-        } while(!validInputProvided);
-
-        return result;
-    }
 }
