@@ -515,12 +515,8 @@ public class UserDaoImpl implements UserDao{
         }catch(ClassNotFoundException e){
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
         }
-        try{
-          connect = DriverManager.getConnection(UserDaoImpl.JDBC);
-          connect.setAutoCommit(false);
-        }finally{
-          close(connect, null);
-        }
+        connect = DriverManager.getConnection(UserDaoImpl.JDBC);
+        connect.setAutoCommit(false);
         return connect;
     }
 
