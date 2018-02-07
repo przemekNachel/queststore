@@ -7,10 +7,12 @@ import java.util.Iterator;
 public abstract class AbstractConsoleView {
 
     protected Menu menu;
-    private static final String ESCAPE_SEQ_CLEAR_SCREEN = "\033[H\033[2J";
-    public static Scanner scanner;
 
-    public AbstractConsoleView() {
+    private static final String ESCAPE_SEQ_CLEAR_SCREEN = "\033[H\033[2J";
+
+    private static Scanner scanner;
+
+    private AbstractConsoleView() {
 
         scanner = new Scanner(System.in);
     }
@@ -36,21 +38,32 @@ public abstract class AbstractConsoleView {
         System.out.flush();
     }
 
-    public void printMenu(Menu menu) {
+    private void printMenu(Menu menu) {
 
         printLine(menu.toString());
     }
+
     public void printSQLException(SQLException e) {
         System.err.println(e.getClass().getName() + ": " + e.getMessage());
     }
 
+    public Integer getIntFromUserInput(String prompt) {
+        print(prompt);
+        Integer userInput = null;
+
+        try {
+             userInput = Integer.valueOf(getStringFromUserInput(prompt));
+        } catch (Exception e) {
+           System.out.println("Invalid Integer input.");
+        }
+        return userInput;
+    }
 
     public String getStringFromUserInput(String prompt) {
 
         print(prompt);
         return scanner.nextLine();
     }
-
 
     public MenuOption getMenuOptionFromUserInput(String prompt) {
 
