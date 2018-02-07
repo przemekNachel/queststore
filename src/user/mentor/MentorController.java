@@ -28,7 +28,9 @@ public class MentorController {
                 new MenuOption("4", "Mark codecooler's artifact usage"),
                 new MenuOption("5", "Create artifact"),
                 new MenuOption("6", "Create quest"),
-                new MenuOption("7", "Display all artifacts")
+                new MenuOption("7", "Display all artifacts"),
+                new MenuOption("8", "Update artifact")
+
         );
 
         view = new MentorView(mentorMenu);
@@ -75,6 +77,9 @@ public class MentorController {
             case "7":
                 displayAllArtifacts();
                 break;
+            case "8":
+                updateArtifact();
+                break;
         }
     }
 
@@ -119,6 +124,24 @@ public class MentorController {
         if(!addUserAdherenceSuccess) {
 
             view.printLine(view.codecoolerAlreadyInGroupOrGroupAbsent);
+        }
+    }
+
+    // Right now forces user to update both description and price. Can be improved to choose one or another with switch case.
+    private void updateArtifact() {
+        ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
+        displayAllArtifacts();
+        try {
+            ArtifactModel artifact = artifactDao.getArtifactByName(view.getStringFromUserInput(view.chooseArtifactNameQuestion));
+
+            String artifactDesc = view.getStringFromUserInput(view.artifactDescQuestion);
+            Integer artifactPrice = view.getIntFromUserInput(view.artifactPriceQuestion);
+
+            ArtifactModel updatedArtifact = new ArtifactModel(artifact.getName(), artifactDesc, artifactPrice);
+            artifactDao.updateArtifact(updatedArtifact);
+
+        } catch (SQLException e){
+            view.printSQLException(e);
         }
     }
 
