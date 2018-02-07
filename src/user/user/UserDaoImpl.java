@@ -66,7 +66,7 @@ public class UserDaoImpl implements UserDao{
 
           userId = getUserId(userName);
           userPrivilegeLevelId = getUserPrivilegeLevelId(role);
-          groupIds = getUserGroupIds(userId);
+          groupIds = getUserGroupIds(user);
 
           /* execute updates */
 
@@ -92,7 +92,7 @@ public class UserDaoImpl implements UserDao{
         email = user.getEmail();
 
         userId = getUserId(userName);
-        groupIds = getUserGroupIds(userId);
+        groupIds = getUserGroupIds(user);
 
         upgradeCredentials(password, email, userId);
         upgradeUserAssociations(groupIds, userId);
@@ -306,27 +306,27 @@ public class UserDaoImpl implements UserDao{
         return associatedGroups;
     }
 
-    private Group<Integer> getUserGroupIds(int userId) throws SQLException{
-
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
-        ResultSet results = null;
-        Group<Integer> groupIds = new Group<>("Group ids");
+    private Group<Integer> getUserGroupIds(User user) throws SQLException{
+      Connection connect = establishConnection();
+      Statement statement = connect.createStatement();
+      ResultSet results = null;
+      Group<Integer> groupIds = new Group<>("Group ids");
       try{
-        String query = "SELECT DISTINCT group_id FROM user_associations " +
-                "WHERE user_id=" + userId + " ;";
-        results = statement.executeQuery(query);
-        int tmp;
+        String query;
 
-        while(results.next()){
-            tmp = results.getInt("group_id");
-            groupIds.add(tmp);
+        for(String groupName : user.getAssociatedGroupNames()){
+          query = "SELECT group_id FROM group_names " +
+                "WHERE group_name='" + groupName + "' ;";
+          results = statement.executeQuery(query);
+          if(results.next()){
+            groupIds.add(results.getInt("group_id"));
+          }
         }
       }finally{
         close(results);
         close(connect, statement);
       }
-        return groupIds;
+      return groupIds;
     }
 
     private int getUserPrivilegeLevelId(String role) throws SQLException{
