@@ -127,15 +127,7 @@ public class UserService {
 
         Group<Group<User>> allUsers = new Group<>("all users");
 
-        Group<String> groupNames = null;
-        try {
-
-            groupNames = new UserDaoImpl().getUserGroupNames();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        for (String groupName : groupNames) {
+        for (String groupName : getUserGroupNames()) {
 
             allUsers.add(getUserGroup(groupName));
         }
