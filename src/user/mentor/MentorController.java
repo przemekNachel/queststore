@@ -76,6 +76,9 @@ public class MentorController {
             case "7":
                 displayAllArtifacts();
                 break;
+            case "10":
+                displayAllQuests();
+                break;
         }
     }
 
