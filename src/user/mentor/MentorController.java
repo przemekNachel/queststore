@@ -30,8 +30,10 @@ public class MentorController {
                 new MenuOption("6", "Create quest"),
                 new MenuOption("7", "Display all artifacts"),
                 new MenuOption("8", "Update artifact"),
-                new MenuOption("9", "Remove artifact")
-                new MenuOption("10", "Display all quests")
+                new MenuOption("9", "Remove artifact"),
+                new MenuOption("10", "Display all quests"),
+                new MenuOption("11", "Update quest"),
+                new MenuOption("12", "Delete quest")
         );
 
         view = new MentorView(mentorMenu);
@@ -85,6 +87,12 @@ public class MentorController {
                 break;
             case "10":
                 displayAllQuests();
+                break;
+            case "11":
+                updateQuest();
+                break;
+            case "12":
+                removeQuest();
                 break;
         }
     }
@@ -206,6 +214,36 @@ public class MentorController {
             view.printSQLException(e);
         }
     }
+
+    private void removeQuest() {
+        QuestDaoImpl questDao = new QuestDaoImpl();
+        displayAllQuests();
+        try {
+            QuestModel quest = questDao.getQuest(view.getStringFromUserInput(view.questNameQuestion));
+            questDao.deleteQuest(quest);
+        } catch (SQLException e) {
+            view.printSQLException(e);
+        }
+    }
+
+    private void updateQuest() {
+        QuestDaoImpl questDao = new QuestDaoImpl();
+        displayAllArtifacts();
+        try {
+            QuestModel quest = questDao.getQuest(view.getStringFromUserInput(view.chooseQuestNameQuestion));
+
+            String questDesc = view.getStringFromUserInput(view.questDescQuestion);
+            Integer questPrice = view.getIntFromUserInput(view.questPriceQuestion);
+
+            QuestModel updatedQuest = new QuestModel(quest.getName(), questDesc, questPrice);
+            questDao.updateQuest(updatedQuest);
+
+        } catch (SQLException e){
+            view.printSQLException(e);
+        }
+
+    }
+
     private void createQuest() {
 
         QuestDaoImpl questDao = new QuestDaoImpl();
