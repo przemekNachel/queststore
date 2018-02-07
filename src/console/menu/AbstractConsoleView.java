@@ -12,7 +12,7 @@ public abstract class AbstractConsoleView {
 
     private static Scanner scanner;
 
-    private AbstractConsoleView() {
+    protected AbstractConsoleView() {
 
         scanner = new Scanner(System.in);
     }
