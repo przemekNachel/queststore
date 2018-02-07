@@ -33,10 +33,31 @@ public class AdminController{
         view = new AdminView(adminMenu);
     }
 
+    private String getNonexistentMentorName() {
+
+        UserService userSvc = new UserService();
+
+        String name;
+        boolean providedValidName = false;
+        do {
+            name = this.view.getStringFromUserInput(view.mentorNameQuestion);
+            if (userSvc.getUser(name) == null) {
+
+                providedValidName = true;
+            } else {
+
+                view.printLine(view.nameAlreadyTaken);
+            }
+
+        } while(!providedValidName);
+        return name;
+    }
+
     private void createMentor() {
 
         UserService userSvc = new UserService();
-        String name = this.view.getStringFromUserInput(view.mentorNameQuestion);
+
+        String name = getNonexistentMentorName();
         String email = this.view.getStringFromUserInput(view.mentorEmailQuestion);
         String password = this.view.getStringFromUserInput(view.mentorPasswordQuestion);
 
@@ -52,7 +73,6 @@ public class AdminController{
 
         boolean requestedExit = false;
         do {
-            UserDao userDao = new UserDaoImpl();
 
             MenuOption userOption = view.getMenuOptionFromUserInput(" Please choose option: ");
             if (userOption.getId().equals("0")) {
@@ -60,7 +80,6 @@ public class AdminController{
                 view.clearScreen();
             } else {
 
-                String chosenOption = userOption.getId();
                 handleUserChoice(userOption.getId());
             }
         } while (!requestedExit);
@@ -99,17 +118,78 @@ public class AdminController{
         }
     }
 
+    private String getNameFromUserInput(String prompt, String disallowedMessage, Group<String> allowedNames) {
+
+        String name;
+        boolean providedValidName = false;
+        do {
+
+            name = view.getStringFromUserInput(prompt);
+            if (allowedNames.contains(name)) {
+
+                providedValidName = true;
+            } else {
+
+                view.printLine(disallowedMessage);
+            }
+
+        } while(!providedValidName);
+        return name;
+    }
+
+    /* Returns the first input string that does not occur in disallowedNames */
+    private String getExclusiveNameFromUserInput(String prompt, String disallowedMessage, Group<String> disallowedNames) {
+
+        String name;
+        boolean providedValidName = false;
+        do {
+
+            name = view.getStringFromUserInput(prompt);
+            if (!disallowedNames.contains(name)) {
+
+                providedValidName = true;
+            } else {
+
+                view.printLine(disallowedMessage);
+            }
+
+        } while(!providedValidName);
+        return name;
+    }
+
+    private Group<String> userGroupToStringGroup(Group<User> userGroup) {
+
+        Group<String> stringGroup = new Group<>("user names");
+        for (User user : userGroup) {
+
+            stringGroup.add(user.getName());
+        }
+        return stringGroup;
+    }
+
+    private MentorModel getMentorFromUserInput() {
+
+        UserService userSvc = new UserService();
+        Group<String> allowedMentorNames = userGroupToStringGroup(userSvc.getUserGroup("mentors"));
+
+        String name = getNameFromUserInput(view.mentorNameQuestion, view.nameOutOfRange, allowedMentorNames);
+
+        return (MentorModel)userSvc.getUser(name);
+    }
+
     public void assignMentorToGroup() {
+
         UserService userSvc = new UserService();
 
-        String name = view.getStringFromUserInput(view.mentorNameQuestion);
-        String groupName = view.getStringFromUserInput(view.groupNameQuestion);
-        User user = userSvc.getUser(name);
+        MentorModel mentor = getMentorFromUserInput();
+        Group<String> allowedGroupNames = userSvc.getUserGroupNames();
 
-        boolean userAddedtoGroup = userSvc.addUserAdherence(user, groupName);
+        String groupName = getNameFromUserInput(view.groupNameQuestion, view.nameOutOfRange, allowedGroupNames);
 
-        if (!userAddedtoGroup || user == null) {
-            view.printLine(view.assignMentorToFroupError);
+        boolean userAddedToGroup = userSvc.addUserAdherence(mentor, groupName);
+
+        if (!userAddedToGroup || mentor == null) {
+            view.printLine(view.assignMentorToGroupError);
         }
     }
 
@@ -117,7 +197,10 @@ public class AdminController{
 
         UserService userSvc = new UserService();
 
-        String groupName = view.getStringFromUserInput(view.groupNameQuestion);
+        Group<String> disallowedGroupNames = userSvc.getUserGroupNames();
+
+        String groupName = getExclusiveNameFromUserInput(view.groupNameQuestion, view.nameAlreadyTaken, disallowedGroupNames);
+
         Group<User> newGroup = new Group<>(groupName);
         userSvc.addUserGroup(newGroup);
     }
@@ -125,21 +208,15 @@ public class AdminController{
     public void editMentor() {
         UserService userSvc = new UserService();
 
-        String mentorName = view.getStringFromUserInput(view.mentorNameQuestion);
-
-        User mentor = userSvc.getUser(mentorName);
+        MentorModel mentor = getMentorFromUserInput();
 
         String choice = view.getStringFromUserInput(view.mentorChangeQuestion);
         switch (choice) {
             case "1":
-                String name = view.getStringFromUserInput(view.mentorNameQuestion);
-                mentor.setName(name);
-                break;
-            case "2":
                 String email = view.getStringFromUserInput(view.mentorEmailQuestion);
                 mentor.setEmail(email);
                 break;
-            case "3":
+            case "2":
                 String password = view.getStringFromUserInput(view.mentorPasswordQuestion);
                 mentor.setPassword(password);
                 break;
@@ -162,11 +239,8 @@ public class AdminController{
     }
 
     public String getMentorDisplay() {
-        UserService userSvc = new UserService();
   
-        String mentorName = view.getStringFromUserInput(view.mentorNameQuestion);
-
-        User mentor = userSvc.getUser(mentorName);
+        MentorModel mentor = getMentorFromUserInput();
 
         if (mentor != null && mentor.getRole() == Role.MENTOR) {
             return mentor.toString();
@@ -178,14 +252,20 @@ public class AdminController{
 
         LevelService levelService = new LevelService();
         levelService.initializeLevels();
+
         HashMap<Integer, String> levels = Level.getLevels();
+
+        Group<String> disallowedLevelNames = new Group<>("disallowed level names");
 
         view.printLine(view.currentLevelsText);
         for (Map.Entry<Integer, String> entry : levels.entrySet()) {
+
             view.printLine(Integer.toString(entry.getKey()) + "   " + entry.getValue());
+            disallowedLevelNames.add(entry.getValue());
         }
-        String lvlName = view.getStringFromUserInput(view.levelNameQuestion);
-        Integer thr = view.getIntFromUserInput(view.levelTresholdQuestion); // might need to be in loop in case of ivalid int input
+        String lvlName = getExclusiveNameFromUserInput(view.levelNameQuestion, view.nameAlreadyTaken, disallowedLevelNames);
+        Integer thr = view.getIntFromUserInput(view.levelThresholdQuestion); // might need to be in loop in case of ivalid int input
+        Level.addLevel(lvlName, thr);
     }
 
 }
