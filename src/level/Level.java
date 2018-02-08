@@ -32,6 +32,10 @@ public class Level{
         experienceGained += experiencePoints;
     }
 
+    public Integer getCurrentExpirience(){
+        return experienceGained;
+    }
+
     public static HashMap<Integer, String> getLevels() {
         return levels;
     }
