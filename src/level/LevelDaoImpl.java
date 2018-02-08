@@ -9,7 +9,7 @@ public class LevelDaoImpl {
     public HashMap<Integer, String> getLevelCollection(){
         try {
             HashMap<Integer, String> levels = new HashMap<>();
-            Connection databaseConnection = Connect();
+            Connection databaseConnection = connect();
             Statement statement = databaseConnection.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM predefined_levels;");
 
@@ -33,7 +33,7 @@ public class LevelDaoImpl {
 
     public boolean saveLevelCollection(HashMap<Integer, String> levels){
         try {
-            Connection databaseConnection = Connect();
+            Connection databaseConnection = connect();
             Statement statement = databaseConnection.createStatement();
 
             String sqlCommand = "DELETE FROM predefined_levels";
@@ -56,7 +56,7 @@ public class LevelDaoImpl {
         }
     }
 
-    private static Connection Connect() throws java.sql.SQLException{
+    private static Connection connect() throws java.sql.SQLException{
         try{
             Class.forName("org.sqlite.JDBC");
         }catch(ClassNotFoundException e){
@@ -66,5 +66,14 @@ public class LevelDaoImpl {
         Connection connect = DriverManager.getConnection(JDBC);
         connect.setAutoCommit(false);
         return connect;
+    }
+
+    private void close(Connection connect, Statement statement) throws SQLException{
+        if(statement != null){
+            statement.close();
+        }
+        if(connect != null){
+            connect.close();
+        }
     }
 }
