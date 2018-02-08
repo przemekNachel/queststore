@@ -2,6 +2,7 @@ package user.codecooler;
 
 import artifact.ArtifactModel;
 import generic_group.Group;
+import level.Level;
 import user.user.Role;
 import user.wallet.WalletService;
 import user.user.RawUser;
@@ -11,9 +12,10 @@ import java.util.Iterator;
 public class CodecoolerModel extends RawUser {
 
     private WalletService wallet;
+    private Level level;
     private Group<ArtifactModel> artifacts;
 
-    public CodecoolerModel(RawUser rawUser, WalletService wallet, Group<ArtifactModel> artifacts) {
+    public CodecoolerModel(RawUser rawUser, WalletService wallet, Group<ArtifactModel> artifacts, Level level) {
         super(Role.CODECOOLER,
                 rawUser.getName(),
                 rawUser.getEmail(),
@@ -21,7 +23,7 @@ public class CodecoolerModel extends RawUser {
                 rawUser.getAssociatedGroupNames());
 
         this.wallet = wallet;
-
+        this.level = level;
         this.artifacts = artifacts;
     }
 
