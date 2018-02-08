@@ -3,6 +3,7 @@ package user.mentor;
 import artifact.ArtifactModel;
 import artifact.ArtifactDao;
 import artifact.ArtifactDaoImpl;
+import level.Level;
 import quest.QuestModel;
 import quest.QuestDao;
 import quest.QuestDaoImpl;
@@ -279,12 +280,13 @@ public class MentorController {
 
 
         WalletService wallet = new WalletService(0);
+        Level level = new Level(0);
 
         Group<String> studentGroups = new Group<>("student groups");
         studentGroups.add("codecoolers");
 
         Group<ArtifactModel> artifacts = new Group<>("user artifacts");
-        CodecoolerModel codecooler = new CodecoolerModel(new RawUser(Role.CODECOOLER, nickname, email, password, studentGroups), wallet, artifacts);
+        CodecoolerModel codecooler = new CodecoolerModel(new RawUser(Role.CODECOOLER, nickname, email, password, studentGroups), wallet, artifacts, level);
 
         User user = userSvc.getUser(nickname);
         // If user getter doesn't find given user, return null
