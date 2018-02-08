@@ -192,6 +192,27 @@ public class UserDaoImpl implements UserDao{
         return id;
     }
 
+    public int getGroupId(String groupName) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+        ResultSet results = null;
+        int id = -1;
+      try{
+        String query = "SELECT group_id FROM group_names WHERE group_name='"
+        + groupName + "';";
+        results = statement.executeQuery(query);
+
+        if(results.next()){
+            id = results.getInt("group_id");
+        }
+      }finally{
+        close(results);
+        close(connect, statement);
+      }
+        return id;
+    }
+
     // helper methods for pubic methods
 
     private RawUser createUserObject(Role role, int userId)  throws SQLException{
@@ -256,27 +277,6 @@ public class UserDaoImpl implements UserDao{
         close(results);
         close(connect, statement);
       }
-    }
-
-    private int getGroupId(String groupName) throws SQLException{
-
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
-        ResultSet results = null;
-        int id = -1;
-      try{
-        String query = "SELECT group_id FROM group_names WHERE group_name='"
-        + groupName + "';";
-        results = statement.executeQuery(query);
-
-        if(results.next()){
-            id = results.getInt("group_id");
-        }
-      }finally{
-        close(results);
-        close(connect, statement);
-      }
-        return id;
     }
 
     private Group<String> getUserGroups(int userId) throws SQLException{
