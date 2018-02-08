@@ -1,11 +1,10 @@
 package user.mentor;
 
+import abstractusercontroller.AbstractUserController;
 import artifact.ArtifactModel;
-import artifact.ArtifactDao;
 import artifact.ArtifactDaoImpl;
 import level.Level;
 import quest.QuestModel;
-import quest.QuestDao;
 import quest.QuestDaoImpl;
 import console.menu.Menu;
 import console.menu.MenuOption;
@@ -16,9 +15,9 @@ import user.wallet.*;
 import user.service.UserService;
 
 import java.sql.*;
-import java.util.Iterator;
 
-public class MentorController {
+public class MentorController extends AbstractUserController {
+
     private MentorView view;
 
     public MentorController() {
@@ -40,13 +39,13 @@ public class MentorController {
         );
 
         view = new MentorView(mentorMenu);
+        userSvc = new UserService();
     }
 
     public void start() {
 
         boolean requestedExit = false;
         do {
-            UserDao userDao = new UserDaoImpl();
             MenuOption userOption = view.getMenuOptionFromUserInput(" Please choose option: ");
             if (userOption.getId().equals("0")) {
                 requestedExit = true;
@@ -136,15 +135,19 @@ public class MentorController {
         }
     }
 
+    private CodecoolerModel getCodecoolerFromUserInput() {
+
+        return (CodecoolerModel)getUserFromUserInput(view.userNicknameQuestion, view.nameOutOfRange, "codecoolers");
+    }
+
     private void assignCodecoolerToGroup() {
-        UserService userSvc = new UserService();
 
-        String nickname = view.getStringFromUserInput(view.userNicknameQuestion);
-        String groupName = view.getStringFromUserInput(view.userGroupQuestion);
+        CodecoolerModel codecooler = getCodecoolerFromUserInput();
 
-        User user = userSvc.getUser(nickname);
+        Group<String> allowedGroupNames = userSvc.getUserGroupNames();
+        String groupName = getNameFromUserInput(view.userGroupQuestion, view.nameOutOfRange, allowedGroupNames);
 
-        boolean addUserAdherenceSuccess = userSvc.addUserAdherence(user, groupName);
+        boolean addUserAdherenceSuccess = userSvc.addUserAdherence(codecooler, groupName);
 
         if(!addUserAdherenceSuccess) {
 
@@ -154,9 +157,12 @@ public class MentorController {
 
     // Right now forces user to update both description and price. Can be improved to choose one or another with switch case.
     private void updateArtifact() {
+
         ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
         displayAllArtifacts();
+
         try {
+
             ArtifactModel artifact = artifactDao.getArtifactByName(view.getStringFromUserInput(view.chooseArtifactNameQuestion));
 
             String artifactDesc = view.getStringFromUserInput(view.artifactDescQuestion);
@@ -179,6 +185,7 @@ public class MentorController {
         ArtifactModel newArtifact = new ArtifactModel(name, desc, price);
 
         try {
+
             Group<String> availableGroups = artifactDao.getArtifactGroupNames();
             view.printLine("\n--- Available groups ---");
             for (String s : availableGroups) {
@@ -200,9 +207,11 @@ public class MentorController {
     }
 
     private void removeArtifact() {
+
         ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
         displayAllArtifacts();
         try {
+
             ArtifactModel artifact = artifactDao.getArtifactByName(view.getStringFromUserInput(view.artifactNameQuestion));
             artifactDao.deleteArtifact(artifact);
         } catch (SQLException e) {
@@ -211,9 +220,11 @@ public class MentorController {
     }
 
     private void removeQuest() {
+
         QuestDaoImpl questDao = new QuestDaoImpl();
         displayAllQuests();
         try {
+
             QuestModel quest = questDao.getQuest(view.getStringFromUserInput(view.questNameQuestion));
             questDao.deleteQuest(quest);
         } catch (SQLException e) {
@@ -222,9 +233,11 @@ public class MentorController {
     }
 
     private void updateQuest() {
+
         QuestDaoImpl questDao = new QuestDaoImpl();
         displayAllQuests();
         try {
+
             QuestModel quest = questDao.getQuest(view.getStringFromUserInput(view.chooseQuestNameQuestion));
 
             String questDesc = view.getStringFromUserInput(view.questDescQuestion);
@@ -248,6 +261,7 @@ public class MentorController {
         QuestModel newQuest = new QuestModel(name, desc, reward);
 
         try {
+
             Group<String> availableGroups = questDao.getQuestGroupNames();
             view.printLine("\n--- Available groups ---");
             for (String s : availableGroups) {
@@ -289,7 +303,7 @@ public class MentorController {
         CodecoolerModel codecooler = new CodecoolerModel(new RawUser(Role.CODECOOLER, nickname, email, password, studentGroups), wallet, artifacts, level);
 
         User user = userSvc.getUser(nickname);
-        // If user getter doesn't find given user, return null
+        // add user if they do not exist in the database
         if (user == null) {
             userSvc.addUser(codecooler);
         } else {
@@ -299,8 +313,7 @@ public class MentorController {
 
     private void markCodecoolerQuestCompletion() {
 
-        UserDaoImpl userDao = new UserDaoImpl();
-        quest.QuestDaoImpl questDao = new quest.QuestDaoImpl();
+        QuestDaoImpl questDao = new QuestDaoImpl();
 
         // get quest group names ...
         Group<String> allowedQuestNames = new Group<>("allowed quest name user input");
@@ -382,13 +395,8 @@ public class MentorController {
             codecooler.getWallet().payIn(worth);
             codecooler.getLevel().addExperience(worth);
             view.printLine("  quest marked");
-            UserDaoImpl userDao = new UserDaoImpl();
-            try {
 
-                userDao.updateUser(codecooler);
-            } catch (SQLException e) {
-                view.printLine(e.getMessage());
-            }
+            userSvc.updateUser(codecooler);
         } else {
             view.printLine("  Someone has changed their mind...");
         }
@@ -435,14 +443,8 @@ public class MentorController {
 
         boolean usageStatus = input.equals("Y");
         codecooler.getArtifact(artifactName).setUsageStatus(usageStatus);
-        UserDaoImpl userDao = new UserDaoImpl();
-        try {
 
-            userDao.updateUser(codecooler);
-        } catch (SQLException e) {
-
-            view.printSQLException(e);
-        }
+        userSvc.updateUser(codecooler);
 
     }
 
