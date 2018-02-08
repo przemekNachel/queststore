@@ -1,18 +1,14 @@
-package helper;
+package abstractusercontroller;
 
 import console.menu.AbstractConsoleView;
 import generic_group.Group;
 import user.service.UserService;
 import user.user.User;
 
-public class ControllerHelper {
+public abstract class AbstractUserController {
 
     private AbstractConsoleView view;
-
-    public ControllerHelper(AbstractConsoleView view) {
-
-        this.view = view;
-    }
+    protected UserService userSvc;
 
     public Group<String> userGroupToStringGroup(Group<User> userGroup) {
 
@@ -66,13 +62,10 @@ public class ControllerHelper {
 
     public User getUserFromUserInput(String nameQuestion, String outOfRangeError, String groupName) {
 
-        UserService userSvc = new UserService();
-        ControllerHelper ch = new ControllerHelper(view);
-
         Group<User> users = userSvc.getUserGroup(groupName);
-        Group<String> allowedUserNames = ch.userGroupToStringGroup(users);
+        Group<String> allowedUserNames = userGroupToStringGroup(users);
 
-        String name = ch.getNameFromUserInput(nameQuestion, outOfRangeError, allowedUserNames);
+        String name = getNameFromUserInput(nameQuestion, outOfRangeError, allowedUserNames);
 
         return userSvc.getUser(name);
     }
