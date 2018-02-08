@@ -6,8 +6,8 @@ import java.util.Iterator;
 
 public abstract class AbstractConsoleView {
 
-    public String nameAlreadyTaken = "This name is taken, it cannot be used.";
-    public String nameOutOfRange = "You need to provide an already existing name.";
+    public String nameAlreadyTaken = "\n This name cannot be used.\n";
+    public String nameOutOfRange = "\n You need to provide an already existing name.\n";
 
     protected Menu menu;
 
@@ -53,11 +53,16 @@ public abstract class AbstractConsoleView {
     public Integer getIntFromUserInput(String prompt) {
         Integer userInput = null;
 
-        try {
-             userInput = Integer.valueOf(getStringFromUserInput(prompt));
-        } catch (Exception e) {
-           System.out.println("Invalid Integer input.");
-        }
+        boolean validInput;
+        do {
+            validInput = true;
+            try {
+                userInput = Integer.valueOf(getStringFromUserInput(prompt));
+            } catch (Exception e) {
+                validInput = false;
+                printLine("\n Invalid input.\n");
+            }
+        } while(!validInput);
         return userInput;
     }
 
