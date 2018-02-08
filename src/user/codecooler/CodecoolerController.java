@@ -6,9 +6,6 @@ import artifact.ArtifactModel;
 import console.menu.Menu;
 import console.menu.MenuOption;
 import user.service.UserService;
-import user.user.UserDaoImpl;
-
-import java.sql.SQLException;
 
 public class CodecoolerController extends AbstractUserController {
     private CodecoolerView view;
