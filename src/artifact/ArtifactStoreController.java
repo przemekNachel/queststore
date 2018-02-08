@@ -1,15 +1,10 @@
 package artifact;
 
-import console.menu.Menu;
-import console.menu.MenuOption;
 import generic_group.Group;
 import user.codecooler.CodecoolerModel;
 import user.service.UserService;
 import user.user.User;
-import user.user.UserDaoImpl;
-import user.wallet.WalletService;
 
-import java.util.Iterator;
 import java.sql.*;
 
 public class ArtifactStoreController{
@@ -117,6 +112,22 @@ public class ArtifactStoreController{
         return artifactName;
     }
 
+    private Group<CodecoolerModel> intersect(Group<User> students, Group<User> consumers) {
+
+        Group<CodecoolerModel> intersection = new Group<>("Codecooler(s) buying an artifact");
+        for (User consumer : consumers) {
+
+            for (User student : students) {
+
+                if(consumer.getName().equals(student.getName())) {
+
+                    intersection.add((CodecoolerModel)consumer);
+                }
+            }
+        }
+        return intersection;
+    }
+
     private Group<CodecoolerModel> getConsumerGroup(CodecoolerModel codecooler) {
 
         UserService userSvc = new UserService();
@@ -134,13 +145,11 @@ public class ArtifactStoreController{
             String consumerGroupName = view.getStringFromUserInput(view.chooseGroup);
             if (allowedGroupNames.contains(consumerGroupName)) {
 
-                Group<User> users = userSvc.getUserGroup(consumerGroupName);
+                Group<User> students = userSvc.getUserGroup("codecoolers");
+                Group<User> consumers = userSvc.getUserGroup(consumerGroupName);
 
-                codecoolers = new Group<>("Codecooler(s) buying an artifact");
-                for (User currentUser : users) {
+                codecoolers = intersect(students, consumers);
 
-                    codecoolers.add((CodecoolerModel)currentUser);
-                }
                 providedExistentGroupName = true;
 
             } else {
@@ -234,7 +243,6 @@ public class ArtifactStoreController{
             allCanAfford &= codecooler.getWallet().canAfford(share);
         }
 
-
         if (!allCanAfford) {
 
             view.printLine(view.insufficientFunds);
@@ -247,79 +255,4 @@ public class ArtifactStoreController{
         }
         return artifact;
     }
-
-    public void editArtifact(){
-
-        Menu editMenu = new Menu(
-                new MenuOption("0", "exit"),
-                new MenuOption("1", "Name"),
-                new MenuOption("2", "Description"),
-                new MenuOption("3", "Price")
-        );
-
-        ArtifactStoreView view = new ArtifactStoreView(editMenu);
-        ArtifactDaoImpl dao = new ArtifactDaoImpl();
-
-        String artName = view.getStringFromUserInput(view.artifactNameQuestion);
-        ArtifactModel artifact = null;
-        try {
-
-            artifact = dao.getArtifactByName(artName);
-        } catch (SQLException e) {
-            view.printSQLException(e);
-        }
-
-        if(artifact == null){
-            view.printLine(view.artifactNotFoundError);
-            return;
-        }
-
-        boolean requestedExit = false;
-        while (!requestedExit) {
-
-            String choice = view.getStringFromUserInput(view.artifactEditQuestion); //make menu from this
-            MenuOption userOption = view.getMenuOptionFromUserInput(" Please choose option: ");
-            switch(userOption.getId()){
-                case "0":
-                    requestedExit = true;
-                    break;
-
-                case "1":
-                    String name = view.getStringFromUserInput(view.artifactNameQuestion);
-                    artifact.setName(name);
-                    break;
-
-                case "2":
-                    String description = view.getStringFromUserInput(view
-                            .artifactDescriptionQuestion);
-                    artifact.setDescription(description);
-                    break;
-
-                case "3":
-                    String priceStr = view.getStringFromUserInput(view
-                            .artifactPriceQuestion);
-                    Integer price = Integer.parseInt(priceStr);
-                    artifact.setPrice(price);
-                    break;
-
-                default :
-                    view.printLine(view.noSuchOption);
-            }
-        }
-    }
-
-    public void createArtifactCategory(){
-        ArtifactStoreView view = new ArtifactStoreView();
-        ArtifactDaoImpl artDao = new ArtifactDaoImpl();
-        String categoryName = view.getStringFromUserInput(view.artifactCategoryQuestion);
-
-        Group<ArtifactModel> newGroup = new Group<>(categoryName);
-        try {
-
-            artDao.addArtifactGroup(newGroup);
-        } catch (SQLException e) {
-            view.printSQLException(e);
-        }
-    }
-
 }
