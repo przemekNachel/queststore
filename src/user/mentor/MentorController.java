@@ -13,8 +13,6 @@ import user.user.*;
 import user.wallet.*;
 import user.service.UserService;
 
-import java.sql.*;
-
 public class MentorController extends AbstractUserController {
 
     private MentorView view;
