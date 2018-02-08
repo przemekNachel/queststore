@@ -98,6 +98,7 @@ public class UserService {
             }
 
             new WalletDaoImpl().updateWallet(userID, codecooler.getWallet());
+            new LevelDaoImpl().updateExperience(userID, codecooler.getLevel());
         }
         return true;
     }
@@ -158,15 +159,46 @@ public class UserService {
         }
     }
 
+    private Group<String> sieveOutNonUserGroupNames(Group<String> groupNames) {
+
+        Group<String> exclusionFilters = new Group<>("exclusion filters");
+        exclusionFilters.add("artifact");
+        exclusionFilters.add("quest");
+        exclusionFilters.add("mentor");
+        exclusionFilters.add("admin");
+
+        Group<String> sieved = new Group<>("group names except for those like exclusion filters");
+        for (String groupName : groupNames) {
+
+            boolean hasToBeIncluded = true;
+            for (String exclusionFilter : exclusionFilters) {
+
+                if (groupName.contains(exclusionFilter)) {
+
+                    hasToBeIncluded = false;
+                    break;
+                }
+            }
+            if (hasToBeIncluded) {
+
+                sieved.add(groupName);
+            }
+        }
+        return sieved;
+    }
+
     public Group<String> getUserGroupNames() {
 
         Group<String> groupNames = new Group<>("user group names");
         try {
-            groupNames = new UserDaoImpl().getUserGroupNames();
+            groupNames = new UserDaoImpl().getAllGroupNames();
         } catch (SQLException e) {
             e.printStackTrace();
+            return groupNames;
         }
-        return groupNames;
+
+        /* sieve out non-user groups */
+        return sieveOutNonUserGroupNames(groupNames);
     }
 
     public void addUser(User user) {
