@@ -452,21 +452,6 @@ public class UserDaoImpl implements UserDao{
       }
     }
 
-    private void updateWallet(int userId, int balance) throws SQLException{
-
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
-        try{
-        String updateWallet = "INSERT INTO user_wallet(user_id, balance) " +
-                "VALUES (" + userId + ", " + balance + ");";
-
-        statement.executeUpdate(updateWallet);
-        connect.commit();
-      }finally{
-        close(connect, statement);
-      }
-    }
-
     // upgraders
 
     private void upgradeCredentials(String password, String email, int userId) throws SQLException{
@@ -485,22 +470,6 @@ public class UserDaoImpl implements UserDao{
       }
     }
 
-    private void upgradePrivilages(int userPrivilegeLevelId, int userId) throws SQLException{
-
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
-        try{
-        String updatePrivileges = ("UPDATE user_roles " +
-                "SET user_privilege_level_id=" + userPrivilegeLevelId + " " +
-                "WHERE user_id=" + userId + ";");
-
-        statement.executeUpdate(updatePrivileges);
-        connect.commit();
-      }finally{
-        close(connect, statement);
-      }
-    }
-
     private void upgradeUserAssociations(Group<Integer> groupIds, int userId) throws SQLException{
 
         Connection connect = establishConnection();
@@ -513,21 +482,6 @@ public class UserDaoImpl implements UserDao{
             statement.executeUpdate(updateAssociations);
             connect.commit();
         }
-      }finally{
-        close(connect, statement);
-      }
-    }
-
-    private void upgradeWallet(int balance, int userId) throws SQLException{
-
-        Connection connect = establishConnection();
-        Statement statement = connect.createStatement();
-        try{
-        String updateWallet = "UPDATE user_wallet " +
-                "SET balance=" + balance + " WHERE user_id=" + userId + ";";
-
-        statement.executeUpdate(updateWallet);
-        connect.commit();
       }finally{
         close(connect, statement);
       }
