@@ -92,6 +92,15 @@ public class LevelDaoImpl {
         executeExperienceUpdate(add);
     }
 
+    public void updateExperience(int userID, Level level) {
+
+
+        String update = "UPDATE user_experience " +
+                "SET experience_gained=" + level.getCurrentExpirience() + " WHERE user_id=" + userID + ";";
+
+        executeExperienceUpdate(update);
+    }
+
 
     private void executeExperienceUpdate(String updateQuery) {
 
