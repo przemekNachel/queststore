@@ -9,11 +9,8 @@ import user.mentor.MentorController;
 import user.service.UserService;
 import user.user.Role;
 import user.user.User;
-import user.user.UserDao;
-import user.user.UserDaoImpl;
 
 import java.lang.UnsupportedOperationException;
-import java.sql.*;
 
 public class LoginController {
 

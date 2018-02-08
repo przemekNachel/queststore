@@ -2,7 +2,6 @@ package login;
 
 import console.menu.AbstractConsoleView;
 import console.menu.Menu;
-import java.io.Console;
 
 
 public class LoginView extends AbstractConsoleView {
