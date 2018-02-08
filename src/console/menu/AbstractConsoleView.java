@@ -6,6 +6,9 @@ import java.util.Iterator;
 
 public abstract class AbstractConsoleView {
 
+    public String nameAlreadyTaken = "This name is taken, it cannot be used.";
+    public String nameOutOfRange = "You need to provide an already existing name.";
+
     protected Menu menu;
 
     private static final String ESCAPE_SEQ_CLEAR_SCREEN = "\033[H\033[2J";
@@ -48,7 +51,6 @@ public abstract class AbstractConsoleView {
     }
 
     public Integer getIntFromUserInput(String prompt) {
-        print(prompt);
         Integer userInput = null;
 
         try {

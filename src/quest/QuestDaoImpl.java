@@ -46,7 +46,7 @@ public class QuestDaoImpl implements QuestDao {
 
         String sql = ("UPDATE quest_store SET "+
                 "descr='"+questDescr+"', "+
-                "price='"+questReward+"' "+
+                "reward='"+questReward+"' "+
                 "WHERE name='" + questName+ "';");
 
         stmt.executeUpdate(sql);

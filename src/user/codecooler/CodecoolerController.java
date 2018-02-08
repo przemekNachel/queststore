@@ -4,6 +4,7 @@ import artifact.ArtifactStoreController;
 import artifact.ArtifactModel;
 import console.menu.Menu;
 import console.menu.MenuOption;
+import user.service.UserService;
 import user.user.UserDaoImpl;
 
 import java.sql.SQLException;
@@ -81,15 +82,7 @@ public class CodecoolerController {
 
             artifact.setUsageStatus(true);
 
-            boolean updated = true;
-            try {
-
-                new UserDaoImpl().updateUser(currentUser);
-            } catch (SQLException e) {
-
-                updated = false;
-                view.printSQLException(e);
-            }
+            boolean updated = new UserService().updateUser(currentUser);
 
             if(updated) {
 

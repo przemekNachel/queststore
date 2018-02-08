@@ -4,6 +4,7 @@ import console.menu.Menu;
 import console.menu.MenuOption;
 import generic_group.Group;
 import user.codecooler.CodecoolerModel;
+import user.service.UserService;
 import user.user.User;
 import user.user.UserDaoImpl;
 import user.wallet.WalletService;
@@ -118,38 +119,30 @@ public class ArtifactStoreController{
 
     private Group<CodecoolerModel> getConsumerGroup(CodecoolerModel codecooler) {
 
-        UserDaoImpl userDao = new UserDaoImpl();
+        UserService userSvc = new UserService();
 
         // get all user groups to choose from and display them
-        Group<String> allowedGroupNames = null;
-
-        try{
-            allowedGroupNames = userDao.getUserGroupNames();
-        } catch (SQLException e) {
-            view.printSQLException(e);
-            return null;
-        }
+        Group<String> allowedGroupNames = codecooler.getAssociatedGroupNames();
 
         // get group which will crowd-fund the artifact
         Group<CodecoolerModel> codecoolers = null;
         boolean providedExistentGroupName = false;
         boolean wantToBuyAlone = false;
+        String groupsDisplay = "\n\n  Groups that can crowd-fund this purchase: \n\n   " + codecooler.getCodecoolerGroupDisplay() + "\n";
         do {
+            view.printLine(groupsDisplay);
             String consumerGroupName = view.getStringFromUserInput(view.chooseGroup);
             if (allowedGroupNames.contains(consumerGroupName)) {
-                try{
-                    Group<User> users = userDao.getUserGroup(consumerGroupName);
-                    // buy the artifact as a group
-                    codecoolers = new Group<>("Codecooler(s) buying an artifact");
-                    for (User currentUser : users) {
 
-                        codecoolers.add((CodecoolerModel)currentUser);
-                    }
-                } catch (SQLException e) {
-                    view.printSQLException(e);
-                    return null;
+                Group<User> users = userSvc.getUserGroup(consumerGroupName);
+
+                codecoolers = new Group<>("Codecooler(s) buying an artifact");
+                for (User currentUser : users) {
+
+                    codecoolers.add((CodecoolerModel)currentUser);
                 }
                 providedExistentGroupName = true;
+
             } else {
                 if (consumerGroupName.equals("ALONE")) {
 
@@ -157,7 +150,6 @@ public class ArtifactStoreController{
                     codecoolers.add(codecooler);
                     wantToBuyAlone = true;
                 } else if (consumerGroupName.equals(view.magicExitString)) {
-
                     return null;
                 } else {
 
@@ -170,8 +162,6 @@ public class ArtifactStoreController{
     }
 
     public void buyProductProcess(CodecoolerModel codecooler){
-
-        UserDaoImpl userDao = new UserDaoImpl();
 
         view.printLine(view.abortHint);
         String artifactName = getArtifactNameFromUserInput();
@@ -187,20 +177,17 @@ public class ArtifactStoreController{
         }
 
         ArtifactModel boughtArtifact = buyArtifact(artifactName, consumers);
+
         if (boughtArtifact == null) {
 
             return;
         }
         /* purchase process succeeded */
         codecooler.addArtifact(boughtArtifact);
-        try {
+        UserService userSvc = new UserService();
+        for (User user : consumers) {
 
-            for (User user : consumers) {
-
-                userDao.updateUser(user);
-            }
-        } catch (SQLException e) {
-            view.printSQLException(e);
+            userSvc.updateUser(user);
         }
     }
 
@@ -225,13 +212,12 @@ public class ArtifactStoreController{
         Integer alignedPrice = artifactPrice - (artifactPrice % divideAmong);
         Integer share = alignedPrice / divideAmong;
 
-        Iterator<CodecoolerModel> iter = consumers.getIterator();
         boolean allCanAfford = true;
-        while (iter.hasNext()) {
+        for (CodecoolerModel codecooler : consumers) {
 
-            WalletService currentWallet = iter.next().getWallet();
-            allCanAfford &= currentWallet.canAfford(share);
+            allCanAfford &= codecooler.getWallet().canAfford(share);
         }
+
 
         if (!allCanAfford) {
 
@@ -239,11 +225,9 @@ public class ArtifactStoreController{
             return null;
         }
 
-        iter = consumers.getIterator();
-        while (iter.hasNext()) {
+        for (CodecoolerModel codecooler : consumers) {
 
-            WalletService currentWallet = iter.next().getWallet();
-            currentWallet.withdraw(share);
+            codecooler.getWallet().withdraw(share);
         }
         return artifact;
     }
