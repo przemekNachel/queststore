@@ -159,15 +159,48 @@ public class QuestDaoImpl implements QuestDao {
         Objects.requireNonNull(con).setAutoCommit(false);
         Statement stmt = con.createStatement();
 
-        String sql = "INSERT INTO quest_associations(quest_id, group_id) " +
-                "VALUES ((SELECT quest_id FROM quest_store WHERE name='"+name+"'), " +
-                "(SELECT group_id FROM group_names WHERE group_name='"+groupName+"'));";
-        stmt.executeUpdate(sql);
+        int groupId = getGroupId(con, groupName);
+
+        Statement checkStatement = con.createStatement();
+        String query = "SELECT quest_id FROM quest_associations WHERE group_id='" + groupId + "';";
+        ResultSet checkRecord = checkStatement.executeQuery(query);
+        boolean addNew = !checkRecord.next();
+        checkStatement.close();
+
+        if(addNew) {
+
+            String sql = "INSERT INTO quest_associations(quest_id, group_id) " +
+                    "VALUES ((SELECT quest_id FROM quest_store WHERE name='"+name+"'), " +
+                    "(SELECT group_id FROM group_names WHERE group_name='"+groupName+"'));";
+            stmt.executeUpdate(sql);
+        }
 
         con.commit();
 
         stmt.close();
         con.close();
 
+    }
+
+    private int getGroupId(Connection connection, String groupName) throws SQLException{
+
+        Statement statement = connection.createStatement();
+        ResultSet results = null;
+        int id = -1;
+        try {
+
+            String query = "SELECT group_id FROM group_names WHERE group_name='"
+                    + groupName + "';";
+            results = statement.executeQuery(query);
+
+            if(results.next()){
+                id = results.getInt("group_id");
+            }
+        } finally {
+
+            results.close();
+            statement.close();
+        }
+        return id;
     }
 }

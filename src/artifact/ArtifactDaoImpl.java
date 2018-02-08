@@ -268,15 +268,26 @@ public class ArtifactDaoImpl implements ArtifactDao{
     }
 
     @Override
-    public void addArtifactAdherence(String name, String groupName) throws SQLException {
+    public void addArtifactAdherence(String artifactName, String groupName) throws SQLException {
         Connection con = connectToDatabase();
         Objects.requireNonNull(con).setAutoCommit(false);
         Statement stmt = con.createStatement();
 
-        String sql = "INSERT INTO artifact_associations(artifact_id, group_id) " +
-                "VALUES ((SELECT artifact_id FROM artifact_store WHERE name='"+name+"'), " +
-                "(SELECT group_id FROM group_names WHERE group_name='"+groupName+"'));";
-        stmt.executeUpdate(sql);
+        int groupId = getGroupId(con, groupName);
+
+        Statement checkStatement = con.createStatement();
+        String query = "SELECT artifact_id FROM artifact_associations WHERE group_id='" + groupId + "';";
+        ResultSet checkRecord = checkStatement.executeQuery(query);
+        boolean addNew = !checkRecord.next();
+        checkStatement.close();
+
+        if (addNew) {
+
+            String sql = "INSERT INTO artifact_associations(artifact_id, group_id) " +
+                    "VALUES ((SELECT artifact_id FROM artifact_store WHERE name='"+artifactName+"'), " +
+                    "(SELECT group_id FROM group_names WHERE group_name='"+groupName+"'));";
+            stmt.executeUpdate(sql);
+        }
 
         con.commit();
 
@@ -285,5 +296,26 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
     }
 
+    private int getGroupId(Connection connection, String groupName) throws SQLException{
+
+        Statement statement = connection.createStatement();
+        ResultSet results = null;
+        int id = -1;
+        try {
+
+            String query = "SELECT group_id FROM group_names WHERE group_name='"
+                    + groupName + "';";
+            results = statement.executeQuery(query);
+
+            if(results.next()){
+                id = results.getInt("group_id");
+            }
+        } finally {
+
+            results.close();
+            statement.close();
+        }
+        return id;
+    }
 
 }
