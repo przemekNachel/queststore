@@ -2,12 +2,11 @@ package user.mentor;
 
 import abstractusercontroller.AbstractUserController;
 import artifact.ArtifactModel;
-import artifact.ArtifactDaoImpl;
-import level.Level;
+import artifact.ArtifactService;
 import quest.QuestModel;
-import quest.QuestDaoImpl;
 import console.menu.Menu;
 import console.menu.MenuOption;
+import quest.QuestService;
 import user.codecooler.CodecoolerModel;
 import generic_group.Group;
 import user.user.*;
@@ -19,6 +18,8 @@ import java.sql.*;
 public class MentorController extends AbstractUserController {
 
     private MentorView view;
+    private ArtifactService artifactSvc;
+    private QuestService questSvc;
 
     public MentorController() {
         super(new MentorView(
@@ -44,6 +45,8 @@ public class MentorController extends AbstractUserController {
         this.view = (MentorView)super.view;
 
         userSvc = new UserService();
+        artifactSvc = new ArtifactService();
+        questSvc = new QuestService();
     }
 
     public void start() {
@@ -108,34 +111,26 @@ public class MentorController extends AbstractUserController {
     }
 
     private void displayAllArtifacts() {
-        ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
 
-        try {
-            Group<Group<ArtifactModel>> artifactCollection = artifactDao.getAllArtifacts();
-            view.printLine("\n--- Available artifacts ---");
-            for(Group<ArtifactModel> artifactGroups : artifactCollection) {
-                for (ArtifactModel artifact : artifactGroups) {
-                    view.printLine(artifact.getName());
-                }
+        view.printLine("\n--- Available artifacts ---");
+        for(Group<ArtifactModel> artifactGroups : artifactSvc.getAllArtifacts()) {
+
+            for (ArtifactModel artifact : artifactGroups) {
+
+                view.printLine(artifact.getName());
             }
-        } catch (SQLException e) {
-            view.printSQLException(e);
         }
     }
 
     private void displayAllQuests() {
-        QuestDaoImpl questDao = new QuestDaoImpl();
 
-        try {
-            Group<Group<QuestModel>> questCollection = questDao.getAllQuests();
-            view.printLine("\n--- Available Quests ---");
-            for(Group<QuestModel> questGroups : questCollection) {
-                for (QuestModel quest : questGroups) {
-                    view.printLine(quest.getName());
-                }
+        view.printLine("\n--- Available Quests ---");
+        for(Group<QuestModel> questGroups : questSvc.getAllQuests()) {
+
+            for (QuestModel quest : questGroups) {
+
+                view.printLine(quest.getName());
             }
-        } catch (SQLException e) {
-            view.printSQLException(e);
         }
     }
 
@@ -162,225 +157,143 @@ public class MentorController extends AbstractUserController {
     // Right now forces user to update both description and price. Can be improved to choose one or another with switch case.
     private void updateArtifact() {
 
-        ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
         displayAllArtifacts();
 
-        try {
+        Group<String> allowedArtifactNames = artifactSvc.getArtifactNames();
+        String name = getNameFromUserInput(view.chooseArtifactNameQuestion, view.nameOutOfRange, allowedArtifactNames);
 
-            ArtifactModel artifact = artifactDao.getArtifactByName(view.getStringFromUserInput(view.chooseArtifactNameQuestion));
+        ArtifactModel artifact = artifactSvc.getArtifactByName(name);
 
-            String artifactDesc = view.getStringFromUserInput(view.artifactDescQuestion);
-            Integer artifactPrice = view.getIntFromUserInput(view.artifactPriceQuestion);
+        String newDesc = view.getStringFromUserInput(view.artifactDescQuestion);
+        Integer newPrice = view.getIntFromUserInput(view.artifactPriceQuestion);
 
-            ArtifactModel updatedArtifact = new ArtifactModel(artifact.getName(), artifactDesc, artifactPrice);
-            artifactDao.updateArtifact(updatedArtifact);
+        artifact.setDescription(newDesc);
+        artifact.setPrice(newPrice);
 
-        } catch (SQLException e){
-            view.printSQLException(e);
-        }
+        artifactSvc.updateArtifact(artifact);
     }
 
     private void createArtifact() {
 
-        ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
-        String name = view.getStringFromUserInput(view.artifactNameQuestion);
+        Group<String> disallowedArtifactNames = artifactSvc.getArtifactNames();
+        String name = getExclusiveNameFromUserInput(view.chooseArtifactNameQuestion, view.nameAlreadyTaken, disallowedArtifactNames);
+
         String desc = view.getStringFromUserInput(view.artifactDescQuestion);
         Integer price = view.getIntFromUserInput(view.artifactPriceQuestion);
-        ArtifactModel newArtifact = new ArtifactModel(name, desc, price);
 
-        try {
 
-            Group<String> availableGroups = artifactDao.getArtifactGroupNames();
-            view.printLine("\n--- Available groups ---");
-            for (String s : availableGroups) {
-                if (!s.equals("artifacts")) {
-                    view.printLine(s);
-                }
-            }
-            view.print("\n");
-
-            String groupName = view.getStringFromUserInput(view.GroupAssignmentQuestion);
-
-            artifactDao.addArtifact(newArtifact);
-            artifactDao.addArtifactAdherence(name, "artifacts");
-            artifactDao.addArtifactAdherence(name, groupName);
-        } catch (SQLException e) {
-
-            view.printSQLException(e);
+        Group<String> availableGroups = artifactSvc.getArtifactGroupNames();
+        view.printLine("\n--- Available groups ---");
+        for (String s : availableGroups) {
+            view.printLine(s);
         }
+        view.print("\n");
+
+        Group<String> allowedGroupNames = availableGroups;
+        String groupName = getNameFromUserInput(view.GroupAssignmentQuestion, view.nameOutOfRange, allowedGroupNames);
+
+        artifactSvc.createArtifact(name, desc, price, groupName);
     }
 
     private void removeArtifact() {
 
-        ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
-        displayAllArtifacts();
-        try {
+        Group<String> allowedArtifactNames = artifactSvc.getArtifactNames();
 
-            ArtifactModel artifact = artifactDao.getArtifactByName(view.getStringFromUserInput(view.artifactNameQuestion));
-            artifactDao.deleteArtifact(artifact);
-        } catch (SQLException e) {
-            view.printSQLException(e);
-        }
+        displayAllArtifacts();
+
+        String name = getNameFromUserInput(view.artifactNameQuestion, view.nameOutOfRange, allowedArtifactNames);
+
+        artifactSvc.deleteArtifact(name);
+    }
+
+    private QuestModel getQuestFromUserInput(String prompt) {
+
+        displayAllQuests();
+
+        Group<String> allowedQuestNames = questSvc.getQuestNames();
+        String name = getNameFromUserInput(prompt, view.nameOutOfRange, allowedQuestNames);
+
+        return questSvc.getQuestByName(name);
     }
 
     private void removeQuest() {
 
-        QuestDaoImpl questDao = new QuestDaoImpl();
-        displayAllQuests();
-        try {
+        QuestModel questDeleted = getQuestFromUserInput(view.questNameQuestion);
 
-            QuestModel quest = questDao.getQuest(view.getStringFromUserInput(view.questNameQuestion));
-            questDao.deleteQuest(quest);
-        } catch (SQLException e) {
-            view.printSQLException(e);
-        }
+        questSvc.deleteQuest(questDeleted.getName());
     }
 
     private void updateQuest() {
 
-        QuestDaoImpl questDao = new QuestDaoImpl();
-        displayAllQuests();
-        try {
+        QuestModel quest = getQuestFromUserInput(view.chooseQuestNameQuestion);
 
-            QuestModel quest = questDao.getQuest(view.getStringFromUserInput(view.chooseQuestNameQuestion));
+        String newDesc = view.getStringFromUserInput(view.questDescQuestion);
+        Integer newReward = view.getIntFromUserInput(view.questPriceQuestion);
 
-            String questDesc = view.getStringFromUserInput(view.questDescQuestion);
-            Integer questPrice = view.getIntFromUserInput(view.questPriceQuestion);
+        quest.setDescription(newDesc);
+        quest.setReward(newReward);
 
-            QuestModel updatedQuest = new QuestModel(quest.getName(), questDesc, questPrice);
-            questDao.updateQuest(updatedQuest);
-
-        } catch (SQLException e){
-            view.printSQLException(e);
-        }
-
+        questSvc.updateQuest(quest);
     }
 
     private void createQuest() {
 
-        QuestDaoImpl questDao = new QuestDaoImpl();
-        String name = view.getStringFromUserInput(view.questNameQuestion);
+        Group<String> disallowedQuestNames = questSvc.getQuestNames();
+        String name = getExclusiveNameFromUserInput(view.chooseQuestNameQuestion, view.nameAlreadyTaken, disallowedQuestNames);
+
         String desc = view.getStringFromUserInput(view.questDescQuestion);
         Integer reward = view.getIntFromUserInput(view.questPriceQuestion);
-        QuestModel newQuest = new QuestModel(name, desc, reward);
 
-        try {
-
-            Group<String> availableGroups = questDao.getQuestGroupNames();
-            view.printLine("\n--- Available groups ---");
-            for (String s : availableGroups) {
-                if (!s.equals("quests")) {
-                    view.printLine(s);
-                }
-            }
-            view.print("\n");
-
-            String groupName = view.getStringFromUserInput(view.GroupAssignmentQuestion);
-
-            questDao.addQuest(newQuest);
-            questDao.addQuestAdherence(name, "quests");
-            questDao.addQuestAdherence(name, groupName);
-        } catch (SQLException e) {
-
-            view.printSQLException(e);
+        Group<String> availableGroups = questSvc.getQuestGroupNames();
+        view.printLine("\n--- Available groups ---");
+        for (String s : availableGroups) {
+            view.printLine(s);
         }
+        view.print("\n");
+
+        Group<String> allowedGroupNames = availableGroups;
+        String groupName = getNameFromUserInput(view.GroupAssignmentQuestion, view.nameOutOfRange, allowedGroupNames);
+
+        questSvc.createQuest(name, desc, reward, groupName);
+    }
+
+    private boolean userNameIsTaken(String name) {
+
+        return userSvc.getUser(name) != null;
     }
 
     private void createCodecooler() {
-        UserService userSvc = new UserService();
 
-        String nickname = view.getStringFromUserInput(view.userNicknameQuestion);
+        boolean validName = false;
+        String nickname;
+        do {
+
+            nickname = view.getStringFromUserInput(view.userNicknameQuestion);
+
+            if (userNameIsTaken(nickname)) {
+
+                view.printLine(view.nameAlreadyTaken);
+            } else {
+
+                validName = true;
+            }
+
+        } while(!validName);
+
         String email = view.getStringFromUserInput(view.userEmailQuestion);
         String password = view.getStringFromUserInput(view.userPasswordQuestion);
 
-        // TODO Default level 0 -- next sprint
-        // TODO level object -- next sprint
+        if (!userSvc.createCodecooler(nickname, email, password)) {
 
-
-        WalletService wallet = new WalletService(0);
-        Level level = new Level(0);
-
-        Group<String> studentGroups = new Group<>("student groups");
-        studentGroups.add("codecoolers");
-
-        Group<ArtifactModel> artifacts = new Group<>("user artifacts");
-        CodecoolerModel codecooler = new CodecoolerModel(new RawUser(Role.CODECOOLER, nickname, email, password, studentGroups), wallet, artifacts, level);
-
-        User user = userSvc.getUser(nickname);
-        // add user if they do not exist in the database
-        if (user == null) {
-            userSvc.addUser(codecooler);
-        } else {
             view.printLine(view.userAlreadyInDatabase);
         }
     }
 
     private void markCodecoolerQuestCompletion() {
 
-        QuestDaoImpl questDao = new QuestDaoImpl();
+        QuestModel quest = getQuestFromUserInput(view.markQuestNameQuestion);
 
-        // get quest group names ...
-        Group<String> allowedQuestNames = new Group<>("allowed quest name user input");
-        Group<String> questGroupNames = null;
-        try {
-
-            questGroupNames = questDao.getQuestGroupNames();
-        } catch (SQLException sqle) {
-
-            view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
-            return;
-        }
-
-        // ... to retrieve particular quest names
-        String groupsFormatted = "";
-        for (String groupName : questGroupNames) {
-
-            Group<quest.QuestModel> questGroup;
-            try {
-
-                questGroup = questDao.getQuestGroup(groupName);
-            } catch (SQLException sqle) {
-
-                view.printLine(sqle.getClass().getCanonicalName() + " " + Integer.toString(sqle.getErrorCode()));
-                return;
-            }
-
-            groupsFormatted += "\n" + groupName + " :\n";
-            for (quest.QuestModel currentQuest : questGroup) {
-
-                groupsFormatted += "*" + currentQuest.getName() + "\n";
-                allowedQuestNames.add(currentQuest.getName());
-            }
-        }
-
-        view.printLine(view.availableQuests);
-        view.printLine(groupsFormatted);
-
-        // get the quest to be checked
-        String questName = null;
-        boolean providedValidQuestName = false;
-        do {
-
-            questName = view.getStringFromUserInput(view.markQuestNameQuestion);
-            if (allowedQuestNames.contains(questName)) {
-
-                providedValidQuestName = true;
-            } else {
-                view.printLine(view.questNotFoundError);
-            }
-        } while(!providedValidQuestName);
-
-        // get quest to be marked
-        quest.QuestModel quest;
-        try {
-
-            quest = questDao.getQuest(questName);
-        } catch (SQLException sqle) {
-            view.printLine(sqle.getMessage());
-            return;
-        }
-        // get a user.codecooler to be marked
-        CodecoolerModel codecooler = getCodecooler();
+        CodecoolerModel codecooler = getCodecoolerFromUserInput();
 
         markQuest(codecooler, quest);
     }
@@ -407,37 +320,24 @@ public class MentorController extends AbstractUserController {
     }
 
     private void markCodecoolerArtifactUsage() {
-        MentorView view = new MentorView();
 
         // get user.codecooler artifact usage of whom is to be marked
-        CodecoolerModel codecooler = getCodecooler();
+        CodecoolerModel codecooler = getCodecoolerFromUserInput();
 
         // get artifact to be marked
         Group<String> allowedArtifactNames = new Group<>("allowed artifact name user input");
         Group<ArtifactModel> userArtifacts = codecooler.getCodecoolerArtifacts();
-        String artifactsFormatted = "Artifacts of codecooler " + codecooler.getName() + "\n\n:";
+        String artifactsFormatted = "  Artifacts of codecooler " + codecooler.getName() + "\n\n:";
         for (ArtifactModel currentArtifact : userArtifacts) {
 
-            artifactsFormatted += "*" + currentArtifact + "\n";
+            artifactsFormatted += "    " + currentArtifact + "\n";
             allowedArtifactNames.add(currentArtifact.getName());
         }
-
         view.printLine(artifactsFormatted);
 
         // get the name of the artifact to be marked
-        String artifactName = null;
-        boolean providedValidArtifactName = false;
-        do {
 
-            artifactName = view.getStringFromUserInput(view.artifactNameQuestion);
-            if (allowedArtifactNames.contains(artifactName)) {
-
-                providedValidArtifactName = true;
-            } else {
-                view.printLine(view.artifactNotFoundError);
-            }
-
-        } while(!providedValidArtifactName);
+        String artifactName = getNameFromUserInput(view.artifactNameQuestion, view.artifactNotFoundError, allowedArtifactNames);
 
         String input = "";
         while (!input.equals("Y") && !input.equals("N")) {
@@ -452,59 +352,42 @@ public class MentorController extends AbstractUserController {
 
     }
 
-    private CodecoolerModel getCodecooler() {
-
-        UserService userSvc = new UserService();
-        boolean validNameProvided = false;
-        User user = null;
-        do {
-
-            String name = view.getStringFromUserInput(view.userNicknameQuestion);
-            user = userSvc.getUser(name);
-
-            if (user != null && user.getRole() == Role.CODECOOLER) {
-                validNameProvided = true;
-            } else {
-                view.printLine(view.invalidNickname);
-            }
-        } while (!validNameProvided);
-
-        return (CodecoolerModel)user;
-    }
     public void showCodecoolerWalletsBalance(){
-        MentorView view = new MentorView();
-        UserService userService = new UserService();
+
         int totalBalance = 0;
         int numberOfCodecoolers = 0;
         int averageCodecoolerBalance;
 
         try {
-            Group<Group<User>> userGroups = userService.getAllUsers();
+
+            Group<Group<User>> userGroups = userSvc.getAllUsers();
             String codecoolerGroupName = "codecoolers";
 
             for(Group<User> group: userGroups ) {
+
                 while (group.getName().equals(codecoolerGroupName)) {
-                    for(User user: group){
+
+                    for (User user: group){
+
                         WalletService wallet;
-                        RawUser rawUser = (RawUser) user;
-                        CodecoolerModel codecooler = (CodecoolerModel) rawUser;
+                        CodecoolerModel codecooler = (CodecoolerModel) user;
+
                         wallet = codecooler.getWallet();
                         view.print(codecooler.getName() + " " + wallet.toString() + "\n");
+
                         totalBalance += wallet.getBalance();
                         numberOfCodecoolers += 1;
                     }
                     break;
                 }
             }
-            averageCodecoolerBalance  = totalBalance/numberOfCodecoolers;
+            averageCodecoolerBalance = totalBalance / numberOfCodecoolers;
             view.print(view.totalCoolcoins + String.valueOf(totalBalance));
             view.print(view.avarageBalance + String.valueOf(averageCodecoolerBalance));
-        }
-        catch(java.lang.ArithmeticException e){
-            view.print("No codecoolers found");
+
+        } catch(ArithmeticException e) {
+
+            view.printLine("No codecoolers found");
         }
     }
-
-
-
 }
