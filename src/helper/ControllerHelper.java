@@ -2,6 +2,7 @@ package helper;
 
 import console.menu.AbstractConsoleView;
 import generic_group.Group;
+import user.service.UserService;
 import user.user.User;
 
 public class ControllerHelper {
@@ -63,4 +64,16 @@ public class ControllerHelper {
         return name;
     }
 
+    public User getUserFromUserInput(String nameQuestion, String outOfRangeError, String groupName) {
+
+        UserService userSvc = new UserService();
+        ControllerHelper ch = new ControllerHelper(view);
+
+        Group<User> users = userSvc.getUserGroup(groupName);
+        Group<String> allowedUserNames = ch.userGroupToStringGroup(users);
+
+        String name = ch.getNameFromUserInput(nameQuestion, outOfRangeError, allowedUserNames);
+
+        return userSvc.getUser(name);
+    }
 }
