@@ -155,12 +155,7 @@ public class MentorController extends AbstractUserController {
     // Right now forces user to update both description and price. Can be improved to choose one or another with switch case.
     private void updateArtifact() {
 
-        displayAllArtifacts();
-
-        Group<String> allowedArtifactNames = artifactSvc.getArtifactNames();
-        String name = getNameFromUserInput(view.chooseArtifactNameQuestion, view.nameOutOfRange, allowedArtifactNames);
-
-        ArtifactModel artifact = artifactSvc.getArtifactByName(name);
+        ArtifactModel artifact = getArtifactFromUserInput(view.artifactNameQuestion);
 
         String newDesc = view.getStringFromUserInput(view.artifactDescQuestion);
         Integer newPrice = view.getIntFromUserInput(view.artifactPriceQuestion);
@@ -174,7 +169,7 @@ public class MentorController extends AbstractUserController {
     private void createArtifact() {
 
         Group<String> disallowedArtifactNames = artifactSvc.getArtifactNames();
-        String name = getExclusiveNameFromUserInput(view.chooseArtifactNameQuestion, view.nameAlreadyTaken, disallowedArtifactNames);
+        String name = getExclusiveNameFromUserInput(view.artifactNameQuestion, view.nameAlreadyTaken, disallowedArtifactNames);
 
         String desc = view.getStringFromUserInput(view.artifactDescQuestion);
         Integer price = view.getIntFromUserInput(view.artifactPriceQuestion);
@@ -195,13 +190,19 @@ public class MentorController extends AbstractUserController {
 
     private void removeArtifact() {
 
-        Group<String> allowedArtifactNames = artifactSvc.getArtifactNames();
+        ArtifactModel artifact = getArtifactFromUserInput(view.artifactNameQuestion);
+
+        artifactSvc.deleteArtifact(artifact.getName());
+    }
+
+    private ArtifactModel getArtifactFromUserInput(String prompt) {
 
         displayAllArtifacts();
 
-        String name = getNameFromUserInput(view.artifactNameQuestion, view.nameOutOfRange, allowedArtifactNames);
+        Group<String> allowedArtifactNames = artifactSvc.getArtifactNames();
+        String name = getNameFromUserInput(prompt, view.nameOutOfRange, allowedArtifactNames);
 
-        artifactSvc.deleteArtifact(name);
+        return artifactSvc.getArtifactByName(name);
     }
 
     private QuestModel getQuestFromUserInput(String prompt) {
