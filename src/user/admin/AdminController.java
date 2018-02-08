@@ -1,6 +1,7 @@
 package user.admin;
 
 import abstractusercontroller.AbstractUserController;
+import console.menu.AbstractConsoleView;
 import console.menu.Menu;
 import console.menu.MenuOption;
 import generic_group.Group;
@@ -20,17 +21,21 @@ public class AdminController extends AbstractUserController {
     private AdminView view;
 
     public AdminController() {
-        Menu adminMenu = new Menu(
-                new MenuOption("0", "Exit"),
-                new MenuOption("1", "Create a mentor"),
-                new MenuOption("2", "Assign a mentor to a group"),
-                new MenuOption("3", "Create user group"),
-                new MenuOption("4", "Edit mentor"),
-                new MenuOption("5", "View mentor's details"),
-                new MenuOption("6", "View groups"),
-                new MenuOption("7", "Create level"));
+        super(new AdminView(
+                new Menu(
+                    new MenuOption("0", "Exit"),
+                    new MenuOption("1", "Create a mentor"),
+                    new MenuOption("2", "Assign a mentor to a group"),
+                    new MenuOption("3", "Create user group"),
+                    new MenuOption("4", "Edit mentor"),
+                    new MenuOption("5", "View mentor's details"),
+                    new MenuOption("6", "View groups"),
+                    new MenuOption("7", "Create level")
+                )
+            )
+        );
+        this.view = (AdminView)super.view;
 
-        view = new AdminView(adminMenu);
         userSvc = new UserService();
     }
 

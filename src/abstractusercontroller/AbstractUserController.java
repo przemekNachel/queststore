@@ -7,8 +7,13 @@ import user.user.User;
 
 public abstract class AbstractUserController {
 
-    private AbstractConsoleView view;
+    protected AbstractConsoleView view;
     protected UserService userSvc;
+
+    public AbstractUserController(AbstractConsoleView view) {
+
+        this.view = view;
+    }
 
     public Group<String> userGroupToStringGroup(Group<User> userGroup) {
 

@@ -21,24 +21,28 @@ public class MentorController extends AbstractUserController {
     private MentorView view;
 
     public MentorController() {
-        Menu mentorMenu = new Menu(
-                new MenuOption("0", "Exit"),
-                new MenuOption("1", "Create a codecooler"),
-                new MenuOption("2", "Assign a codecooler to a group"),
-                new MenuOption("3", "Mark codecooler's quest completion"),
-                new MenuOption("4", "Mark codecooler's artifact usage"),
-                new MenuOption("5", "Create artifact"),
-                new MenuOption("6", "Create quest"),
-                new MenuOption("7", "Display all artifacts"),
-                new MenuOption("8", "Update artifact"),
-                new MenuOption("9", "Remove artifact"),
-                new MenuOption("10", "Display all quests"),
-                new MenuOption("11", "Update quest"),
-                new MenuOption("12", "Delete quest"),
-                new MenuOption("13", "View codecoolers wallets")
+        super(new MentorView(
+                new Menu(
+                    new MenuOption("0", "Exit"),
+                    new MenuOption("1", "Create a codecooler"),
+                    new MenuOption("2", "Assign a codecooler to a group"),
+                    new MenuOption("3", "Mark codecooler's quest completion"),
+                    new MenuOption("4", "Mark codecooler's artifact usage"),
+                    new MenuOption("5", "Create artifact"),
+                    new MenuOption("6", "Create quest"),
+                    new MenuOption("7", "Display all artifacts"),
+                    new MenuOption("8", "Update artifact"),
+                    new MenuOption("9", "Remove artifact"),
+                    new MenuOption("10", "Display all quests"),
+                    new MenuOption("11", "Update quest"),
+                    new MenuOption("12", "Delete quest"),
+                    new MenuOption("13", "View codecoolers wallets")
+                )
+            )
         );
 
-        view = new MentorView(mentorMenu);
+        this.view = (MentorView)super.view;
+
         userSvc = new UserService();
     }
 
