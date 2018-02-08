@@ -83,6 +83,38 @@ public class LevelDaoImpl {
         }
         return experienceGained < 0 ? null : new Level(experienceGained);
     }
+    
+    private void executeExperienceUpdate(String updateQuery) {
+
+        boolean succeeded = true;
+        Connection connect = null;
+        Statement statement = null;
+        try {
+
+            connect = connect();
+            statement = connect.createStatement();
+
+            statement.executeUpdate(updateQuery);
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+            succeeded = false;
+        } finally {
+            if (succeeded) {
+                try {
+                    connect.commit();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                close(connect, statement);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     private static Connection connect() throws java.sql.SQLException{
         try{
