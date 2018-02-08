@@ -1,5 +1,6 @@
 package user.codecooler;
 
+import abstractusercontroller.AbstractUserController;
 import artifact.ArtifactStoreController;
 import artifact.ArtifactModel;
 import console.menu.Menu;
@@ -9,20 +10,24 @@ import user.user.UserDaoImpl;
 
 import java.sql.SQLException;
 
-public class CodecoolerController {
-    public CodecoolerView view;
-    public CodecoolerModel currentUser;
+public class CodecoolerController extends AbstractUserController {
+    private CodecoolerView view;
+    private CodecoolerModel currentUser;
 
     public CodecoolerController(CodecoolerModel codecooler) {
-        this.currentUser = codecooler;
-        Menu codecoolerMenu = new Menu(
-                new MenuOption("0", "Exit"),
-                new MenuOption("1", "Buy artifact"),
-                new MenuOption("2", "Use artifact"),
-                new MenuOption("3", "View My Info")
+        super(new CodecoolerView(
+                new Menu(
+                        new MenuOption("0", "Exit"),
+                        new MenuOption("1", "Buy artifact"),
+                        new MenuOption("2", "Use artifact"),
+                        new MenuOption("3", "View My Info")
+                        )
+                )
         );
+        this.view = (CodecoolerView)super.view;
 
-        view = new CodecoolerView(codecoolerMenu);
+        userSvc = new UserService();
+        this.currentUser = codecooler;
     }
 
     public void start() {
@@ -34,7 +39,6 @@ public class CodecoolerController {
                 view.clearScreen();
             } else {
 
-                String chosenOption = userOption.getId();
                 handleUserChoice(userOption.getId());
             }
         } while (!requestedExit);
@@ -50,7 +54,9 @@ public class CodecoolerController {
                 useArtifact();
                 break;
             case "3":
-                view.printLine(currentUser.getStatisticsDisplay() + "\n\nGroup adherence:\n" + currentUser.getCodecoolerGroupDisplay());
+                view.printLine(currentUser.getStatisticsDisplay()
+                        + "\nOwned artifacts:\n" + codecoolerArtifactsToString(currentUser)
+                        + "\nGroup adherence:\n" + currentUser.getCodecoolerGroupDisplay());
                 break;
         }
     }
@@ -58,7 +64,7 @@ public class CodecoolerController {
     public void buyArtifact() {
         ArtifactStoreController store = new ArtifactStoreController();
         store.buyProductProcess(currentUser);
-        currentUser = (CodecoolerModel)new UserService().getUser(currentUser.getName());
+        currentUser = (CodecoolerModel)userSvc.getUser(currentUser.getName());
     }
 
     private String codecoolerArtifactsToString(CodecoolerModel codecooler) {
@@ -66,7 +72,7 @@ public class CodecoolerController {
         String result = "";
         for (ArtifactModel artifact : codecooler.getCodecoolerArtifacts()) {
 
-            result += "  " + artifact.getName() + "\n";
+            result += "  " + artifact.getName() + "  " + (artifact.getUsageStatus() ? "USED" : "NOT USED") +"\n";
         }
         return result;
     }
@@ -81,18 +87,7 @@ public class CodecoolerController {
 
         if (artifact != null) {
 
-            artifact.setUsageStatus(true);
-
-            boolean updated = new UserService().updateUser(currentUser);
-
-            if(updated) {
-
-                view.printLine("\n  Used artifact " + artifact.getName() + " by " + currentUser.getName());
-            } else {
-
-                view.printLine(view.artifactUsageUpdateFailure);
-            }
-
+            view.printLine("\n  Used artifact " + artifact.getName() + " by " + currentUser.getName());
         } else {
 
             view.printLine(view.artifactNoSuch);
