@@ -40,7 +40,7 @@ public class ArtifactDaoImpl implements ArtifactDao{
         Connection con = connectToDatabase();
         Statement stmt = Objects.requireNonNull(con).createStatement();
 
-        String sql = "SELECT name, descr, price FROM artifact_store " +
+        String sql = "SELECT name, descr, price, used FROM artifact_store " +
                 "JOIN user_artifacts USING (artifact_id) " +
                 "WHERE user_id="+userId+"";
 
@@ -50,7 +50,9 @@ public class ArtifactDaoImpl implements ArtifactDao{
             String artName = rs.getString("name");
             String artDescr = rs.getString("descr");
             Integer artPrice = rs.getInt("price");
-            group.add(new ArtifactModel(artName, artDescr, artPrice));
+            ArtifactModel artifact = new ArtifactModel(artName, artDescr, artPrice);
+            artifact.setUsageStatus(Boolean.valueOf(rs.getString("used")));
+            group.add(artifact);
         }
 
         stmt.close();
