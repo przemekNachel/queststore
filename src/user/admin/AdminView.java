@@ -10,7 +10,7 @@ class AdminView extends AbstractConsoleView {
         this.menu = menu;
     }
 
-    public String mentorNameQuestion = "Provide name:";
+    public String mentorNameQuestion = "Provide mentor name:";
     public String mentorPasswordQuestion = "Type in password: ";
     public String mentorEmailQuestion = "Type in email: ";
     public String groupNameQuestion = "Provide group name:";
