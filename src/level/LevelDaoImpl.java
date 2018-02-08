@@ -56,6 +56,34 @@ public class LevelDaoImpl {
         }
     }
 
+    public Level getLevel(int userID){
+        Connection connect = null;
+        Statement statement = null;
+        int experienceGained = -1;
+
+        try {
+            connect = connect();
+            statement = connect.createStatement();
+
+            String query = "SELECT experience_gained FROM user_experience WHERE user_id='" + userID + "';";
+            ResultSet results = statement.executeQuery(query);
+
+            if (results.next()) {
+                experienceGained = results.getInt("experience_gained");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                close(connect, statement);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return experienceGained < 0 ? null : new Level(experienceGained);
+    }
+
     private static Connection connect() throws java.sql.SQLException{
         try{
             Class.forName("org.sqlite.JDBC");
