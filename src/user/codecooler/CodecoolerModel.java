@@ -34,7 +34,7 @@ public class CodecoolerModel extends RawUser {
     public ArtifactModel getArtifact(String name) {
 
         Iterator<ArtifactModel> iter = artifacts.getIterator();
-        while(iter.hasNext()) {
+        while (iter.hasNext()) {
 
             ArtifactModel currentArtifact = iter.next();
             if (currentArtifact.getName().equals(name)) {
@@ -58,7 +58,7 @@ public class CodecoolerModel extends RawUser {
         walletBalance = "Wallet balance: " + wallet.toString() + "\n\n";
 
         Iterator<ArtifactModel> iter = artifacts.getIterator();
-        while(iter.hasNext()) {
+        while (iter.hasNext()) {
             artifactsOwned += "\n" + iter.next().getName();
         }
         statistics = walletBalance + artifactsOwned;
@@ -79,5 +79,9 @@ public class CodecoolerModel extends RawUser {
 
     public WalletService getWallet() {
         return wallet;
+    }
+
+    public Level getLevel() {
+        return level;
     }
 }
