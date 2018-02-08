@@ -182,7 +182,7 @@ public class UserDaoImpl implements UserDao{
           String query = "SELECT group_name FROM group_names ;";
           results = statement.executeQuery(query);
 
-          if(results.next()){
+          while(results.next()){
               groups.add(results.getString("group_name"));
           }
         }finally{
