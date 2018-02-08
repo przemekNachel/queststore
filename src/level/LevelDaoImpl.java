@@ -83,7 +83,16 @@ public class LevelDaoImpl {
         }
         return experienceGained < 0 ? null : new Level(experienceGained);
     }
-    
+
+    public void addExperience(int userID, Level level) {
+
+        String add = "INSERT INTO user_experience(user_id, experience_gained) " +
+                "VALUES (" + userID + ", " + level.getCurrentExpirience() + ");";
+
+        executeExperienceUpdate(add);
+    }
+
+
     private void executeExperienceUpdate(String updateQuery) {
 
         boolean succeeded = true;
