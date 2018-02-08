@@ -139,20 +139,29 @@ public class UserDaoImpl implements UserDao{
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
         boolean addedAdherence = false;
-        try{
-        int userId = getUserId(user.getName());
-        int groupId = getGroupId(groupName);
+        try {
 
-        if(userId > 0 && groupId > 0){
-            String query = "INSERT INTO user_associations(user_id, group_id) " +
-                "VALUES (" + userId + ", " + groupId + ");";
-            statement.executeUpdate(query);
-            connect.commit();
-            addedAdherence =  true;
+            int userId = getUserId(user.getName());
+            int groupId = getGroupId(groupName);
+
+            Statement checkStatement = connect.createStatement();
+            String query = "SELECT user_id FROM user_associations WHERE group_id='" + groupId + "';";
+            ResultSet checkRecord = checkStatement.executeQuery(query);
+            boolean addNew = !checkRecord.next();
+            checkStatement.close();
+
+            if(addNew && userId > 0 && groupId > 0){
+                String insert = "INSERT INTO user_associations(user_id, group_id) " +
+                    "VALUES (" + userId + ", " + groupId + ");";
+                statement.executeUpdate(insert);
+                connect.commit();
+                addedAdherence =  true;
+            }
+
+        } finally {
+
+            close(connect, statement);
         }
-      }finally{
-        close(connect, statement);
-      }
         return addedAdherence;
     }
 
