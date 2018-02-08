@@ -26,7 +26,8 @@ public class Level{
                 return entry.getValue();
             }
         }
-        return null;
+        String higherThenAnyExistingLevel = "MASTER OF MASTERS LEVEL OVER 9000";
+        return higherThenAnyExistingLevel;
     }
     public void addExperience(int experiencePoints){
         experienceGained += experiencePoints;
