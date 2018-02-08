@@ -103,6 +103,22 @@ public class UserService {
         return true;
     }
 
+    public boolean createCodecooler(String nickname, String email, String password) {
+
+        WalletService wallet = new WalletService(0);
+        Level level = new Level(0);
+
+        Group<String> studentGroups = new Group<>("student groups");
+        studentGroups.add("codecoolers");
+
+        Group<ArtifactModel> artifacts = new Group<>("user artifacts");
+        CodecoolerModel codecooler = new CodecoolerModel(new RawUser(Role.CODECOOLER, nickname, email, password, studentGroups), wallet, artifacts, level);
+
+        User user = getUser(nickname);
+        // add user if they do not exist in the database
+        return user == null ? addUser(codecooler) : false;
+    }
+
     private Group<User> getCastGroup(Group<User> beforeCast) {
 
         Group<User> afterCast = new Group<>(beforeCast.getName());
@@ -201,7 +217,7 @@ public class UserService {
         return sieveOutNonUserGroupNames(groupNames);
     }
 
-    public void addUser(User user) {
+    public boolean addUser(User user) {
 
         UserDaoImpl userDao = new UserDaoImpl();
         int userID = -1;
@@ -210,16 +226,18 @@ public class UserService {
             userID = userDao.getUserId(user.getName());
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
 
         if (user.getRole() == Role.CODECOOLER) {
 
             CodecoolerModel codecooler = (CodecoolerModel)user;
 
-            /* we don't add any artifacts - a stock codecooler does no have any*/
+            /* we don't add any artifacts - a stock codecooler does not have any*/
 
             new WalletDaoImpl().addWallet(userID, codecooler.getWallet());
             new LevelDaoImpl().addExperience(userID, codecooler.getLevel());
         }
+        return true;
     }
 }
