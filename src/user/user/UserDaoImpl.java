@@ -145,7 +145,7 @@ public class UserDaoImpl implements UserDao{
             int groupId = getGroupId(groupName);
 
             Statement checkStatement = connect.createStatement();
-            String query = "SELECT user_id FROM user_associations WHERE group_id='" + groupId + "';";
+            String query = "SELECT user_id FROM user_associations WHERE user_id='" + userId +  "' AND group_id='" + groupId + "';";
             ResultSet checkRecord = checkStatement.executeQuery(query);
             boolean addNew = !checkRecord.next();
             checkStatement.close();
