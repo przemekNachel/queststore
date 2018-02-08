@@ -1,7 +1,6 @@
 package user.admin;
 
 import abstractusercontroller.AbstractUserController;
-import console.menu.AbstractConsoleView;
 import console.menu.Menu;
 import console.menu.MenuOption;
 import generic_group.Group;
