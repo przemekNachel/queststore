@@ -380,6 +380,7 @@ public class MentorController {
 
             Integer worth = quest.getReward();
             codecooler.getWallet().payIn(worth);
+            codecooler.getExperience().addExperience(worth);
             view.printLine("  quest marked");
             UserDaoImpl userDao = new UserDaoImpl();
             try {
