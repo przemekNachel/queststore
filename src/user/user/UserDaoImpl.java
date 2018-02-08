@@ -172,24 +172,24 @@ public class UserDaoImpl implements UserDao{
       }
     }
 
-    public int getUserId(String userName) throws SQLException{
+    public Group<String> getAllGroupNames() throws SQLException{
 
-      Connection connect = establishConnection();
-      Statement statement = connect.createStatement();
-      ResultSet results = null;
-      int id = -1;
-      try{
-        String query = "SELECT user_id FROM users WHERE nickname='" + userName + "';";
-        results = statement.executeQuery(query);
-        while(results.next()){
-            id = results.getInt("user_id");
-            break;
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+        ResultSet results = null;
+        Group<String> groups = new Group<>("all groups");
+        try{
+          String query = "SELECT group_name FROM group_names ;";
+          results = statement.executeQuery(query);
+
+          if(results.next()){
+              groups.add(results.getString("group_name"));
+          }
+        }finally{
+          close(results);
+          close(connect, statement);
         }
-      }finally{
-        close(results);
-        close(connect, statement);
-      }
-        return id;
+          return groups;
     }
 
     public int getGroupId(String groupName) throws SQLException{
@@ -212,6 +212,27 @@ public class UserDaoImpl implements UserDao{
       }
         return id;
     }
+
+    public int getUserId(String userName) throws SQLException{
+
+      Connection connect = establishConnection();
+      Statement statement = connect.createStatement();
+      ResultSet results = null;
+      int id = -1;
+      try{
+        String query = "SELECT user_id FROM users WHERE nickname='" + userName + "';";
+        results = statement.executeQuery(query);
+        while(results.next()){
+            id = results.getInt("user_id");
+            break;
+        }
+      }finally{
+        close(results);
+        close(connect, statement);
+      }
+        return id;
+    }
+
 
     // helper methods for pubic methods
 
