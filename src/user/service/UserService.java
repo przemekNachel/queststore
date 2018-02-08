@@ -2,6 +2,8 @@ package user.service;
 
 import artifact.ArtifactModel;
 import artifact.ArtifactDaoImpl;
+import level.Level;
+import level.LevelDaoImpl;
 import user.user.Role;
 import user.user.UserDaoImpl;
 import user.user.User;
@@ -50,8 +52,9 @@ public class UserService {
                 }
 
                 WalletService wallet = new WalletDaoImpl().getWallet(userID);
+                Level level = new LevelDaoImpl().getLevel(userID);
 
-                newUser = new CodecoolerModel(rawUser, wallet, artifacts);
+                newUser = new CodecoolerModel(rawUser, wallet, artifacts, level);
                 break;
 
             case MENTOR:
@@ -184,6 +187,7 @@ public class UserService {
             /* we don't add any artifacts - a stock codecooler does no have any*/
 
             new WalletDaoImpl().addWallet(userID, codecooler.getWallet());
+            new LevelDaoImpl().addExperience(userID, codecooler.getLevel());
         }
     }
 }

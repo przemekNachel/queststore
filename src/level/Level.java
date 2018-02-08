@@ -6,7 +6,11 @@ import java.util.TreeMap;
 
 public class Level{
     private static HashMap<Integer, String> levels = new HashMap<>();
-    private Integer experienceGained;
+    private int experienceGained;
+
+    public Level(int experienceGained){
+        this.experienceGained = experienceGained;
+    }
 
     public static void addLevel(String name, Integer treshold){
         LevelService service = new LevelService();
@@ -24,6 +28,10 @@ public class Level{
         }
         return null;
     }
+    public void addExperience(int experiencePoints){
+        experienceGained += experiencePoints;
+    }
+
     public Integer getCurrentExpirience(){
         return experienceGained;
     }
