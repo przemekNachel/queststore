@@ -175,6 +175,8 @@ public class ArtifactStoreController{
             /* purchase process aborted as requested by user */
             return;
         }
+        CodecoolerModel buyer = getSelf(consumers, codecooler);
+        /* the above is necessary for proper object to update */
 
         ArtifactModel boughtArtifact = buyArtifact(artifactName, consumers);
 
@@ -183,12 +185,26 @@ public class ArtifactStoreController{
             return;
         }
         /* purchase process succeeded */
-        codecooler.addArtifact(boughtArtifact);
+        buyer.addArtifact(boughtArtifact);
         UserService userSvc = new UserService();
         for (User user : consumers) {
 
             userSvc.updateUser(user);
         }
+    }
+
+    /* reason for the below method: a getter for consumer group gets the same codecooler and
+     * we have extract them because it is their wallet and artifacts that have supposedly been changed */
+    private CodecoolerModel getSelf(Group<CodecoolerModel> consumers, CodecoolerModel twin) {
+
+        for (CodecoolerModel codecooler : consumers) {
+
+            if (codecooler.getName().equals(twin.getName())) {
+
+                return codecooler;
+            }
+        }
+        return null;
     }
 
     public ArtifactModel buyArtifact(String name, Group<CodecoolerModel> consumers) {

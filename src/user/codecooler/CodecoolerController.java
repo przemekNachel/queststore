@@ -58,6 +58,7 @@ public class CodecoolerController {
     public void buyArtifact() {
         ArtifactStoreController store = new ArtifactStoreController();
         store.buyProductProcess(currentUser);
+        currentUser = (CodecoolerModel)new UserService().getUser(currentUser.getName());
     }
 
     private String codecoolerArtifactsToString(CodecoolerModel codecooler) {

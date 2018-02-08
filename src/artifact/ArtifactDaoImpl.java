@@ -121,19 +121,47 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
     @Override
     public void updateUserArtifactsUsage(int userId, ArtifactModel artifact) throws SQLException {
+
         String artName = artifact.getName();
         String artStatus = String.valueOf(artifact.getUsageStatus());
 
         Connection con = connectToDatabase();
         Objects.requireNonNull(con).setAutoCommit(false);
-        Statement stmt = Objects.requireNonNull(con).createStatement();
+        Statement checkStmt = Objects.requireNonNull(con).createStatement();
 
-        String sql = "UPDATE user_artifacts SET used='"+artStatus+"' WHERE user_id='"+userId+"'" +
+        // check if there is a record in the first place
+        String check = "SELECT artifact_id FROM user_artifacts WHERE user_id='"+userId+"'" +
                 " AND artifact_id=(SELECT artifact_id FROM artifact_store WHERE name='"+artName+"');";
-        stmt.executeUpdate(sql);
+
+        ResultSet artifactRecord = checkStmt.executeQuery(check);
+
+        boolean shouldAddNew = !artifactRecord.next();
+        checkStmt.close(); // this close *has* to be after the above line
+
+        if (shouldAddNew) {
+
+            /* add new record */
+            String getIdQuery = "SELECT artifact_id FROM artifact_store WHERE name='" + artName + "';";
+            Statement idStmt = con.createStatement();
+            artifactRecord = idStmt.executeQuery(getIdQuery);
+            int artifactID = artifactRecord.getInt("artifact_id");
+
+            String add = "INSERT INTO user_artifacts (user_id, artifact_id, used)" +
+                    "VALUES('"+ userId + "', '" + artifactID + "', '" + artStatus + "');";
+
+            idStmt.executeUpdate(add);
+            idStmt.close();
+        } else {
+
+            /* update */
+            Statement updateStmt = con.createStatement();
+            String sql = "UPDATE user_artifacts SET used='" + artStatus + "' WHERE user_id='" + userId + "'" +
+                    " AND artifact_id=(SELECT artifact_id FROM artifact_store WHERE name='" + artName + "');";
+            updateStmt.executeUpdate(sql);
+            updateStmt.close();
+        }
         con.commit();
 
-        stmt.close();
         con.close();
     }
 
