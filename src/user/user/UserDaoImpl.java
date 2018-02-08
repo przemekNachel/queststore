@@ -172,6 +172,47 @@ public class UserDaoImpl implements UserDao{
       }
     }
 
+    public Group<String> getAllGroupNames() throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+        ResultSet results = null;
+        Group<String> groups = new Group<>("all groups");
+        try{
+          String query = "SELECT group_name FROM group_names ;";
+          results = statement.executeQuery(query);
+
+          if(results.next()){
+              groups.add(results.getString("group_name"));
+          }
+        }finally{
+          close(results);
+          close(connect, statement);
+        }
+          return groups;
+    }
+
+    public int getGroupId(String groupName) throws SQLException{
+
+        Connection connect = establishConnection();
+        Statement statement = connect.createStatement();
+        ResultSet results = null;
+        int id = -1;
+      try{
+        String query = "SELECT group_id FROM group_names WHERE group_name='"
+        + groupName + "';";
+        results = statement.executeQuery(query);
+
+        if(results.next()){
+            id = results.getInt("group_id");
+        }
+      }finally{
+        close(results);
+        close(connect, statement);
+      }
+        return id;
+    }
+
     public int getUserId(String userName) throws SQLException{
 
       Connection connect = establishConnection();
