@@ -110,4 +110,16 @@ public class ArtifactService {
         }
         return names;
     }
+
+    public Group<ArtifactModel> getArtifactGroup(String groupName) {
+
+        Group<ArtifactModel> specializedGroup = null;
+        try {
+            specializedGroup = new ArtifactDaoImpl().getArtifactGroup(groupName);
+
+        } catch (SQLException e) {
+            ExceptionLog.add(e);
+        }
+        return specializedGroup;
+    }
 }
