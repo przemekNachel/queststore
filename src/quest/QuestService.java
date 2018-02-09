@@ -1,11 +1,11 @@
 package quest;
 
+import exceptionlog.ExceptionLog;
 import generic_group.Group;
 
 import java.sql.SQLException;
 
 public class QuestService {
-
 
     public Group<String> getQuestNames() {
 
@@ -27,7 +27,7 @@ public class QuestService {
 
             questCollection = new QuestDaoImpl().getAllQuests();
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionLog.add(e);
         }
         return questCollection;
     }
@@ -38,7 +38,7 @@ public class QuestService {
         try {
             quest = new QuestDaoImpl().getQuest(name);
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionLog.add(e);
         }
         return quest;
     }
@@ -49,7 +49,7 @@ public class QuestService {
         try {
             new QuestDaoImpl().updateQuest(quest);
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionLog.add(e);
             updated = false;
         }
         return updated;
@@ -66,7 +66,7 @@ public class QuestService {
             addQuestAdherence(newQuest, specializedGroupName);
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionLog.add(e);
             created = false;
         }
         return created;
@@ -78,7 +78,7 @@ public class QuestService {
         try {
             new QuestDaoImpl().addQuestAdherence(quest.getName(), groupName);
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionLog.add(e);
             adherenceAdded = false;
         }
         return adherenceAdded;
@@ -93,7 +93,7 @@ public class QuestService {
             questGroupNames.remove("quests");
         } catch (SQLException e) {
 
-            e.printStackTrace();
+            ExceptionLog.add(e);
         }
         return questGroupNames;
     }
@@ -108,7 +108,7 @@ public class QuestService {
             QuestModel quest = questDao.getQuest(name);
             questDao.deleteQuest(quest);
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionLog.add(e);
             deleted = false;
         }
         return deleted;

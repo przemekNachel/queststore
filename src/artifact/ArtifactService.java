@@ -1,5 +1,6 @@
 package artifact;
 
+import exceptionlog.ExceptionLog;
 import generic_group.Group;
 
 import java.sql.SQLException;
@@ -13,7 +14,7 @@ public class ArtifactService {
             groupNames = new ArtifactDaoImpl().getArtifactGroupNames();
             groupNames.remove("artifacts");
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionLog.add(e);
         }
         return groupNames;
     }
@@ -28,7 +29,7 @@ public class ArtifactService {
             ArtifactModel artifact = artifactDao.getArtifactByName(name);
             artifactDao.deleteArtifact(artifact);
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionLog.add(e);
             deleted = false;
         }
         return deleted;
@@ -44,7 +45,7 @@ public class ArtifactService {
             addArtifactAdherence(newArtifact, "artifacts");
             addArtifactAdherence(newArtifact, specializedGroupName);
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionLog.add(e);
             created = false;
         }
         return created;
@@ -56,7 +57,7 @@ public class ArtifactService {
         try {
             new ArtifactDaoImpl().addArtifactAdherence(artifact.getName(), groupName);
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionLog.add(e);
             adherenceAdded = false;
         }
         return adherenceAdded;
@@ -68,7 +69,7 @@ public class ArtifactService {
         try {
             artifact = new ArtifactDaoImpl().getArtifactByName(name);
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionLog.add(e);
         }
         return artifact;
     }
@@ -79,7 +80,7 @@ public class ArtifactService {
         try {
             new ArtifactDaoImpl().updateArtifact(artifact);
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionLog.add(e);
             updated = false;
         }
         return updated;
@@ -92,7 +93,7 @@ public class ArtifactService {
 
             artifactCollection = new ArtifactDaoImpl().getAllArtifacts();
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionLog.add(e);
         }
         return artifactCollection;
     }

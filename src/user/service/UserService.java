@@ -2,6 +2,7 @@ package user.service;
 
 import artifact.ArtifactModel;
 import artifact.ArtifactDaoImpl;
+import exceptionlog.ExceptionLog;
 import level.Level;
 import level.LevelDaoImpl;
 import user.user.Role;
@@ -30,7 +31,7 @@ public class UserService {
             rawUser = userDao.getUser(nickname);
             userID = userDao.getUserId(nickname);
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionLog.add(e);
         }
 
         boolean userExists = rawUser != null;
@@ -48,7 +49,7 @@ public class UserService {
                 try {
                     artifacts = new ArtifactDaoImpl().getUserArtifacts(userID);
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    ExceptionLog.add(e);
                 }
 
                 WalletService wallet = new WalletDaoImpl().getWallet(userID);
@@ -77,7 +78,7 @@ public class UserService {
             userDao.updateUser(user);
             userID = userDao.getUserId(user.getName());
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionLog.add(e);
             return false;
         }
 
@@ -92,7 +93,7 @@ public class UserService {
                 try {
                     artifactDao.updateUserArtifactsUsage(userID, artifact);
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    ExceptionLog.add(e);
                     return false;
                 }
             }
@@ -125,6 +126,7 @@ public class UserService {
 
         for (User user : beforeCast) {
 
+            /* note: getUser below returns an object of a specialized type*/
             afterCast.add(getUser(user.getName()));
         }
 
@@ -138,7 +140,7 @@ public class UserService {
             specializedGroup = getCastGroup(new UserDaoImpl().getUserGroup(groupName));
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionLog.add(e);
         }
         return specializedGroup;
     }
@@ -160,7 +162,7 @@ public class UserService {
         try {
             added = new UserDaoImpl().addUserAdherence(user, groupName);
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionLog.add(e);
             added = false;
         }
         return added;
@@ -171,7 +173,7 @@ public class UserService {
         try {
             new UserDaoImpl().addUserGroup(newGroup);
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionLog.add(e);
         }
     }
 
@@ -209,7 +211,7 @@ public class UserService {
         try {
             groupNames = new UserDaoImpl().getAllGroupNames();
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionLog.add(e);
             return groupNames;
         }
 
@@ -225,7 +227,7 @@ public class UserService {
             userDao.addUser(user);
             userID = userDao.getUserId(user.getName());
         } catch (SQLException e) {
-            e.printStackTrace();
+            ExceptionLog.add(e);
             return false;
         }
 
