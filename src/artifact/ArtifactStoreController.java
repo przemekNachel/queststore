@@ -7,41 +7,27 @@ import user.user.User;
 
 import java.sql.*;
 
-public class ArtifactStoreController{
+public class ArtifactStoreController {
 
-    ArtifactStoreView view;
+    private ArtifactStoreView view;
+    private ArtifactService artifactSvc;
 
     public ArtifactStoreController() {
 
-      this.view = new ArtifactStoreView();
+        this.view = new ArtifactStoreView();
+        this.artifactSvc = new ArtifactService();
     }
 
     private Group<String> getAllowedArtifactNames() {
 
-        ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
-
         Group<String> allowedArtifactNames = new Group<>("allowed artifact name user input");
         // get available artifacts by category/ group
-        Group<String> artifactGroupNames = null;
-        try {
 
-            artifactGroupNames = artifactDao.getArtifactGroupNames();
-        } catch (SQLException e) {
-            view.printSQLException(e);
-            return null;
-        }
+        Group<String> artifactGroupNames = artifactSvc.getArtifactGroupNames();
 
         for (String groupName : artifactGroupNames) {
 
-            Group<ArtifactModel> artifactGroup = null;
-            try {
-
-                artifactGroup = artifactDao.getArtifactGroup(groupName);
-            } catch (SQLException e) {
-
-                view.printSQLException(e);
-                return null;
-            }
+            Group<ArtifactModel> artifactGroup = artifactSvc.getArtifactGroup(groupName);
 
             for (ArtifactModel currentArtifact : artifactGroup) {
 
@@ -53,34 +39,18 @@ public class ArtifactStoreController{
 
     private String getArtifactStoreDisplay() {
 
-        ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
-
         // get available artifacts by category/ group
-        Group<String> artifactGroupNames = null;
-        try {
+        Group<String> artifactGroupNames = artifactSvc.getArtifactGroupNames();
 
-            artifactGroupNames = artifactDao.getArtifactGroupNames();
-        } catch (SQLException e) {
-            view.printSQLException(e);
-            return null;
-        }
-
-        String display = "Available artifacts:\n";
+        String display = "\n  Available artifacts:\n";
         for (String groupName : artifactGroupNames) {
 
-            Group<ArtifactModel> artifactGroup = null;
-            try {
+            Group<ArtifactModel> artifactGroup = artifactSvc.getArtifactGroup(groupName);
 
-                artifactGroup = artifactDao.getArtifactGroup(groupName);
-            } catch (SQLException e) {
-
-                view.printSQLException(e);
-                return null;
-            }
-
-            display += "\n  Group " + artifactGroup.getName();
+            display += "\n    Group " + artifactGroup.getName();
             for (ArtifactModel currentArtifact : artifactGroup) {
-                display += "\n    " + currentArtifact.getName() + " - " + currentArtifact.getDescription() + " - PRICE: " + currentArtifact.getPrice();
+
+                display += "\n      " + currentArtifact.getName() + " - " + currentArtifact.getDescription() + " - PRICE: " + currentArtifact.getPrice();
             }
         }
 
@@ -218,15 +188,7 @@ public class ArtifactStoreController{
 
     public ArtifactModel buyArtifact(String name, Group<CodecoolerModel> consumers) {
 
-        ArtifactDaoImpl dao = new ArtifactDaoImpl();
-
-        ArtifactModel artifact = null;
-        try {
-
-            artifact = dao.getArtifactByName(name);
-        } catch (SQLException e) {
-            view.printSQLException(e);
-        }
+        ArtifactModel artifact = artifactSvc.getArtifactByName(name);
 
         if(artifact == null){
             return null;

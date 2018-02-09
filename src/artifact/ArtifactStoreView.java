@@ -1,17 +1,11 @@
 package artifact;
 
 import console.menu.AbstractConsoleView;
-import console.menu.Menu;
 
 class ArtifactStoreView extends AbstractConsoleView {
 
     public ArtifactStoreView() {
         // a no-menu view constructor - not all uses require a menu
-    }
-
-    public ArtifactStoreView(Menu menu) {
-
-        this.menu = menu;
     }
 
     public String artifactNameQuestion = "Enter the artifact's name: ";
