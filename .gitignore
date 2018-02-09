@@ -1,5 +1,15 @@
+# database files
+database/
+*.db
+database/*.db
 # Compiled class file
 *.class
+
+# intelliJ crap
+.idea/*
+bin/*/.idea/*
+*.iml
+
 
 # Log file
 *.log
@@ -11,7 +21,6 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.ear
 *.zip
