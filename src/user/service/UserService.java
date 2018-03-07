@@ -53,7 +53,13 @@ public class UserService {
                 }
 
                 WalletService wallet = new WalletDaoImpl().getWallet(userID);
-                Level level = new LevelDaoImpl().getLevel(userID);
+
+                LevelDaoImpl levelDao = new LevelDaoImpl();
+                levelDao.establishConnection();
+
+                Level level = levelDao.getLevel(userID);
+
+                levelDao.finalizeConnection();
 
                 newUser = new CodecoolerModel(rawUser, wallet, artifacts, level);
                 break;
@@ -82,6 +88,7 @@ public class UserService {
             return false;
         }
 
+        boolean succeeded = true;
         if (user.getRole() == Role.CODECOOLER) {
 
             ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
@@ -99,9 +106,16 @@ public class UserService {
             }
 
             new WalletDaoImpl().updateWallet(userID, codecooler.getWallet());
-            new LevelDaoImpl().updateExperience(userID, codecooler.getLevel());
+
+            LevelDaoImpl levelDao = new LevelDaoImpl();
+
+            levelDao.establishConnection();
+
+            succeeded &= levelDao.updateExperience(userID, codecooler.getLevel());
+
+            levelDao.finalizeConnection();
         }
-        return true;
+        return succeeded;
     }
 
     public boolean createCodecooler(String nickname, String email, String password) {
@@ -231,6 +245,7 @@ public class UserService {
             return false;
         }
 
+        boolean succeeded = true;
         if (user.getRole() == Role.CODECOOLER) {
 
             CodecoolerModel codecooler = (CodecoolerModel)user;
@@ -238,8 +253,14 @@ public class UserService {
             /* we don't add any artifacts - a stock codecooler does not have any*/
 
             new WalletDaoImpl().addWallet(userID, codecooler.getWallet());
-            new LevelDaoImpl().addExperience(userID, codecooler.getLevel());
+
+            LevelDaoImpl levelDao = new LevelDaoImpl();
+            levelDao.establishConnection();
+
+            succeeded &= levelDao.addExperience(userID, codecooler.getLevel());
+
+            levelDao.finalizeConnection();
         }
-        return true;
+        return succeeded;
     }
 }

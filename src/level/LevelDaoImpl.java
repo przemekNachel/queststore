@@ -1,157 +1,137 @@
 package level;
 
+import abstractdao.AbstractDao;
+import exceptionlog.ExceptionLog;
+
 import java.util.HashMap;
 import java.sql.*;
 import java.util.Map;
 
-public class LevelDaoImpl {
+public class LevelDaoImpl extends AbstractDao {
 
-    public HashMap<Integer, String> getLevelCollection(){
-        try {
-            HashMap<Integer, String> levels = new HashMap<>();
-            Connection databaseConnection = connect();
-            Statement statement = databaseConnection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * FROM predefined_levels;");
+    public HashMap<Integer, String> getLevelCollection() {
+
+        HashMap<Integer, String> levels = new HashMap<>();
+
+        String grabAll = "SELECT * FROM predefined_levels;";
+
+        try (PreparedStatement stmt = connection.prepareStatement(grabAll)) {
+
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
+
                 Integer levelThreshold = rs.getInt("threshold");
                 String levelName = rs.getString("level_name");
                 levels.put(levelThreshold, levelName);
             }
-            databaseConnection.commit();
-            rs.close();
-            statement.close();
-            databaseConnection.close();
-            return levels;
-
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
-            return null;
+        } catch (SQLException e) {
+            ExceptionLog.add(e);
         }
+
+        return levels;
     }
 
-    public boolean saveLevelCollection(HashMap<Integer, String> levels){
-        try {
-            Connection databaseConnection = connect();
-            Statement statement = databaseConnection.createStatement();
+    public boolean saveLevelCollection(HashMap<Integer, String> levels) {
 
-            String sqlCommand = "DELETE FROM predefined_levels";
-            statement.executeUpdate(sqlCommand);
+        String sqlDelete = "DELETE FROM predefined_levels;";
+        String sqlInsert = "INSERT INTO predefined_levels (threshold, level_name) VALUES(?, ?);";
+        try (PreparedStatement deleteStmt = connection.prepareStatement(sqlDelete);
+             PreparedStatement insertStmt = connection.prepareStatement(sqlInsert)){
 
+            /* prepare a batch of insertion statements */
             for(Map.Entry<Integer, String> entry : levels.entrySet()) {
-                sqlCommand = "INSERT INTO predefined_levels (threshold, level_name) VALUES('" + entry.getKey() +
-                        "', '" + entry.getValue() + "');";
-                statement.executeUpdate(sqlCommand);
-                }
-            databaseConnection.commit();
-            statement.close();
-            databaseConnection.close();
+
+                insertStmt.setInt(1, entry.getKey());
+                insertStmt.setString(2, entry.getValue());
+                insertStmt.addBatch();
+            }
+
+            /* execute the statements */
+            deleteStmt.executeUpdate();
+            insertStmt.executeBatch();
+
+            connection.commit();
             return true;
 
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
+        } catch (SQLException e) {
+
+            /* roll back on failure*/
+            try {
+
+                connection.rollback();
+            } catch (SQLException e1) {
+
+                ExceptionLog.add(e1);
+            }
+            ExceptionLog.add(e);
             return false;
         }
     }
 
-    public Level getLevel(int userID){
-        Connection connect = null;
-        Statement statement = null;
+    public Level getLevel(int userID) {
+
         int experienceGained = -1;
 
-        try {
-            connect = connect();
-            statement = connect.createStatement();
+        String query = "SELECT experience_gained FROM user_experience WHERE user_id=?;";
 
-            String query = "SELECT experience_gained FROM user_experience WHERE user_id='" + userID + "';";
-            ResultSet results = statement.executeQuery(query);
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+
+            stmt.setInt(1, userID);
+            ResultSet results = stmt.executeQuery();
 
             if (results.next()) {
+
                 experienceGained = results.getInt("experience_gained");
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                close(connect, statement);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+
+            ExceptionLog.add(e);
         }
-        return experienceGained < 0 ? null : new Level(experienceGained);
+        return new Level(experienceGained);
     }
 
-    public void addExperience(int userID, Level level) {
+    public boolean addExperience(int userID, Level level) {
 
-        String add = "INSERT INTO user_experience(user_id, experience_gained) " +
-                "VALUES (" + userID + ", " + level.getCurrentExpirience() + ");";
+        String add = "INSERT INTO user_experience(user_id, experience_gained) VALUES (?, ?);";
 
-        executeExperienceUpdate(add);
-    }
+        try (PreparedStatement addStmt = connection.prepareStatement(add)) {
 
-    public void updateExperience(int userID, Level level) {
+            addStmt.setInt(1, userID);
+            addStmt.setInt(2, level.getCurrentExpirience());
 
+            final int amountUpdated = addStmt.executeUpdate();
 
-        String update = "UPDATE user_experience " +
-                "SET experience_gained=" + level.getCurrentExpirience() + " WHERE user_id=" + userID + ";";
-
-        executeExperienceUpdate(update);
-    }
-
-
-    private void executeExperienceUpdate(String updateQuery) {
-
-        boolean succeeded = true;
-        Connection connect = null;
-        Statement statement = null;
-        try {
-
-            connect = connect();
-            statement = connect.createStatement();
-
-            statement.executeUpdate(updateQuery);
+            connection.commit();
+            return amountUpdated > 0;
 
         } catch (SQLException e) {
 
-            e.printStackTrace();
-            succeeded = false;
-        } finally {
-            if (succeeded) {
-                try {
-                    connect.commit();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            try {
-                close(connect, statement);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            ExceptionLog.add(e);
+            return false;
         }
     }
 
-    private static Connection connect() throws java.sql.SQLException{
-        try{
-            Class.forName("org.sqlite.JDBC");
-        }catch(ClassNotFoundException e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-        }
-        String JDBC = "jdbc:sqlite:database/database.db";
-        Connection connect = DriverManager.getConnection(JDBC);
-        connect.setAutoCommit(false);
-        return connect;
-    }
+    public boolean updateExperience(int userID, Level level) {
 
-    private void close(Connection connect, Statement statement) throws SQLException{
-        if(statement != null){
-            statement.close();
-        }
-        if(connect != null){
-            connect.close();
+
+        String update = "UPDATE user_experience SET experience_gained=? WHERE user_id=?;";
+
+        try (PreparedStatement updateStmt = connection.prepareStatement(update)) {
+
+            updateStmt.setInt(1, level.getCurrentExpirience());
+            updateStmt.setInt(2, userID);
+
+            final int amountUpdated = updateStmt.executeUpdate();
+
+            connection.commit();
+            return amountUpdated > 0;
+
+        } catch (SQLException e) {
+
+            ExceptionLog.add(e);
+            return false;
         }
     }
 }
