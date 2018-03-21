@@ -1,7 +1,7 @@
+package quest;
 
 import org.junit.Before;
 import org.junit.Test;
-import quest.QuestModel;
 
 import static org.junit.Assert.*;
 
