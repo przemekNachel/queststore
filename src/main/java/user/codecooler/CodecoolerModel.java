@@ -59,7 +59,7 @@ public class CodecoolerModel extends RawUser {
         String walletBalance;
         String currentLevelStats;
 
-        currentLevelStats = "Current level " + level.getCurrentLevel() + " Xp: " + Integer.toString(level.getCurrentExpirience());
+        currentLevelStats = "Current level " + level.getCurrentLevel() + " Xp: " + Integer.toString(level.getCurrentExperience());
         walletBalance = "\nWallet balance: " + wallet.toString() + "\n\n";
 
         statistics = currentLevelStats + walletBalance;
