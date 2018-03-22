@@ -99,7 +99,7 @@ public class LevelDaoImpl {
     public void addExperience(int userID, Level level) {
 
         String add = "INSERT INTO user_experience(user_id, experience_gained) " +
-                "VALUES (" + userID + ", " + level.getCurrentExpirience() + ");";
+                "VALUES (" + userID + ", " + level.getCurrentExperience() + ");";
 
         executeExperienceUpdate(add);
     }
@@ -108,7 +108,7 @@ public class LevelDaoImpl {
 
 
         String update = "UPDATE user_experience " +
-                "SET experience_gained=" + level.getCurrentExpirience() + " WHERE user_id=" + userID + ";";
+                "SET experience_gained=" + level.getCurrentExperience() + " WHERE user_id=" + userID + ";";
 
         executeExperienceUpdate(update);
     }
