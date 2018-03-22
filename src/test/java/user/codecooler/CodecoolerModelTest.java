@@ -12,7 +12,7 @@ import user.wallet.WalletService;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
 
 public class CodecoolerModelTest {
 
