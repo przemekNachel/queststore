@@ -31,3 +31,4 @@ bin/*/.idea/*
 hs_err_pid*
 /target/
 /out/
+/src/test/java/SimulateUserInput.java

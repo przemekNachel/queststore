@@ -28,6 +28,7 @@ public class MentorController extends AbstractUserController {
                                 new MenuOption("1", "Create a codecooler"),
                                 new MenuOption("2", "Assign a codecooler to a group"),
                                 new MenuOption("3", "Mark codecooler's quest completion"),
+                                new MenuOption("3", "Mark codecooler's quest completion"),
                                 new MenuOption("4", "Mark codecooler's artifact usage"),
                                 new MenuOption("5", "Create artifact"),
                                 new MenuOption("6", "Create quest"),
@@ -388,7 +389,7 @@ public class MentorController extends AbstractUserController {
             view.print(view.totalCoolcoins + String.valueOf(totalBalance));
             view.print(view.avarageBalance + String.valueOf(averageCodecoolerBalance));
 
-        } catch (ArithmeticException e) {
+        } catch (ArithmeticException | NullPointerException e) {
 
             view.printLine("No codecoolers found");
         }
