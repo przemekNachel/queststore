@@ -14,6 +14,7 @@ import user.service.UserService;
 import java.util.NoSuchElementException;
 
 import static org.powermock.api.mockito.PowerMockito.*;
+import static org.powermock.reflect.Whitebox.invokeMethod;
 import static org.powermock.reflect.Whitebox.setInternalState;
 
 
@@ -45,6 +46,19 @@ public class AdminFeaturesTest {
 
         } catch (NoSuchElementException ignored) {
             Mockito.verify(controller, Mockito.times(1)).createGroup();
+        }
+    }
+
+    @Test
+    public void test_if_AdminController_calls_editMentor_when_user_chose_fourth_option_from_main_menu() {
+
+        try {
+            systemInMock.provideLines("4");
+            invokeMethod(controller, "createMentor");
+            controller.start();
+
+        } catch (Exception ignored) {
+            Mockito.verify(controller, Mockito.times(1)).editMentor();
         }
     }
 }
