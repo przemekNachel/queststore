@@ -1,6 +1,6 @@
 package main.java.com.nwo.queststore.model;
 
-import user.user.Role;
+import main.java.com.nwo.queststore.enums.Role;
 
 public class RawUserModel extends UserModel {
 

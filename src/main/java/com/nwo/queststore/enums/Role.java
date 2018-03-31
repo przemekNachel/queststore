@@ -1,4 +1,4 @@
-package user.user;
+package main.java.com.nwo.queststore.enums;
 
 public enum Role {
 

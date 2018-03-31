@@ -3,11 +3,11 @@ package main.java.com.nwo.queststore.dao;
 import main.java.com.nwo.queststore.model.GroupModel;
 import main.java.com.nwo.queststore.model.RawUserModel;
 import main.java.com.nwo.queststore.model.UserModel;
-import user.user.Role;
+import main.java.com.nwo.queststore.enums.Role;
 
 import java.sql.*;
 
-import static user.user.Role.*;
+import static main.java.com.nwo.queststore.enums.Role.*;
 
 
 public class UserDaoImpl implements UserDao {

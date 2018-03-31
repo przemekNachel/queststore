@@ -1,11 +1,11 @@
 package main.java.com.nwo.queststore.service;
 
 import main.java.com.nwo.queststore.dao.UserDaoImpl;
+import main.java.com.nwo.queststore.enums.Role;
 import main.java.com.nwo.queststore.model.*;
 import main.java.com.nwo.queststore.dao.ArtifactDaoImpl;
 import main.java.com.nwo.queststore.utils.ExceptionLog;
 import main.java.com.nwo.queststore.dao.LevelDaoImpl;
-import user.user.*;
 
 import main.java.com.nwo.queststore.model.GroupModel;
 import main.java.com.nwo.queststore.dao.WalletDaoImpl;
