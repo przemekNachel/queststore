@@ -1,6 +1,6 @@
 package main.java.com.nwo.queststore.model;
 
-import iterator.IteratorImpl;
+import main.java.com.nwo.queststore.utils.IteratorImpl;
 
 import java.util.ArrayList;
 import java.util.Iterator;

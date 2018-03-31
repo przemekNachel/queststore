@@ -1,4 +1,4 @@
-package iterator;
+package main.java.com.nwo.queststore.utils;
 
 import main.java.com.nwo.queststore.model.GroupModel;
 
