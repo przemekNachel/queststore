@@ -1,13 +1,14 @@
 package main.java.com.nwo.queststore.service;
 
+import main.java.com.nwo.queststore.dao.UserDaoImpl;
 import main.java.com.nwo.queststore.model.*;
-import artifact.ArtifactDaoImpl;
+import main.java.com.nwo.queststore.dao.ArtifactDaoImpl;
 import exceptionlog.ExceptionLog;
-import level.LevelDaoImpl;
+import main.java.com.nwo.queststore.dao.LevelDaoImpl;
 import user.user.*;
 
 import main.java.com.nwo.queststore.model.GroupModel;
-import user.wallet.WalletDaoImpl;
+import main.java.com.nwo.queststore.dao.WalletDaoImpl;
 
 import java.sql.SQLException;
 

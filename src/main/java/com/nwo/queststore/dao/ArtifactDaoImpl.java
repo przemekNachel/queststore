@@ -1,4 +1,4 @@
-package artifact;
+package main.java.com.nwo.queststore.dao;
 
 import main.java.com.nwo.queststore.model.GroupModel;
 import main.java.com.nwo.queststore.model.ArtifactModel;
@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.Objects;
 
 
-public class ArtifactDaoImpl implements ArtifactDao{
+public class ArtifactDaoImpl implements ArtifactDao {
 
     @Override
     public Connection connectToDatabase() throws SQLException {

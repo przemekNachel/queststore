@@ -3,7 +3,7 @@ package main.java.com.nwo.queststore.service;
 import exceptionlog.ExceptionLog;
 import main.java.com.nwo.queststore.model.GroupModel;
 import main.java.com.nwo.queststore.model.QuestModel;
-import quest.QuestDaoImpl;
+import main.java.com.nwo.queststore.dao.QuestDaoImpl;
 
 import java.sql.SQLException;
 

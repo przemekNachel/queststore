@@ -1,15 +1,16 @@
-package user.user;
+package main.java.com.nwo.queststore.dao;
 
 import main.java.com.nwo.queststore.model.GroupModel;
 import main.java.com.nwo.queststore.model.RawUserModel;
 import main.java.com.nwo.queststore.model.UserModel;
+import user.user.Role;
 
 import java.sql.*;
 
 import static user.user.Role.*;
 
 
-public class UserDaoImpl implements UserDao{
+public class UserDaoImpl implements UserDao {
 
     private static String JDBC = "jdbc:sqlite:database/database.db";
 

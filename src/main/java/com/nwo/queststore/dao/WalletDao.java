@@ -1,4 +1,4 @@
-package user.wallet;
+package main.java.com.nwo.queststore.dao;
 
 import main.java.com.nwo.queststore.service.WalletService;
 

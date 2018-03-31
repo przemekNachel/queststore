@@ -1,4 +1,4 @@
-package user.user;
+package main.java.com.nwo.queststore.dao;
 
 import main.java.com.nwo.queststore.model.GroupModel;
 import main.java.com.nwo.queststore.model.RawUserModel;

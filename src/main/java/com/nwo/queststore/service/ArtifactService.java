@@ -1,6 +1,6 @@
 package main.java.com.nwo.queststore.service;
 
-import artifact.ArtifactDaoImpl;
+import main.java.com.nwo.queststore.dao.ArtifactDaoImpl;
 import exceptionlog.ExceptionLog;
 import main.java.com.nwo.queststore.model.GroupModel;
 import main.java.com.nwo.queststore.model.ArtifactModel;
