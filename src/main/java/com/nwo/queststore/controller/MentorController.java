@@ -2,12 +2,12 @@ package main.java.com.nwo.queststore.controller;
 
 import main.java.com.nwo.queststore.model.MenuModel;
 import main.java.com.nwo.queststore.model.*;
-import artifact.ArtifactService;
+import main.java.com.nwo.queststore.service.ArtifactService;
 import main.java.com.nwo.queststore.model.MenuOptionModel;
-import quest.QuestService;
+import main.java.com.nwo.queststore.service.QuestService;
+import main.java.com.nwo.queststore.service.WalletService;
 import main.java.com.nwo.queststore.view.MentorView;
-import user.wallet.*;
-import user.service.UserService;
+import main.java.com.nwo.queststore.service.UserService;
 
 public class MentorController extends AbstractUserController {
 

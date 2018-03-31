@@ -1,5 +1,6 @@
-package level;
+package main.java.com.nwo.queststore.service;
 
+import level.LevelDaoImpl;
 import main.java.com.nwo.queststore.model.LevelModel;
 
 import java.util.HashMap;

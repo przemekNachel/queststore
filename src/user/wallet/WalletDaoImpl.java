@@ -1,6 +1,8 @@
 package user.wallet;
 
 
+import main.java.com.nwo.queststore.service.WalletService;
+
 import java.sql.*;
 
 public class WalletDaoImpl implements WalletDao {

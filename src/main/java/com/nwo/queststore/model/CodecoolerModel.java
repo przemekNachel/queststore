@@ -1,8 +1,8 @@
 package main.java.com.nwo.queststore.model;
 
-import level.LevelService;
+import main.java.com.nwo.queststore.service.LevelService;
 import user.user.Role;
-import user.wallet.WalletService;
+import main.java.com.nwo.queststore.service.WalletService;
 
 import java.util.Iterator;
 

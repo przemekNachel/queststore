@@ -1,4 +1,4 @@
-package user.wallet;
+package main.java.com.nwo.queststore.service;
 
 public class WalletService{
     int balance = 0;

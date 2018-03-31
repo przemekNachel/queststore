@@ -5,8 +5,8 @@ import main.java.com.nwo.queststore.model.GroupModel;
 import main.java.com.nwo.queststore.view.AdminView;
 import user.admin.AdminView;
 import user.user.Role;
-import user.service.UserService;
-import level.LevelService;
+import main.java.com.nwo.queststore.service.UserService;
+import main.java.com.nwo.queststore.service.LevelService;
 
 import java.util.HashMap;
 import java.util.Map;

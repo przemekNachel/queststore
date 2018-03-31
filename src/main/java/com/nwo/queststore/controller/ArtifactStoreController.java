@@ -1,11 +1,11 @@
 package main.java.com.nwo.queststore.controller;
 
 import main.java.com.nwo.queststore.model.ArtifactModel;
-import artifact.ArtifactService;
+import main.java.com.nwo.queststore.service.ArtifactService;
 import artifact.ArtifactStoreView;
 import main.java.com.nwo.queststore.model.GroupModel;
 import main.java.com.nwo.queststore.model.CodecoolerModel;
-import user.service.UserService;
+import main.java.com.nwo.queststore.service.UserService;
 import main.java.com.nwo.queststore.model.UserModel;
 
 public class ArtifactStoreController {

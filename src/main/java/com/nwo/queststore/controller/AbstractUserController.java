@@ -2,7 +2,7 @@ package main.java.com.nwo.queststore.controller;
 
 import main.java.com.nwo.queststore.view.AbstractConsoleView;
 import main.java.com.nwo.queststore.model.GroupModel;
-import user.service.UserService;
+import main.java.com.nwo.queststore.service.UserService;
 import main.java.com.nwo.queststore.model.UserModel;
 
 public abstract class AbstractUserController {

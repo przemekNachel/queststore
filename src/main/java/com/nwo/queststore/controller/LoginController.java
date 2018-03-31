@@ -4,7 +4,7 @@ import main.java.com.nwo.queststore.model.MenuModel;
 import main.java.com.nwo.queststore.view.LoginView;
 import main.java.com.nwo.queststore.model.CodecoolerModel;
 import main.java.com.nwo.queststore.view.AbstractConsoleView;
-import user.service.UserService;
+import main.java.com.nwo.queststore.service.UserService;
 import user.user.Role;
 import main.java.com.nwo.queststore.model.UserModel;
 

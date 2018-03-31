@@ -5,7 +5,7 @@ import main.java.com.nwo.queststore.model.ArtifactModel;
 import main.java.com.nwo.queststore.model.MenuOptionModel;
 import main.java.com.nwo.queststore.model.CodecoolerModel;
 import main.java.com.nwo.queststore.view.CodecoolerView;
-import user.service.UserService;
+import main.java.com.nwo.queststore.service.UserService;
 
 public class CodecoolerController extends AbstractUserController {
     private CodecoolerView view;
