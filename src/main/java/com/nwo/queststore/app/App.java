@@ -1,6 +1,6 @@
-package app;
+package main.java.com.nwo.queststore.app;
 
-import login.LoginController;
+import main.java.com.nwo.queststore.controller.LoginController;
 
 public class App {
 

@@ -1,10 +1,12 @@
-package user.codecooler;
+package main.java.com.nwo.queststore.controller;
 
-import abstractusercontroller.AbstractUserController;
-import artifact.ArtifactStoreController;
+import main.java.com.nwo.queststore.controller.AbstractUserController;
+import main.java.com.nwo.queststore.controller.ArtifactStoreController;
 import artifact.ArtifactModel;
 import console.menu.Menu;
 import console.menu.MenuOption;
+import user.codecooler.CodecoolerModel;
+import user.codecooler.CodecoolerView;
 import user.service.UserService;
 
 public class CodecoolerController extends AbstractUserController {

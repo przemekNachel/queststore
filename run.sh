@@ -1,5 +1,5 @@
 #!/bin/bash
-java -classpath ".:database:bin:lib/sqlite-jdbc-3.21.0.jar" app.App
+java -classpath ".:database:bin:lib/sqlite-jdbc-3.21.0.jar" main.java.com.nwo.queststore.app.App
 
 
 

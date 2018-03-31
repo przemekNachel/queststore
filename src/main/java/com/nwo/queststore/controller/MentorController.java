@@ -1,6 +1,6 @@
-package user.mentor;
+package main.java.com.nwo.queststore.controller;
 
-import abstractusercontroller.AbstractUserController;
+import main.java.com.nwo.queststore.controller.AbstractUserController;
 import artifact.ArtifactModel;
 import artifact.ArtifactService;
 import quest.QuestModel;
@@ -9,6 +9,7 @@ import console.menu.MenuOption;
 import quest.QuestService;
 import user.codecooler.CodecoolerModel;
 import generic_group.Group;
+import user.mentor.MentorView;
 import user.user.*;
 import user.wallet.*;
 import user.service.UserService;

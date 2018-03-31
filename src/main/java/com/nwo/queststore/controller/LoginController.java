@@ -1,11 +1,9 @@
-package login;
+package main.java.com.nwo.queststore.controller;
 
 import console.menu.Menu;
-import user.admin.AdminController;
-import user.codecooler.CodecoolerController;
+import login.LoginView;
 import user.codecooler.CodecoolerModel;
 import console.menu.AbstractConsoleView;
-import user.mentor.MentorController;
 import user.service.UserService;
 import user.user.Role;
 import user.user.User;

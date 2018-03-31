@@ -1,5 +1,8 @@
-package artifact;
+package main.java.com.nwo.queststore.controller;
 
+import artifact.ArtifactModel;
+import artifact.ArtifactService;
+import artifact.ArtifactStoreView;
 import generic_group.Group;
 import user.codecooler.CodecoolerModel;
 import user.service.UserService;

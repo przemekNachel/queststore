@@ -1,4 +1,4 @@
-package abstractusercontroller;
+package main.java.com.nwo.queststore.controller;
 
 import console.menu.AbstractConsoleView;
 import generic_group.Group;
