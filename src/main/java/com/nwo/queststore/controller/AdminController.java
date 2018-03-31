@@ -3,7 +3,6 @@ package main.java.com.nwo.queststore.controller;
 import main.java.com.nwo.queststore.model.*;
 import main.java.com.nwo.queststore.model.GroupModel;
 import main.java.com.nwo.queststore.view.AdminView;
-import user.admin.AdminView;
 import main.java.com.nwo.queststore.enums.Role;
 import main.java.com.nwo.queststore.service.UserService;
 import main.java.com.nwo.queststore.service.LevelService;

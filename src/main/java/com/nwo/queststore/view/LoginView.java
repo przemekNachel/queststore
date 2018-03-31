@@ -13,7 +13,7 @@ public class LoginView extends AbstractConsoleView {
     public final String loginPasswordQuestion = "  Please provide user password: ";
     public final String loginInvalidCredentialsOrNoUser = "  The provided credentials are invalid \n  or the specified nickname does not exist in the system.";
 
-    LoginView(MenuModel menuModel) {
+    public LoginView(MenuModel menuModel) {
         this.menuModel = menuModel;
     }
 
