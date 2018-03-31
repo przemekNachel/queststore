@@ -1,16 +1,18 @@
 package user.user;
 
-import generic_group.Group;
+import main.java.com.nwo.queststore.model.GroupModel;
+import main.java.com.nwo.queststore.model.RawUserModel;
+import main.java.com.nwo.queststore.model.UserModel;
 
 import java.sql.*;
 
 public interface UserDao{
-    RawUser getUser(String nickname) throws SQLException;
-    void addUser(User user) throws SQLException;
-    void updateUser(User user) throws SQLException;
-    Group<String> getUserGroupNames() throws SQLException;
-    Group<User> getUserGroup(String groupName) throws SQLException;
-    boolean addUserAdherence(User user, String groupName) throws SQLException;
-    void addUserGroup(Group<User> group) throws SQLException;
+    RawUserModel getUser(String nickname) throws SQLException;
+    void addUser(UserModel userModel) throws SQLException;
+    void updateUser(UserModel userModel) throws SQLException;
+    GroupModel<String> getUserGroupNames() throws SQLException;
+    GroupModel<UserModel> getUserGroup(String groupName) throws SQLException;
+    boolean addUserAdherence(UserModel userModel, String groupName) throws SQLException;
+    void addUserGroup(GroupModel<UserModel> groupModel) throws SQLException;
     int getUserId(String userName) throws SQLException;
 }

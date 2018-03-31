@@ -168,13 +168,13 @@ VALUES
 
 INSERT INTO predefined_levels
 VALUES
-  (0, 'Level 1'),
-  (100, 'Level 2'),
-  (200, 'Level 3'),
-  (300, 'Level 4'),
-  (400, 'Level 5'),
-  (500, 'Level 6'),
-  (600, 'Level 7');
+  (0, 'LevelModel 1'),
+  (100, 'LevelModel 2'),
+  (200, 'LevelModel 3'),
+  (300, 'LevelModel 4'),
+  (400, 'LevelModel 5'),
+  (500, 'LevelModel 6'),
+  (600, 'LevelModel 7');
 
 INSERT INTO quest_associations
 (quest_id, group_id)

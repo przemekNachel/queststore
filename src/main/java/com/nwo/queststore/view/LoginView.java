@@ -1,7 +1,7 @@
-package login;
+package main.java.com.nwo.queststore.view;
 
-import console.menu.AbstractConsoleView;
-import console.menu.Menu;
+import main.java.com.nwo.queststore.view.AbstractConsoleView;
+import main.java.com.nwo.queststore.model.MenuModel;
 
 
 public class LoginView extends AbstractConsoleView {
@@ -13,8 +13,8 @@ public class LoginView extends AbstractConsoleView {
     public final String loginPasswordQuestion = "  Please provide user password: ";
     public final String loginInvalidCredentialsOrNoUser = "  The provided credentials are invalid \n  or the specified nickname does not exist in the system.";
 
-    LoginView(Menu menu) {
-        this.menu = menu;
+    LoginView(MenuModel menuModel) {
+        this.menuModel = menuModel;
     }
 
     public String getPassword(){

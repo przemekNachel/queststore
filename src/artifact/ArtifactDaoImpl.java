@@ -1,6 +1,7 @@
 package artifact;
 
-import generic_group.Group;
+import main.java.com.nwo.queststore.model.GroupModel;
+import main.java.com.nwo.queststore.model.ArtifactModel;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,10 +23,10 @@ public class ArtifactDaoImpl implements ArtifactDao{
 
 
     @Override
-    public Group<Group<ArtifactModel>> getAllArtifacts() throws SQLException {
-        Group<Group<ArtifactModel>> allArtifacts = new Group<>("All artifacts");
-        Group<String> groupNames = getArtifactGroupNames();
-        Iterator<String> groupNamesIter = groupNames.getIterator();
+    public GroupModel<GroupModel<ArtifactModel>> getAllArtifacts() throws SQLException {
+        GroupModel<GroupModel<ArtifactModel>> allArtifacts = new GroupModel<>("All artifacts");
+        GroupModel<String> groupModelNames = getArtifactGroupNames();
+        Iterator<String> groupNamesIter = groupModelNames.getIterator();
 
         while(groupNamesIter.hasNext()) {
             allArtifacts.add(getArtifactGroup(groupNamesIter.next()));
@@ -35,8 +36,8 @@ public class ArtifactDaoImpl implements ArtifactDao{
     }
 
     @Override
-    public Group<ArtifactModel> getUserArtifacts(int userId) throws SQLException {
-        Group<ArtifactModel> group = new Group<>("User's artifacts: ");
+    public GroupModel<ArtifactModel> getUserArtifacts(int userId) throws SQLException {
+        GroupModel<ArtifactModel> groupModel = new GroupModel<>("UserModel's artifacts: ");
         Connection con = connectToDatabase();
         Statement stmt = Objects.requireNonNull(con).createStatement();
 
@@ -52,14 +53,14 @@ public class ArtifactDaoImpl implements ArtifactDao{
             Integer artPrice = rs.getInt("price");
             ArtifactModel artifact = new ArtifactModel(artName, artDescr, artPrice);
             artifact.setUsageStatus(Boolean.valueOf(rs.getString("used")));
-            group.add(artifact);
+            groupModel.add(artifact);
         }
 
         stmt.close();
         con.close();
         rs.close();
 
-        return group;
+        return groupModel;
     }
 
     @Override
@@ -209,8 +210,8 @@ public class ArtifactDaoImpl implements ArtifactDao{
     }
 
     @Override
-    public Group<String> getArtifactGroupNames() throws SQLException {
-        Group<String> groupsNames = new Group<>("Group name");
+    public GroupModel<String> getArtifactGroupNames() throws SQLException {
+        GroupModel<String> groupsNames = new GroupModel<>("GroupModel name");
 
         Connection con = connectToDatabase();
         Statement stmt = Objects.requireNonNull(con).createStatement();
@@ -226,8 +227,8 @@ public class ArtifactDaoImpl implements ArtifactDao{
     }
 
     @Override
-    public Group<ArtifactModel> getArtifactGroup(String groupName) throws SQLException{
-        Group<ArtifactModel> group = new Group<>(groupName);
+    public GroupModel<ArtifactModel> getArtifactGroup(String groupName) throws SQLException{
+        GroupModel<ArtifactModel> groupModel = new GroupModel<>(groupName);
 
         Connection con = connectToDatabase();
         Statement stmt = Objects.requireNonNull(con).createStatement();
@@ -246,22 +247,22 @@ public class ArtifactDaoImpl implements ArtifactDao{
             String name = rs.getString("name");
             String descr = rs.getString("descr");
             Integer price = rs.getInt("price");
-            group.add(new ArtifactModel(name, descr, price));
+            groupModel.add(new ArtifactModel(name, descr, price));
         }
 
         stmt.close();
         rs.close();
         con.close();
 
-        return group;
+        return groupModel;
     }
     @Override
-    public void addArtifactGroup(Group<ArtifactModel> group) throws SQLException{
+    public void addArtifactGroup(GroupModel<ArtifactModel> groupModel) throws SQLException{
         Connection con = connectToDatabase();
         Objects.requireNonNull(con).setAutoCommit(false);
         Statement stmt = con.createStatement();
 
-        String sql = "INSERT INTO group_names (group_name) VALUES ('" + group.getName() + "');";
+        String sql = "INSERT INTO group_names (group_name) VALUES ('" + groupModel.getName() + "');";
         stmt.executeUpdate(sql);
 
         con.commit();

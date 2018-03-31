@@ -1,11 +1,11 @@
-package console.menu;
+package main.java.com.nwo.queststore.model;
 
-public class MenuOption {
+public class MenuOptionModel {
 
     private String optionId;
     private String optionName;
 
-    public MenuOption(String optionId, String optionName) {
+    public MenuOptionModel(String optionId, String optionName) {
 
         this.optionId = optionId;
         this.optionName = optionName;

@@ -1,13 +1,12 @@
-package user.admin;
+package main.java.com.nwo.queststore.view;
 
-import console.menu.AbstractConsoleView;
-import console.menu.Menu;
+import main.java.com.nwo.queststore.model.MenuModel;
 
-class AdminView extends AbstractConsoleView {
+public class AdminView extends AbstractConsoleView {
 
-    public AdminView(Menu menu) {
+    public AdminView(MenuModel menuModel) {
 
-        this.menu = menu;
+        this.menuModel = menuModel;
     }
 
     public String mentorNameQuestion = "Provide mentor name:";

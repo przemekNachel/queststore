@@ -1,17 +1,17 @@
 package exceptionlog;
 
-import generic_group.Group;
+import main.java.com.nwo.queststore.model.GroupModel;
 
 public class ExceptionLog {
 
-    private static Group<Exception> exceptions = new Group<>("exception container");
+    private static GroupModel<Exception> exceptions = new GroupModel<>("exception container");
 
     public static void add(Exception e) {
 
         ExceptionLog.exceptions.add(e);
     }
 
-    public static Group<Exception> getExceptions() {
+    public static GroupModel<Exception> getExceptions() {
 
         return ExceptionLog.exceptions;
     }

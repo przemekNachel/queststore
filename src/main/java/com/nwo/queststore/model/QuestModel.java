@@ -1,4 +1,4 @@
-package quest;
+package main.java.com.nwo.queststore.model;
 
 public class QuestModel {
   private String questName;

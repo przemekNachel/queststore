@@ -1,6 +1,7 @@
 package quest;
 
-import generic_group.Group;
+import main.java.com.nwo.queststore.model.GroupModel;
+import main.java.com.nwo.queststore.model.QuestModel;
 
 import java.sql.*;
 import java.util.Iterator;
@@ -94,10 +95,10 @@ public class QuestDaoImpl implements QuestDao {
 
 
     @Override
-    public Group<Group<QuestModel>> getAllQuests() throws SQLException {
-        Group<Group<QuestModel>> allQuests = new Group<>("All quests");
-        Group<String> groupNames = getQuestGroupNames();
-        Iterator<String> groupNamesIter = groupNames.getIterator();
+    public GroupModel<GroupModel<QuestModel>> getAllQuests() throws SQLException {
+        GroupModel<GroupModel<QuestModel>> allQuests = new GroupModel<>("All quests");
+        GroupModel<String> groupModelNames = getQuestGroupNames();
+        Iterator<String> groupNamesIter = groupModelNames.getIterator();
 
         while(groupNamesIter.hasNext()) {
             allQuests.add(getQuestGroup(groupNamesIter.next()));
@@ -107,8 +108,8 @@ public class QuestDaoImpl implements QuestDao {
     }
 
     @Override
-    public Group<String> getQuestGroupNames() throws SQLException {
-        Group<String> groupsNames = new Group<>("generic_group.Group name");
+    public GroupModel<String> getQuestGroupNames() throws SQLException {
+        GroupModel<String> groupsNames = new GroupModel<>("generic_group.GroupModel name");
 
         Connection con = connectToDatabase();
         Statement stmt = Objects.requireNonNull(con).createStatement();
@@ -124,8 +125,8 @@ public class QuestDaoImpl implements QuestDao {
     }
 
     @Override
-    public Group<QuestModel> getQuestGroup(String groupName) throws SQLException {
-        Group<QuestModel> group = new Group<>(groupName);
+    public GroupModel<QuestModel> getQuestGroup(String groupName) throws SQLException {
+        GroupModel<QuestModel> groupModel = new GroupModel<>(groupName);
 
         Connection con = connectToDatabase();
         Statement stmt = Objects.requireNonNull(con).createStatement();
@@ -144,14 +145,14 @@ public class QuestDaoImpl implements QuestDao {
             String questName = rs.getString("name");
             String questDescr = rs.getString("descr");
             Integer questReward = rs.getInt("reward");
-            group.add(new QuestModel(questName, questDescr, questReward));
+            groupModel.add(new QuestModel(questName, questDescr, questReward));
         }
 
         stmt.close();
         rs.close();
         con.close();
 
-        return group;
+        return groupModel;
     }
     @Override
     public void addQuestAdherence(String name, String groupName) throws SQLException {

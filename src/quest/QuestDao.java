@@ -1,15 +1,16 @@
 package quest;
 
-import generic_group.Group;
+import main.java.com.nwo.queststore.model.GroupModel;
+import main.java.com.nwo.queststore.model.QuestModel;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public interface QuestDao {
     Connection connectToDatabase() throws SQLException;
-    Group<Group<QuestModel>> getAllQuests() throws SQLException;
-    Group<String> getQuestGroupNames() throws SQLException;
-    Group<QuestModel> getQuestGroup(String groupName) throws SQLException;
+    GroupModel<GroupModel<QuestModel>> getAllQuests() throws SQLException;
+    GroupModel<String> getQuestGroupNames() throws SQLException;
+    GroupModel<QuestModel> getQuestGroup(String groupName) throws SQLException;
     QuestModel getQuest(String name) throws SQLException;
     void addQuest(QuestModel quest) throws SQLException;
     void updateQuest(QuestModel quest) throws SQLException;

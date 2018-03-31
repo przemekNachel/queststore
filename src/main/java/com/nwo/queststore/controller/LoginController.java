@@ -1,12 +1,12 @@
 package main.java.com.nwo.queststore.controller;
 
-import console.menu.Menu;
-import login.LoginView;
-import user.codecooler.CodecoolerModel;
-import console.menu.AbstractConsoleView;
+import main.java.com.nwo.queststore.model.MenuModel;
+import main.java.com.nwo.queststore.view.LoginView;
+import main.java.com.nwo.queststore.model.CodecoolerModel;
+import main.java.com.nwo.queststore.view.AbstractConsoleView;
 import user.service.UserService;
 import user.user.Role;
-import user.user.User;
+import main.java.com.nwo.queststore.model.UserModel;
 
 import java.lang.UnsupportedOperationException;
 
@@ -16,8 +16,8 @@ public class LoginController {
 
     public LoginController() {
 
-        Menu loginMenu = null;
-        this.view = new LoginView(loginMenu);
+        MenuModel loginMenuModel = null;
+        this.view = new LoginView(loginMenuModel);
 
     }
 
@@ -39,13 +39,13 @@ public class LoginController {
 
             password = view.getPassword();
 
-            User user = login(nickname, password);
-            if (user == null) {
+            UserModel userModel = login(nickname, password);
+            if (userModel == null) {
 
                 view.printLine(view.loginInvalidCredentialsOrNoUser);
             } else {
 
-                engageAppropriateController(user);
+                engageAppropriateController(userModel);
             }
 
         } while(!wantToQuit);
@@ -53,9 +53,9 @@ public class LoginController {
         AbstractConsoleView.closeScanner();
     }
 
-    public void engageAppropriateController(User user) {
+    public void engageAppropriateController(UserModel userModel) {
 
-        Role userRole = user.getRole();
+        Role userRole = userModel.getRole();
         switch(userRole) {
 
             case ADMIN:
@@ -67,7 +67,7 @@ public class LoginController {
                 break;
 
             case CODECOOLER:
-                new CodecoolerController((CodecoolerModel)user).start();
+                new CodecoolerController((CodecoolerModel) userModel).start();
                 break;
 
             default:
@@ -76,14 +76,14 @@ public class LoginController {
 
     }
 
-    public User login(String nickname, String password) {
+    public UserModel login(String nickname, String password) {
 
         UserService userSvc = new UserService();
 
-        User user = userSvc.getUser(nickname);
+        UserModel userModel = userSvc.getUser(nickname);
 
-        if (user != null && user.getPassword().equals(password)) {
-            return user;
+        if (userModel != null && userModel.getPassword().equals(password)) {
+            return userModel;
         } else {
             return null;
         }

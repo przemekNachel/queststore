@@ -1,18 +1,19 @@
 package quest;
 
 import exceptionlog.ExceptionLog;
-import generic_group.Group;
+import main.java.com.nwo.queststore.model.GroupModel;
+import main.java.com.nwo.queststore.model.QuestModel;
 
 import java.sql.SQLException;
 
 public class QuestService {
 
-    public Group<String> getQuestNames() {
+    public GroupModel<String> getQuestNames() {
 
-        Group<String> names = new Group<>("quest names");
-        for (Group<QuestModel> subGroup : getAllQuests()) {
+        GroupModel<String> names = new GroupModel<>("quest names");
+        for (GroupModel<QuestModel> subGroupModel : getAllQuests()) {
 
-            for (QuestModel quest : subGroup) {
+            for (QuestModel quest : subGroupModel) {
 
                 names.add(quest.getName());
             }
@@ -20,9 +21,9 @@ public class QuestService {
         return names;
     }
 
-    public Group<Group<QuestModel>> getAllQuests() {
+    public GroupModel<GroupModel<QuestModel>> getAllQuests() {
 
-        Group<Group<QuestModel>> questCollection = new Group<>("all quests");
+        GroupModel<GroupModel<QuestModel>> questCollection = new GroupModel<>("all quests");
         try {
 
             questCollection = new QuestDaoImpl().getAllQuests();
@@ -84,18 +85,18 @@ public class QuestService {
         return adherenceAdded;
     }
 
-    public Group<String> getQuestGroupNames() {
+    public GroupModel<String> getQuestGroupNames() {
 
-        Group<String> questGroupNames = new Group<>("quest group names");
+        GroupModel<String> questGroupModelNames = new GroupModel<>("quest group names");
         try {
 
-            questGroupNames = new QuestDaoImpl().getQuestGroupNames();
-            questGroupNames.remove("quests");
+            questGroupModelNames = new QuestDaoImpl().getQuestGroupNames();
+            questGroupModelNames.remove("quests");
         } catch (SQLException e) {
 
             ExceptionLog.add(e);
         }
-        return questGroupNames;
+        return questGroupModelNames;
     }
 
     public boolean deleteQuest(String name) {

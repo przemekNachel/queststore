@@ -1,14 +1,12 @@
 package main.java.com.nwo.queststore.controller;
 
-import artifact.ArtifactModel;
+import main.java.com.nwo.queststore.model.ArtifactModel;
 import artifact.ArtifactService;
 import artifact.ArtifactStoreView;
-import generic_group.Group;
-import user.codecooler.CodecoolerModel;
+import main.java.com.nwo.queststore.model.GroupModel;
+import main.java.com.nwo.queststore.model.CodecoolerModel;
 import user.service.UserService;
-import user.user.User;
-
-import java.sql.*;
+import main.java.com.nwo.queststore.model.UserModel;
 
 public class ArtifactStoreController {
 
@@ -21,18 +19,18 @@ public class ArtifactStoreController {
         this.artifactSvc = new ArtifactService();
     }
 
-    private Group<String> getAllowedArtifactNames() {
+    private GroupModel<String> getAllowedArtifactNames() {
 
-        Group<String> allowedArtifactNames = new Group<>("allowed artifact name user input");
+        GroupModel<String> allowedArtifactNames = new GroupModel<>("allowed artifact name user input");
         // get available artifacts by category/ group
 
-        Group<String> artifactGroupNames = artifactSvc.getArtifactGroupNames();
+        GroupModel<String> artifactGroupModelNames = artifactSvc.getArtifactGroupNames();
 
-        for (String groupName : artifactGroupNames) {
+        for (String groupName : artifactGroupModelNames) {
 
-            Group<ArtifactModel> artifactGroup = artifactSvc.getArtifactGroup(groupName);
+            GroupModel<ArtifactModel> artifactGroupModel = artifactSvc.getArtifactGroup(groupName);
 
-            for (ArtifactModel currentArtifact : artifactGroup) {
+            for (ArtifactModel currentArtifact : artifactGroupModel) {
 
                 allowedArtifactNames.add(currentArtifact.getName());
             }
@@ -43,15 +41,15 @@ public class ArtifactStoreController {
     private String getArtifactStoreDisplay() {
 
         // get available artifacts by category/ group
-        Group<String> artifactGroupNames = artifactSvc.getArtifactGroupNames();
+        GroupModel<String> artifactGroupModelNames = artifactSvc.getArtifactGroupNames();
 
         String display = "\n  Available artifacts:\n";
-        for (String groupName : artifactGroupNames) {
+        for (String groupName : artifactGroupModelNames) {
 
-            Group<ArtifactModel> artifactGroup = artifactSvc.getArtifactGroup(groupName);
+            GroupModel<ArtifactModel> artifactGroupModel = artifactSvc.getArtifactGroup(groupName);
 
-            display += "\n    Group " + artifactGroup.getName();
-            for (ArtifactModel currentArtifact : artifactGroup) {
+            display += "\n    GroupModel " + artifactGroupModel.getName();
+            for (ArtifactModel currentArtifact : artifactGroupModel) {
 
                 display += "\n      " + currentArtifact.getName() + " - " + currentArtifact.getDescription() + " - PRICE: " + currentArtifact.getPrice();
             }
@@ -62,7 +60,7 @@ public class ArtifactStoreController {
 
     private String getArtifactNameFromUserInput() {
 
-        Group<String> allowedArtifactNames = getAllowedArtifactNames();
+        GroupModel<String> allowedArtifactNames = getAllowedArtifactNames();
         String storeDisplay = getArtifactStoreDisplay();
 
         view.printLine(view.productsMessage);
@@ -85,12 +83,12 @@ public class ArtifactStoreController {
         return artifactName;
     }
 
-    private Group<CodecoolerModel> intersect(Group<User> students, Group<User> consumers) {
+    private GroupModel<CodecoolerModel> intersect(GroupModel<UserModel> students, GroupModel<UserModel> consumers) {
 
-        Group<CodecoolerModel> intersection = new Group<>("Codecooler(s) buying an artifact");
-        for (User consumer : consumers) {
+        GroupModel<CodecoolerModel> intersection = new GroupModel<>("Codecooler(s) buying an artifact");
+        for (UserModel consumer : consumers) {
 
-            for (User student : students) {
+            for (UserModel student : students) {
 
                 if(consumer.getName().equals(student.getName())) {
 
@@ -101,25 +99,25 @@ public class ArtifactStoreController {
         return intersection;
     }
 
-    private Group<CodecoolerModel> getConsumerGroup(CodecoolerModel codecooler) {
+    private GroupModel<CodecoolerModel> getConsumerGroup(CodecoolerModel codecooler) {
 
         UserService userSvc = new UserService();
 
         // get all user groups to choose from and display them
-        Group<String> allowedGroupNames = codecooler.getAssociatedGroupNames();
+        GroupModel<String> allowedGroupModelNames = codecooler.getAssociatedGroupModelNames();
 
         // get group which will crowd-fund the artifact
-        Group<CodecoolerModel> codecoolers = null;
+        GroupModel<CodecoolerModel> codecoolers = null;
         boolean providedExistentGroupName = false;
         boolean wantToBuyAlone = false;
         String groupsDisplay = "\n\n  Groups that can crowd-fund this purchase: \n\n   " + codecooler.getCodecoolerGroupDisplay() + "\n";
         do {
             view.printLine(groupsDisplay);
             String consumerGroupName = view.getStringFromUserInput(view.chooseGroup);
-            if (allowedGroupNames.contains(consumerGroupName)) {
+            if (allowedGroupModelNames.contains(consumerGroupName)) {
 
-                Group<User> students = userSvc.getUserGroup("codecoolers");
-                Group<User> consumers = userSvc.getUserGroup(consumerGroupName);
+                GroupModel<UserModel> students = userSvc.getUserGroup("codecoolers");
+                GroupModel<UserModel> consumers = userSvc.getUserGroup(consumerGroupName);
 
                 codecoolers = intersect(students, consumers);
 
@@ -128,7 +126,7 @@ public class ArtifactStoreController {
             } else {
                 if (consumerGroupName.equals("ALONE")) {
 
-                    codecoolers = new Group<>("buying alone");
+                    codecoolers = new GroupModel<>("buying alone");
                     codecoolers.add(codecooler);
                     wantToBuyAlone = true;
                 } else if (consumerGroupName.equals(view.magicExitString)) {
@@ -152,7 +150,7 @@ public class ArtifactStoreController {
             return;
         }
 
-        Group<CodecoolerModel> consumers = getConsumerGroup(codecooler);
+        GroupModel<CodecoolerModel> consumers = getConsumerGroup(codecooler);
         if (consumers == null) {
             /* purchase process aborted as requested by user */
             return;
@@ -169,15 +167,15 @@ public class ArtifactStoreController {
         /* purchase process succeeded */
         buyer.addArtifact(boughtArtifact);
         UserService userSvc = new UserService();
-        for (User user : consumers) {
+        for (UserModel userModel : consumers) {
 
-            userSvc.updateUser(user);
+            userSvc.updateUser(userModel);
         }
     }
 
     /* reason for the below method: a getter for consumer group gets the same codecooler and
      * we have extract them because it is their wallet and artifacts that have supposedly been changed */
-    private CodecoolerModel getSelf(Group<CodecoolerModel> consumers, CodecoolerModel twin) {
+    private CodecoolerModel getSelf(GroupModel<CodecoolerModel> consumers, CodecoolerModel twin) {
 
         for (CodecoolerModel codecooler : consumers) {
 
@@ -189,7 +187,7 @@ public class ArtifactStoreController {
         return null;
     }
 
-    public ArtifactModel buyArtifact(String name, Group<CodecoolerModel> consumers) {
+    public ArtifactModel buyArtifact(String name, GroupModel<CodecoolerModel> consumers) {
 
         ArtifactModel artifact = artifactSvc.getArtifactByName(name);
 

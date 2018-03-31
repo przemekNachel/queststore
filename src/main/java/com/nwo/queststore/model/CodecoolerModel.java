@@ -1,30 +1,26 @@
-package user.codecooler;
+package main.java.com.nwo.queststore.model;
 
-import artifact.ArtifactModel;
-import generic_group.Group;
-import level.Level;
 import level.LevelService;
 import user.user.Role;
 import user.wallet.WalletService;
-import user.user.RawUser;
 
 import java.util.Iterator;
 
-public class CodecoolerModel extends RawUser {
+public class CodecoolerModel extends RawUserModel {
 
     private WalletService wallet;
-    private Level level;
-    private Group<ArtifactModel> artifacts;
+    private LevelModel levelModel;
+    private GroupModel<ArtifactModel> artifacts;
 
-    public CodecoolerModel(RawUser rawUser, WalletService wallet, Group<ArtifactModel> artifacts, Level level) {
+    public CodecoolerModel(RawUserModel rawUser, WalletService wallet, GroupModel<ArtifactModel> artifacts, LevelModel levelModel) {
         super(Role.CODECOOLER,
                 rawUser.getName(),
                 rawUser.getEmail(),
                 rawUser.getPassword(),
-                rawUser.getAssociatedGroupNames());
+                rawUser.getAssociatedGroupModelNames());
 
         this.wallet = wallet;
-        this.level = level;
+        this.levelModel = levelModel;
         this.artifacts = artifacts;
     }
 
@@ -46,7 +42,7 @@ public class CodecoolerModel extends RawUser {
         return null;
     }
 
-    public Group<ArtifactModel> getCodecoolerArtifacts() {
+    public GroupModel<ArtifactModel> getCodecoolerArtifacts() {
 
         return artifacts;
     }
@@ -59,7 +55,7 @@ public class CodecoolerModel extends RawUser {
         String walletBalance;
         String currentLevelStats;
 
-        currentLevelStats = "Current level " + level.getCurrentLevel() + " Xp: " + Integer.toString(level.getCurrentExpirience());
+        currentLevelStats = "Current levelModel " + levelModel.getCurrentLevel() + " Xp: " + Integer.toString(levelModel.getCurrentExpirience());
         walletBalance = "\nWallet balance: " + wallet.toString() + "\n\n";
 
         statistics = currentLevelStats + walletBalance;
@@ -71,7 +67,7 @@ public class CodecoolerModel extends RawUser {
 
         String groupNamesString = "";
 
-        for (String groupName : getAssociatedGroupNames()) {
+        for (String groupName : getAssociatedGroupModelNames()) {
 
             groupNamesString += "|" + groupName;
         }
@@ -82,7 +78,7 @@ public class CodecoolerModel extends RawUser {
         return wallet;
     }
 
-    public Level getLevel() {
-        return level;
+    public LevelModel getLevelModel() {
+        return levelModel;
     }
 }

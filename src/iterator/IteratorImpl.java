@@ -1,27 +1,27 @@
 package iterator;
 
-import generic_group.Group;
+import main.java.com.nwo.queststore.model.GroupModel;
 
 import java.util.Iterator;
 
 public class IteratorImpl<T> implements Iterator<T> {
 
     private int index;
-    private Group<T> group;
+    private GroupModel<T> groupModel;
 
-    public IteratorImpl(Group<T> group) {
+    public IteratorImpl(GroupModel<T> groupModel) {
 
-        this.group = group;
+        this.groupModel = groupModel;
     }
 
     public boolean hasNext() {
 
-        return index < group.size();
+        return index < groupModel.size();
     }
 
     public T next() {
 
-        return group.get(index++);
+        return groupModel.get(index++);
     }
 
 }

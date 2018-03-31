@@ -1,4 +1,4 @@
-package artifact;
+package main.java.com.nwo.queststore.model;
 
 public class ArtifactModel {
     private String name;

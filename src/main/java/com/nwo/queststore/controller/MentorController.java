@@ -1,16 +1,11 @@
 package main.java.com.nwo.queststore.controller;
 
-import main.java.com.nwo.queststore.controller.AbstractUserController;
-import artifact.ArtifactModel;
+import main.java.com.nwo.queststore.model.MenuModel;
+import main.java.com.nwo.queststore.model.*;
 import artifact.ArtifactService;
-import quest.QuestModel;
-import console.menu.Menu;
-import console.menu.MenuOption;
+import main.java.com.nwo.queststore.model.MenuOptionModel;
 import quest.QuestService;
-import user.codecooler.CodecoolerModel;
-import generic_group.Group;
-import user.mentor.MentorView;
-import user.user.*;
+import main.java.com.nwo.queststore.view.MentorView;
 import user.wallet.*;
 import user.service.UserService;
 
@@ -22,21 +17,21 @@ public class MentorController extends AbstractUserController {
 
     public MentorController() {
         super(new MentorView(
-                new Menu(
-                    new MenuOption("0", "Exit"),
-                    new MenuOption("1", "Create a codecooler"),
-                    new MenuOption("2", "Assign a codecooler to a group"),
-                    new MenuOption("3", "Mark codecooler's quest completion"),
-                    new MenuOption("4", "Mark codecooler's artifact usage"),
-                    new MenuOption("5", "Create artifact"),
-                    new MenuOption("6", "Create quest"),
-                    new MenuOption("7", "Display all artifacts"),
-                    new MenuOption("8", "Update artifact"),
-                    new MenuOption("9", "Remove artifact"),
-                    new MenuOption("10", "Display all quests"),
-                    new MenuOption("11", "Update quest"),
-                    new MenuOption("12", "Delete quest"),
-                    new MenuOption("13", "View codecoolers wallets")
+                new MenuModel(
+                    new MenuOptionModel("0", "Exit"),
+                    new MenuOptionModel("1", "Create a codecooler"),
+                    new MenuOptionModel("2", "Assign a codecooler to a group"),
+                    new MenuOptionModel("3", "Mark codecooler's quest completion"),
+                    new MenuOptionModel("4", "Mark codecooler's artifact usage"),
+                    new MenuOptionModel("5", "Create artifact"),
+                    new MenuOptionModel("6", "Create quest"),
+                    new MenuOptionModel("7", "Display all artifacts"),
+                    new MenuOptionModel("8", "Update artifact"),
+                    new MenuOptionModel("9", "Remove artifact"),
+                    new MenuOptionModel("10", "Display all quests"),
+                    new MenuOptionModel("11", "Update quest"),
+                    new MenuOptionModel("12", "Delete quest"),
+                    new MenuOptionModel("13", "View codecoolers wallets")
                 )
             )
         );
@@ -52,7 +47,7 @@ public class MentorController extends AbstractUserController {
 
         boolean requestedExit = false;
         do {
-            MenuOption userOption = view.getMenuOptionFromUserInput(" Please choose option: ");
+            MenuOptionModel userOption = view.getMenuOptionFromUserInput(" Please choose option: ");
             if (userOption.getId().equals("0")) {
                 requestedExit = true;
                 view.clearScreen();
@@ -112,7 +107,7 @@ public class MentorController extends AbstractUserController {
     private void displayAllArtifacts() {
 
         view.printLine("\n--- Available artifacts ---");
-        for(Group<ArtifactModel> artifactGroups : artifactSvc.getAllArtifacts()) {
+        for(GroupModel<ArtifactModel> artifactGroups : artifactSvc.getAllArtifacts()) {
 
             for (ArtifactModel artifact : artifactGroups) {
 
@@ -124,7 +119,7 @@ public class MentorController extends AbstractUserController {
     private void displayAllQuests() {
 
         view.printLine("\n--- Available Quests ---");
-        for(Group<QuestModel> questGroups : questSvc.getAllQuests()) {
+        for(GroupModel<QuestModel> questGroups : questSvc.getAllQuests()) {
 
             for (QuestModel quest : questGroups) {
 
@@ -142,8 +137,8 @@ public class MentorController extends AbstractUserController {
 
         CodecoolerModel codecooler = getCodecoolerFromUserInput();
 
-        Group<String> allowedGroupNames = userSvc.getUserGroupNames();
-        String groupName = getNameFromUserInput(view.userGroupQuestion, view.nameOutOfRange, allowedGroupNames);
+        GroupModel<String> allowedGroupModelNames = userSvc.getUserGroupNames();
+        String groupName = getNameFromUserInput(view.userGroupQuestion, view.nameOutOfRange, allowedGroupModelNames);
 
         boolean addUserAdherenceSuccess = userSvc.addUserAdherence(codecooler, groupName);
 
@@ -169,22 +164,22 @@ public class MentorController extends AbstractUserController {
 
     private void createArtifact() {
 
-        Group<String> disallowedArtifactNames = artifactSvc.getArtifactNames();
+        GroupModel<String> disallowedArtifactNames = artifactSvc.getArtifactNames();
         String name = getExclusiveNameFromUserInput(view.artifactNameQuestion, view.nameAlreadyTaken, disallowedArtifactNames);
 
         String desc = view.getStringFromUserInput(view.artifactDescQuestion);
         Integer price = view.getIntFromUserInput(view.artifactPriceQuestion);
 
 
-        Group<String> availableGroups = artifactSvc.getArtifactGroupNames();
+        GroupModel<String> availableGroups = artifactSvc.getArtifactGroupNames();
         view.printLine("\n--- Available groups ---");
         for (String s : availableGroups) {
             view.printLine(s);
         }
         view.print("\n");
 
-        Group<String> allowedGroupNames = availableGroups;
-        String groupName = getNameFromUserInput(view.GroupAssignmentQuestion, view.nameOutOfRange, allowedGroupNames);
+        GroupModel<String> allowedGroupModelNames = availableGroups;
+        String groupName = getNameFromUserInput(view.GroupAssignmentQuestion, view.nameOutOfRange, allowedGroupModelNames);
 
         artifactSvc.createArtifact(name, desc, price, groupName);
     }
@@ -200,7 +195,7 @@ public class MentorController extends AbstractUserController {
 
         displayAllArtifacts();
 
-        Group<String> allowedArtifactNames = artifactSvc.getArtifactNames();
+        GroupModel<String> allowedArtifactNames = artifactSvc.getArtifactNames();
         String name = getNameFromUserInput(prompt, view.nameOutOfRange, allowedArtifactNames);
 
         return artifactSvc.getArtifactByName(name);
@@ -210,7 +205,7 @@ public class MentorController extends AbstractUserController {
 
         displayAllQuests();
 
-        Group<String> allowedQuestNames = questSvc.getQuestNames();
+        GroupModel<String> allowedQuestNames = questSvc.getQuestNames();
         String name = getNameFromUserInput(prompt, view.nameOutOfRange, allowedQuestNames);
 
         return questSvc.getQuestByName(name);
@@ -238,21 +233,21 @@ public class MentorController extends AbstractUserController {
 
     private void createQuest() {
 
-        Group<String> disallowedQuestNames = questSvc.getQuestNames();
+        GroupModel<String> disallowedQuestNames = questSvc.getQuestNames();
         String name = getExclusiveNameFromUserInput(view.chooseQuestNameQuestion, view.nameAlreadyTaken, disallowedQuestNames);
 
         String desc = view.getStringFromUserInput(view.questDescQuestion);
         Integer reward = view.getIntFromUserInput(view.questPriceQuestion);
 
-        Group<String> availableGroups = questSvc.getQuestGroupNames();
+        GroupModel<String> availableGroups = questSvc.getQuestGroupNames();
         view.printLine("\n--- Available groups ---");
         for (String s : availableGroups) {
             view.printLine(s);
         }
         view.print("\n");
 
-        Group<String> allowedGroupNames = availableGroups;
-        String groupName = getNameFromUserInput(view.GroupAssignmentQuestion, view.nameOutOfRange, allowedGroupNames);
+        GroupModel<String> allowedGroupModelNames = availableGroups;
+        String groupName = getNameFromUserInput(view.GroupAssignmentQuestion, view.nameOutOfRange, allowedGroupModelNames);
 
         questSvc.createQuest(name, desc, reward, groupName);
     }
@@ -298,7 +293,7 @@ public class MentorController extends AbstractUserController {
         markQuest(codecooler, quest);
     }
 
-    private void markQuest(CodecoolerModel codecooler, quest.QuestModel quest) {
+    private void markQuest(CodecoolerModel codecooler, QuestModel quest) {
 
         view.printLine("You are about to mark the quest \"" + quest.getName() + "\" for " + codecooler.getName() + ", completion of which is worth " + quest.getReward().toString());
         String input = "";
@@ -310,7 +305,7 @@ public class MentorController extends AbstractUserController {
 
             Integer worth = quest.getReward();
             codecooler.getWallet().payIn(worth);
-            codecooler.getLevel().addExperience(worth);
+            codecooler.getLevelModel().addExperience(worth);
             view.printLine("  quest marked");
 
             userSvc.updateUser(codecooler);
@@ -325,8 +320,8 @@ public class MentorController extends AbstractUserController {
         CodecoolerModel codecooler = getCodecoolerFromUserInput();
 
         // get artifact to be marked
-        Group<String> allowedArtifactNames = new Group<>("allowed artifact name user input");
-        Group<ArtifactModel> userArtifacts = codecooler.getCodecoolerArtifacts();
+        GroupModel<String> allowedArtifactNames = new GroupModel<>("allowed artifact name user input");
+        GroupModel<ArtifactModel> userArtifacts = codecooler.getCodecoolerArtifacts();
         String artifactsFormatted = "  Artifacts of codecooler " + codecooler.getName() + "\n\n:";
         for (ArtifactModel currentArtifact : userArtifacts) {
 
@@ -360,17 +355,17 @@ public class MentorController extends AbstractUserController {
 
         try {
 
-            Group<Group<User>> userGroups = userSvc.getAllUsers();
+            GroupModel<GroupModel<UserModel>> userGroups = userSvc.getAllUsers();
             String codecoolerGroupName = "codecoolers";
 
-            for(Group<User> group: userGroups ) {
+            for(GroupModel<UserModel> groupModel : userGroups ) {
 
-                while (group.getName().equals(codecoolerGroupName)) {
+                while (groupModel.getName().equals(codecoolerGroupName)) {
 
-                    for (User user: group){
+                    for (UserModel userModel : groupModel){
 
                         WalletService wallet;
-                        CodecoolerModel codecooler = (CodecoolerModel) user;
+                        CodecoolerModel codecooler = (CodecoolerModel) userModel;
 
                         wallet = codecooler.getWallet();
                         view.print(codecooler.getName() + " " + wallet.toString() + "\n");

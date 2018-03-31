@@ -1,17 +1,16 @@
-package user.mentor;
+package main.java.com.nwo.queststore.view;
 
-import console.menu.AbstractConsoleView;
-import console.menu.Menu;
+import main.java.com.nwo.queststore.model.MenuModel;
 
 public class MentorView extends AbstractConsoleView {
 
     public MentorView() {
-        // a no-menu constructor - not all uses require a menu
+        // a no-menuModel constructor - not all uses require a menuModel
     }
 
-    public MentorView(Menu menu) {
+    public MentorView(MenuModel menuModel) {
 
-        this.menu = menu;
+        this.menuModel = menuModel;
     }
 
     public String userNicknameQuestion = "Provide user Nickname : ";

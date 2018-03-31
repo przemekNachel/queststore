@@ -1,11 +1,9 @@
-package artifact;
+package main.java.com.nwo.queststore.view;
 
-import console.menu.AbstractConsoleView;
-
-class ArtifactStoreView extends AbstractConsoleView {
+public class ArtifactStoreView extends AbstractConsoleView {
 
     public ArtifactStoreView() {
-        // a no-menu view constructor - not all uses require a menu
+        // a no-menuModel view constructor - not all uses require a menuModel
     }
 
     public String artifactNameQuestion = "Enter the artifact's name: ";

@@ -1,9 +1,9 @@
 package main.java.com.nwo.queststore.controller;
 
-import console.menu.AbstractConsoleView;
-import generic_group.Group;
+import main.java.com.nwo.queststore.view.AbstractConsoleView;
+import main.java.com.nwo.queststore.model.GroupModel;
 import user.service.UserService;
-import user.user.User;
+import main.java.com.nwo.queststore.model.UserModel;
 
 public abstract class AbstractUserController {
 
@@ -15,17 +15,17 @@ public abstract class AbstractUserController {
         this.view = view;
     }
 
-    public Group<String> userGroupToStringGroup(Group<User> userGroup) {
+    public GroupModel<String> userGroupToStringGroup(GroupModel<UserModel> userGroupModel) {
 
-        Group<String> stringGroup = new Group<>("user names");
-        for (User user : userGroup) {
+        GroupModel<String> stringGroupModel = new GroupModel<>("user names");
+        for (UserModel userModel : userGroupModel) {
 
-            stringGroup.add(user.getName());
+            stringGroupModel.add(userModel.getName());
         }
-        return stringGroup;
+        return stringGroupModel;
     }
 
-    public String getNameFromUserInput(String prompt, String disallowedMessage, Group<String> allowedNames) {
+    public String getNameFromUserInput(String prompt, String disallowedMessage, GroupModel<String> allowedNames) {
 
         String name;
         boolean providedValidName = false;
@@ -46,7 +46,7 @@ public abstract class AbstractUserController {
 
 
     /* Returns the first input string that does not occur in disallowedNames */
-    public String getExclusiveNameFromUserInput(String prompt, String disallowedMessage, Group<String> disallowedNames) {
+    public String getExclusiveNameFromUserInput(String prompt, String disallowedMessage, GroupModel<String> disallowedNames) {
 
         String name;
         boolean providedValidName = false;
@@ -65,10 +65,10 @@ public abstract class AbstractUserController {
         return name;
     }
 
-    public User getUserFromUserInput(String nameQuestion, String outOfRangeError, String groupName) {
+    public UserModel getUserFromUserInput(String nameQuestion, String outOfRangeError, String groupName) {
 
-        Group<User> users = userSvc.getUserGroup(groupName);
-        Group<String> allowedUserNames = userGroupToStringGroup(users);
+        GroupModel<UserModel> users = userSvc.getUserGroup(groupName);
+        GroupModel<String> allowedUserNames = userGroupToStringGroup(users);
 
         String name = getNameFromUserInput(nameQuestion, outOfRangeError, allowedUserNames);
 

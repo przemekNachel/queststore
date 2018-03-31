@@ -1,18 +1,16 @@
-package user.user;
+package main.java.com.nwo.queststore.model;
 
-import generic_group.Group;
 import user.user.Role;
-import user.user.User;
 
-public class RawUser extends User {
+public class RawUserModel extends UserModel {
 
-    public RawUser(Role role, String nickname, String email, String password, Group<String> groupNames) {
+    public RawUserModel(Role role, String nickname, String email, String password, GroupModel<String> groupModelNames) {
         this.role = role;
         this.nickname = nickname;
         this.email = email;
         this.password = password;
 
-        associatedGroupNames = groupNames;
+        associatedGroupModelNames = groupModelNames;
     }
     @Override
     public Role getRole() {

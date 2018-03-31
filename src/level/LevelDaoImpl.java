@@ -1,5 +1,7 @@
 package level;
 
+import main.java.com.nwo.queststore.model.LevelModel;
+
 import java.util.HashMap;
 import java.sql.*;
 import java.util.Map;
@@ -56,7 +58,7 @@ public class LevelDaoImpl {
         }
     }
 
-    public Level getLevel(int userID){
+    public LevelModel getLevel(int userID){
         Connection connect = null;
         Statement statement = null;
         int experienceGained = -1;
@@ -81,22 +83,22 @@ public class LevelDaoImpl {
                 e.printStackTrace();
             }
         }
-        return experienceGained < 0 ? null : new Level(experienceGained);
+        return experienceGained < 0 ? null : new LevelModel(experienceGained);
     }
 
-    public void addExperience(int userID, Level level) {
+    public void addExperience(int userID, LevelModel levelModel) {
 
         String add = "INSERT INTO user_experience(user_id, experience_gained) " +
-                "VALUES (" + userID + ", " + level.getCurrentExpirience() + ");";
+                "VALUES (" + userID + ", " + levelModel.getCurrentExpirience() + ");";
 
         executeExperienceUpdate(add);
     }
 
-    public void updateExperience(int userID, Level level) {
+    public void updateExperience(int userID, LevelModel levelModel) {
 
 
         String update = "UPDATE user_experience " +
-                "SET experience_gained=" + level.getCurrentExpirience() + " WHERE user_id=" + userID + ";";
+                "SET experience_gained=" + levelModel.getCurrentExpirience() + " WHERE user_id=" + userID + ";";
 
         executeExperienceUpdate(update);
     }

@@ -1,8 +1,9 @@
 package user.user;
 
-import generic_group.Group;
+import main.java.com.nwo.queststore.model.GroupModel;
+import main.java.com.nwo.queststore.model.RawUserModel;
+import main.java.com.nwo.queststore.model.UserModel;
 
-import java.util.Iterator;
 import java.sql.*;
 
 import static user.user.Role.*;
@@ -12,12 +13,12 @@ public class UserDaoImpl implements UserDao{
 
     private static String JDBC = "jdbc:sqlite:database/database.db";
 
-    public RawUser getUser(String nickname) throws SQLException{
+    public RawUserModel getUser(String nickname) throws SQLException{
 
       Connection connect = establishConnection();
       Statement statement = connect.createStatement();
       ResultSet extractRole = null;
-      RawUser tempUsr = null;
+      RawUserModel tempUsr = null;
 
       try{
 
@@ -49,65 +50,65 @@ public class UserDaoImpl implements UserDao{
       return tempUsr;
     }
 
-    public void addUser(User user) throws SQLException{
+    public void addUser(UserModel userModel) throws SQLException{
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
         try{
           String userName = null, password = null, email = null, role = null;
           int userId = 0, userPrivilegeLevelId = 0, balance = 0;//, expGained = 0, ;
-          Group<Integer> groupIds;
+          GroupModel<Integer> groupModelIds;
 
-          userName = user.getName();
-          password = user.getPassword();
-          email = user.getEmail();
-          role = convertRole(user.getRole());
+          userName = userModel.getName();
+          password = userModel.getPassword();
+          email = userModel.getEmail();
+          role = convertRole(userModel.getRole());
 
           updateCredentials(userName, password, email);
 
           userId = getUserId(userName);
           userPrivilegeLevelId = getUserPrivilegeLevelId(role);
-          groupIds = getUserGroupIds(user);
+          groupModelIds = getUserGroupIds(userModel);
 
           /* execute updates */
 
           updatePrivileges(userId, userPrivilegeLevelId);
-          updateUserAssociations(groupIds, userId);
+          updateUserAssociations(groupModelIds, userId);
       }finally{
         close(connect, statement);
       }
     }
 
-    public void updateUser(User user) throws SQLException{
+    public void updateUser(UserModel userModel) throws SQLException{
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
 
         try{
         String userName = null, password = null, email = null;
         int userId = 0;
-        Group<Integer> groupIds = null;
+        GroupModel<Integer> groupModelIds = null;
 
-        // get basic user credentials (all strings + role)
-        userName = user.getName();
-        password = user.getPassword();
-        email = user.getEmail();
+        // get basic userModel credentials (all strings + role)
+        userName = userModel.getName();
+        password = userModel.getPassword();
+        email = userModel.getEmail();
 
         userId = getUserId(userName);
-        groupIds = getUserGroupIds(user);
+        groupModelIds = getUserGroupIds(userModel);
 
         upgradeCredentials(password, email, userId);
-        upgradeUserAssociations(groupIds, userId);
+        upgradeUserAssociations(groupModelIds, userId);
 
       }finally{
         close(connect, statement);
       }
     }
 
-    public Group<String> getUserGroupNames() throws SQLException{
+    public GroupModel<String> getUserGroupNames() throws SQLException{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
         ResultSet results = null;
-        Group<String> groupsNames = new Group<>("generic_group.Group names");
+        GroupModel<String> groupsNames = new GroupModel<>("generic_group.GroupModel names");
 
         try{
         String query = "SELECT DISTINCT group_names.group_name " +
@@ -127,21 +128,21 @@ public class UserDaoImpl implements UserDao{
         return groupsNames;
     }
 
-    public Group<User> getUserGroup(String groupName) throws SQLException{
+    public GroupModel<UserModel> getUserGroup(String groupName) throws SQLException{
 
-      Group<User> userGroup = new Group<>(groupName);
-      insertUsersTo(userGroup);
-      return userGroup;
+      GroupModel<UserModel> userGroupModel = new GroupModel<>(groupName);
+      insertUsersTo(userGroupModel);
+      return userGroupModel;
     }
 
-    public boolean addUserAdherence(User user, String groupName) throws SQLException{
+    public boolean addUserAdherence(UserModel userModel, String groupName) throws SQLException{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
         boolean addedAdherence = false;
         try {
 
-            int userId = getUserId(user.getName());
+            int userId = getUserId(userModel.getName());
             int groupId = getGroupId(groupName);
 
             Statement checkStatement = connect.createStatement();
@@ -165,14 +166,14 @@ public class UserDaoImpl implements UserDao{
         return addedAdherence;
     }
 
-    public void addUserGroup(Group<User> group) throws SQLException{
+    public void addUserGroup(GroupModel<UserModel> groupModel) throws SQLException{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
 
         try{
         String query = "INSERT INTO group_names(group_name) " +
-            "VALUES ('" + group.getName() + "');";
+            "VALUES ('" + groupModel.getName() + "');";
 
         statement.executeUpdate(query);
         connect.commit();
@@ -181,12 +182,12 @@ public class UserDaoImpl implements UserDao{
       }
     }
 
-    public Group<String> getAllGroupNames() throws SQLException{
+    public GroupModel<String> getAllGroupNames() throws SQLException{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
         ResultSet results = null;
-        Group<String> groups = new Group<>("all groups");
+        GroupModel<String> groups = new GroupModel<>("all groups");
         try{
           String query = "SELECT group_name FROM group_names ;";
           results = statement.executeQuery(query);
@@ -245,16 +246,16 @@ public class UserDaoImpl implements UserDao{
 
     // helper methods for pubic methods
 
-    private RawUser createUserObject(Role role, int userId)  throws SQLException{
+    private RawUserModel createUserObject(Role role, int userId)  throws SQLException{
 
       Connection connect = establishConnection();
       Statement statement = connect.createStatement();
       ResultSet results = null;
-      RawUser user = null;
+      RawUserModel user = null;
 
       try{
         String name, password, email;
-        Group<String> userGroups = getUserGroups(userId);
+        GroupModel<String> userGroups = getUserGroups(userId);
 
         String query = "SELECT * FROM users WHERE user_id="
         + userId + " ;";
@@ -265,7 +266,7 @@ public class UserDaoImpl implements UserDao{
           password = results.getString("password");
           email = results.getString("email");
 
-          user = new RawUser(role, name, email, password, userGroups);
+          user = new RawUserModel(role, name, email, password, userGroups);
         }
 
       }finally{
@@ -275,7 +276,7 @@ public class UserDaoImpl implements UserDao{
       return user;
     }
 
-    private void insertUsersTo(Group<User> group) throws SQLException{
+    private void insertUsersTo(GroupModel<UserModel> groupModel) throws SQLException{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
@@ -290,7 +291,7 @@ public class UserDaoImpl implements UserDao{
             "JOIN user_roles ON user_roles.user_id = users.user_id " +
             "JOIN user_privilege_levels ON " +
             "user_privilege_levels.privilege_id = user_roles.user_privilege_level_id " +
-            "WHERE group_name = '" + group.getName() + "' ;" ;
+            "WHERE group_name = '" + groupModel.getName() + "' ;" ;
 
         results = statement.executeQuery(query);
 
@@ -301,7 +302,7 @@ public class UserDaoImpl implements UserDao{
             email = results.getString("email");
             role = convertRole(results.getString("privilege_name"));
 
-            group.add(new RawUser(role, name, email, password, getUserGroups(results.getInt("user_id"))));
+            groupModel.add(new RawUserModel(role, name, email, password, getUserGroups(results.getInt("user_id"))));
         }
       }finally{
         close(results);
@@ -309,11 +310,11 @@ public class UserDaoImpl implements UserDao{
       }
     }
 
-    private Group<String> getUserGroups(int userId) throws SQLException{
+    private GroupModel<String> getUserGroups(int userId) throws SQLException{
 
       Connection connect = establishConnection();
       Statement statement = connect.createStatement();
-      Group<String> associatedGroups = new Group<>("associated user groups");
+      GroupModel<String> associatedGroups = new GroupModel<>("associated user groups");
       ResultSet results = null;
       try{
         String query = "SELECT DISTINCT group_name " +
@@ -336,27 +337,27 @@ public class UserDaoImpl implements UserDao{
         return associatedGroups;
     }
 
-    private Group<Integer> getUserGroupIds(User user) throws SQLException{
+    private GroupModel<Integer> getUserGroupIds(UserModel userModel) throws SQLException{
       Connection connect = establishConnection();
       Statement statement = connect.createStatement();
       ResultSet results = null;
-      Group<Integer> groupIds = new Group<>("Group ids");
+      GroupModel<Integer> groupModelIds = new GroupModel<>("GroupModel ids");
       try{
         String query;
 
-        for(String groupName : user.getAssociatedGroupNames()){
+        for(String groupName : userModel.getAssociatedGroupModelNames()){
           query = "SELECT group_id FROM group_names " +
                 "WHERE group_name='" + groupName + "' ;";
           results = statement.executeQuery(query);
           if(results.next()){
-            groupIds.add(results.getInt("group_id"));
+            groupModelIds.add(results.getInt("group_id"));
           }
         }
       }finally{
         close(results);
         close(connect, statement);
       }
-      return groupIds;
+      return groupModelIds;
     }
 
     private int getUserPrivilegeLevelId(String role) throws SQLException{
@@ -435,13 +436,13 @@ public class UserDaoImpl implements UserDao{
       }
     }
 
-    private void updateUserAssociations(Group<Integer> groupIds, int userId) throws SQLException{
+    private void updateUserAssociations(GroupModel<Integer> groupModelIds, int userId) throws SQLException{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
       try{
         String updateAssociations;
-        for(Integer groupId : groupIds){
+        for(Integer groupId : groupModelIds){
             updateAssociations = "INSERT INTO user_associations(user_id, group_id) " +
                     "VALUES (" + userId + ", " + groupId + ");";
             statement.executeUpdate(updateAssociations);
@@ -470,13 +471,13 @@ public class UserDaoImpl implements UserDao{
       }
     }
 
-    private void upgradeUserAssociations(Group<Integer> groupIds, int userId) throws SQLException{
+    private void upgradeUserAssociations(GroupModel<Integer> groupModelIds, int userId) throws SQLException{
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
         try{
         String updateAssociations;
-        for(Integer groupId : groupIds){
+        for(Integer groupId : groupModelIds){
             updateAssociations = "UPDATE user_associations " +
                     "SET group_id=" + groupId + " WHERE user_id=" + userId + ";";
             statement.executeUpdate(updateAssociations);

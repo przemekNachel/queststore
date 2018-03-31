@@ -1,15 +1,13 @@
-package user.user;
+package main.java.com.nwo.queststore.model;
 
-import generic_group.Group;
+import user.user.Role;
 
-import java.util.Iterator;
-
-public abstract class User {
+public abstract class UserModel {
     protected Role role;
     protected String nickname;
     protected String password;
     protected String email;
-    protected Group<String> associatedGroupNames;
+    protected GroupModel<String> associatedGroupModelNames;
 
     public String getName() {
         return nickname;
@@ -35,8 +33,8 @@ public abstract class User {
         this.email = email;
     }
 
-    public Group<String> getAssociatedGroupNames() {
-        return associatedGroupNames;
+    public GroupModel<String> getAssociatedGroupModelNames() {
+        return associatedGroupModelNames;
     }
 
     public abstract Role getRole();
@@ -45,7 +43,7 @@ public abstract class User {
     public String toString() {
 
         String strGroups = "";
-        for (String groupName : associatedGroupNames) {
+        for (String groupName : associatedGroupModelNames) {
 
             strGroups += groupName + ";";
         }

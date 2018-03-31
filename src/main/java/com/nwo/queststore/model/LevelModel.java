@@ -1,14 +1,16 @@
-package level;
+package main.java.com.nwo.queststore.model;
+
+import level.LevelService;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class Level{
+public class LevelModel {
     private static HashMap<Integer, String> levels = new HashMap<>();
     private int experienceGained;
 
-    public Level(int experienceGained){
+    public LevelModel(int experienceGained){
         this.experienceGained = experienceGained;
     }
 

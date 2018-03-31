@@ -1,22 +1,23 @@
 package artifact;
 
 import exceptionlog.ExceptionLog;
-import generic_group.Group;
+import main.java.com.nwo.queststore.model.GroupModel;
+import main.java.com.nwo.queststore.model.ArtifactModel;
 
 import java.sql.SQLException;
 
 public class ArtifactService {
 
-    public Group<String> getArtifactGroupNames() {
+    public GroupModel<String> getArtifactGroupNames() {
 
-        Group<String> groupNames = new Group<>("artifact group names");
+        GroupModel<String> groupModelNames = new GroupModel<>("artifact group names");
         try {
-            groupNames = new ArtifactDaoImpl().getArtifactGroupNames();
-            groupNames.remove("artifacts");
+            groupModelNames = new ArtifactDaoImpl().getArtifactGroupNames();
+            groupModelNames.remove("artifacts");
         } catch (SQLException e) {
             ExceptionLog.add(e);
         }
-        return groupNames;
+        return groupModelNames;
     }
 
     public boolean deleteArtifact(String name) {
@@ -86,9 +87,9 @@ public class ArtifactService {
         return updated;
     }
 
-    public Group<Group<ArtifactModel>> getAllArtifacts() {
+    public GroupModel<GroupModel<ArtifactModel>> getAllArtifacts() {
 
-        Group<Group<ArtifactModel>> artifactCollection = new Group<>("all artifacts");
+        GroupModel<GroupModel<ArtifactModel>> artifactCollection = new GroupModel<>("all artifacts");
         try {
 
             artifactCollection = new ArtifactDaoImpl().getAllArtifacts();
@@ -98,12 +99,12 @@ public class ArtifactService {
         return artifactCollection;
     }
 
-    public Group<String> getArtifactNames() {
+    public GroupModel<String> getArtifactNames() {
 
-        Group<String> names = new Group<>("artifact names");
-        for (Group<ArtifactModel> subGroup : getAllArtifacts()) {
+        GroupModel<String> names = new GroupModel<>("artifact names");
+        for (GroupModel<ArtifactModel> subGroupModel : getAllArtifacts()) {
 
-            for (ArtifactModel artifact : subGroup) {
+            for (ArtifactModel artifact : subGroupModel) {
 
                 names.add(artifact.getName());
             }
@@ -111,15 +112,15 @@ public class ArtifactService {
         return names;
     }
 
-    public Group<ArtifactModel> getArtifactGroup(String groupName) {
+    public GroupModel<ArtifactModel> getArtifactGroup(String groupName) {
 
-        Group<ArtifactModel> specializedGroup = null;
+        GroupModel<ArtifactModel> specializedGroupModel = null;
         try {
-            specializedGroup = new ArtifactDaoImpl().getArtifactGroup(groupName);
+            specializedGroupModel = new ArtifactDaoImpl().getArtifactGroup(groupName);
 
         } catch (SQLException e) {
             ExceptionLog.add(e);
         }
-        return specializedGroup;
+        return specializedGroupModel;
     }
 }

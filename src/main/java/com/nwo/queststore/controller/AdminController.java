@@ -1,16 +1,11 @@
 package main.java.com.nwo.queststore.controller;
 
-import main.java.com.nwo.queststore.controller.AbstractUserController;
-import console.menu.Menu;
-import console.menu.MenuOption;
-import generic_group.Group;
+import main.java.com.nwo.queststore.model.*;
+import main.java.com.nwo.queststore.model.GroupModel;
+import main.java.com.nwo.queststore.view.AdminView;
 import user.admin.AdminView;
-import user.mentor.MentorModel;
 import user.user.Role;
-import user.user.User;
-import user.user.RawUser;
 import user.service.UserService;
-import level.Level;
 import level.LevelService;
 
 import java.util.HashMap;
@@ -22,15 +17,15 @@ public class AdminController extends AbstractUserController {
 
     public AdminController() {
         super(new AdminView(
-                new Menu(
-                    new MenuOption("0", "Exit"),
-                    new MenuOption("1", "Create a mentor"),
-                    new MenuOption("2", "Assign a mentor to a group"),
-                    new MenuOption("3", "Create user group"),
-                    new MenuOption("4", "Edit mentor"),
-                    new MenuOption("5", "View mentor's details"),
-                    new MenuOption("6", "View groups"),
-                    new MenuOption("7", "Create level")
+                new MenuModel(
+                    new MenuOptionModel("0", "Exit"),
+                    new MenuOptionModel("1", "Create a mentor"),
+                    new MenuOptionModel("2", "Assign a mentor to a group"),
+                    new MenuOptionModel("3", "Create user group"),
+                    new MenuOptionModel("4", "Edit mentor"),
+                    new MenuOptionModel("5", "View mentor's details"),
+                    new MenuOptionModel("6", "View groups"),
+                    new MenuOptionModel("7", "Create level")
                 )
             )
         );
@@ -63,9 +58,9 @@ public class AdminController extends AbstractUserController {
         String email = view.getStringFromUserInput(view.mentorEmailQuestion);
         String password = view.getStringFromUserInput(view.mentorPasswordQuestion);
 
-        Group<String> mentorGroups = new Group<>("mentor groups");
+        GroupModel<String> mentorGroups = new GroupModel<>("mentor groups");
         mentorGroups.add("mentors");
-        MentorModel mentor = new MentorModel(new RawUser(Role.MENTOR, name, email, password, mentorGroups));
+        MentorModel mentor = new MentorModel(new RawUserModel(Role.MENTOR, name, email, password, mentorGroups));
 
         userSvc.addUser(mentor);
 
@@ -76,7 +71,7 @@ public class AdminController extends AbstractUserController {
         boolean requestedExit = false;
         do {
 
-            MenuOption userOption = view.getMenuOptionFromUserInput(" Please choose option: ");
+            MenuOptionModel userOption = view.getMenuOptionFromUserInput(" Please choose option: ");
             if (userOption.getId().equals("0")) {
                 requestedExit = true;
                 view.clearScreen();
@@ -124,8 +119,8 @@ public class AdminController extends AbstractUserController {
 
         MentorModel mentor = getMentorFromUserInput();
 
-        Group<String> allowedGroupNames = userSvc.getUserGroupNames();
-        String groupName = getNameFromUserInput(view.groupNameQuestion, view.nameOutOfRange, allowedGroupNames);
+        GroupModel<String> allowedGroupModelNames = userSvc.getUserGroupNames();
+        String groupName = getNameFromUserInput(view.groupNameQuestion, view.nameOutOfRange, allowedGroupModelNames);
 
         boolean userAddedToGroup = userSvc.addUserAdherence(mentor, groupName);
 
@@ -136,11 +131,11 @@ public class AdminController extends AbstractUserController {
 
     public void createGroup() {
 
-        Group<String> disallowedGroupNames = userSvc.getUserGroupNames();
-        String groupName = getExclusiveNameFromUserInput(view.groupNameQuestion, view.nameAlreadyTaken, disallowedGroupNames);
+        GroupModel<String> disallowedGroupModelNames = userSvc.getUserGroupNames();
+        String groupName = getExclusiveNameFromUserInput(view.groupNameQuestion, view.nameAlreadyTaken, disallowedGroupModelNames);
 
-        Group<User> newGroup = new Group<>(groupName);
-        userSvc.addUserGroup(newGroup);
+        GroupModel<UserModel> newGroupModel = new GroupModel<>(groupName);
+        userSvc.addUserGroup(newGroupModel);
     }
 
     public void editMentor() {
@@ -171,10 +166,10 @@ public class AdminController extends AbstractUserController {
 
     public String getGroupsDisplay(){
         UserService userSvc = new UserService();
-        Group<String> groupNames = userSvc.getUserGroupNames();
+        GroupModel<String> groupModelNames = userSvc.getUserGroupNames();
 
         String groupsFormatted = "";
-        for (String name : groupNames) {
+        for (String name : groupModelNames) {
             groupsFormatted += name + " | ";
         }
         return groupsFormatted;
@@ -195,9 +190,9 @@ public class AdminController extends AbstractUserController {
         LevelService levelService = new LevelService();
         levelService.initializeLevels();
 
-        HashMap<Integer, String> levels = Level.getLevels();
+        HashMap<Integer, String> levels = LevelModel.getLevels();
 
-        Group<String> disallowedLevelNames = new Group<>("disallowed level names");
+        GroupModel<String> disallowedLevelNames = new GroupModel<>("disallowed level names");
 
         view.printLine(view.currentLevelsText);
         for (Map.Entry<Integer, String> entry : levels.entrySet()) {
@@ -207,7 +202,7 @@ public class AdminController extends AbstractUserController {
         }
         String lvlName = getExclusiveNameFromUserInput(view.levelNameQuestion, view.nameAlreadyTaken, disallowedLevelNames);
         Integer thr = view.getIntFromUserInput(view.levelThresholdQuestion); // might need to be in loop in case of ivalid int input
-        Level.addLevel(lvlName, thr);
+        LevelModel.addLevel(lvlName, thr);
     }
 
 }

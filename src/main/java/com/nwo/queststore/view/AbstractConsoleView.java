@@ -1,4 +1,7 @@
-package console.menu;
+package main.java.com.nwo.queststore.view;
+
+import main.java.com.nwo.queststore.model.MenuModel;
+import main.java.com.nwo.queststore.model.MenuOptionModel;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -9,7 +12,7 @@ public abstract class AbstractConsoleView {
     public String nameAlreadyTaken = "\n This name cannot be used.\n";
     public String nameOutOfRange = "\n You need to provide an already existing name.\n";
 
-    protected Menu menu;
+    protected MenuModel menuModel;
 
     private static final String ESCAPE_SEQ_CLEAR_SCREEN = "\033[H\033[2J";
 
@@ -41,9 +44,9 @@ public abstract class AbstractConsoleView {
         System.out.flush();
     }
 
-    private void printMenu(Menu menu) {
+    private void printMenu(MenuModel menuModel) {
 
-        printLine(menu.toString());
+        printLine(menuModel.toString());
     }
 
     public void printSQLException(SQLException e) {
@@ -72,20 +75,20 @@ public abstract class AbstractConsoleView {
         return scanner.nextLine();
     }
 
-    public MenuOption getMenuOptionFromUserInput(String prompt) {
+    public MenuOptionModel getMenuOptionFromUserInput(String prompt) {
 
-        MenuOption chosenOption = null;
+        MenuOptionModel chosenOption = null;
 
         boolean providedValidAnswer = false;
         while (!providedValidAnswer) {
 
-            printMenu(menu);
+            printMenu(menuModel);
             String userInput = getStringFromUserInput(prompt);
 
-            Iterator<MenuOption> iter = menu.getIterator();
+            Iterator<MenuOptionModel> iter = menuModel.getIterator();
             while (iter.hasNext()) {
 
-                MenuOption currentOption = iter.next();
+                MenuOptionModel currentOption = iter.next();
                 if (currentOption.getId().equals(userInput)) {
                     providedValidAnswer = true;
                     chosenOption = currentOption;

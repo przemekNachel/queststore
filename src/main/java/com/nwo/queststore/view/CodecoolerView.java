@@ -1,12 +1,11 @@
-package user.codecooler;
+package main.java.com.nwo.queststore.view;
 
-import console.menu.AbstractConsoleView;
-import console.menu.Menu;
+import main.java.com.nwo.queststore.model.MenuModel;
 
 public class CodecoolerView extends AbstractConsoleView {
 
-    public CodecoolerView(Menu menu) {
-        this.menu = menu;
+    public CodecoolerView(MenuModel menuModel) {
+        this.menuModel = menuModel;
     }
 
     public String artifactNameQuestion = "Provide artifact name: ";

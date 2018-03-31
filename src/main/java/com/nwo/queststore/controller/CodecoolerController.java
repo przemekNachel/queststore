@@ -1,12 +1,10 @@
 package main.java.com.nwo.queststore.controller;
 
-import main.java.com.nwo.queststore.controller.AbstractUserController;
-import main.java.com.nwo.queststore.controller.ArtifactStoreController;
-import artifact.ArtifactModel;
-import console.menu.Menu;
-import console.menu.MenuOption;
-import user.codecooler.CodecoolerModel;
-import user.codecooler.CodecoolerView;
+import main.java.com.nwo.queststore.model.MenuModel;
+import main.java.com.nwo.queststore.model.ArtifactModel;
+import main.java.com.nwo.queststore.model.MenuOptionModel;
+import main.java.com.nwo.queststore.model.CodecoolerModel;
+import main.java.com.nwo.queststore.view.CodecoolerView;
 import user.service.UserService;
 
 public class CodecoolerController extends AbstractUserController {
@@ -15,11 +13,11 @@ public class CodecoolerController extends AbstractUserController {
 
     public CodecoolerController(CodecoolerModel codecooler) {
         super(new CodecoolerView(
-                new Menu(
-                        new MenuOption("0", "Exit"),
-                        new MenuOption("1", "Buy artifact"),
-                        new MenuOption("2", "Use artifact"),
-                        new MenuOption("3", "View My Info")
+                new MenuModel(
+                        new MenuOptionModel("0", "Exit"),
+                        new MenuOptionModel("1", "Buy artifact"),
+                        new MenuOptionModel("2", "Use artifact"),
+                        new MenuOptionModel("3", "View My Info")
                         )
                 )
         );
@@ -32,7 +30,7 @@ public class CodecoolerController extends AbstractUserController {
     public void start() {
         boolean requestedExit = false;
         do {
-            MenuOption userOption = view.getMenuOptionFromUserInput(" Please choose option: ");
+            MenuOptionModel userOption = view.getMenuOptionFromUserInput(" Please choose option: ");
             if (userOption.getId().equals("0")) {
                 requestedExit = true;
                 view.clearScreen();
@@ -55,7 +53,7 @@ public class CodecoolerController extends AbstractUserController {
             case "3":
                 view.printLine(currentUser.getStatisticsDisplay()
                         + "\nOwned artifacts:\n" + codecoolerArtifactsToString(currentUser)
-                        + "\nGroup adherence:\n" + currentUser.getCodecoolerGroupDisplay());
+                        + "\nGroupModel adherence:\n" + currentUser.getCodecoolerGroupDisplay());
                 break;
         }
     }

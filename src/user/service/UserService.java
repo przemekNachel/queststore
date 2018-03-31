@@ -1,31 +1,24 @@
 package user.service;
 
-import artifact.ArtifactModel;
+import main.java.com.nwo.queststore.model.*;
 import artifact.ArtifactDaoImpl;
 import exceptionlog.ExceptionLog;
-import level.Level;
 import level.LevelDaoImpl;
-import user.user.Role;
-import user.user.UserDaoImpl;
-import user.user.User;
-import user.codecooler.CodecoolerModel;
-import user.mentor.MentorModel;
-import user.admin.AdminModel;
+import user.user.*;
 
-import generic_group.Group;
+import main.java.com.nwo.queststore.model.GroupModel;
 import user.wallet.WalletService;
 import user.wallet.WalletDaoImpl;
-import user.user.RawUser;
 
 import java.sql.SQLException;
 
 public class UserService {
 
-    public User getUser(String nickname) {
+    public UserModel getUser(String nickname) {
 
         UserDaoImpl userDao = new UserDaoImpl();
 
-        RawUser rawUser = null;
+        RawUserModel rawUser = null;
         int userID = 0;
         try {
             rawUser = userDao.getUser(nickname);
@@ -40,12 +33,12 @@ public class UserService {
             return null;
         }
 
-        User newUser = null;
+        UserModel newUserModel = null;
 
         switch (rawUser.getRole()) {
             case CODECOOLER:
 
-                Group<ArtifactModel> artifacts = null;
+                GroupModel<ArtifactModel> artifacts = null;
                 try {
                     artifacts = new ArtifactDaoImpl().getUserArtifacts(userID);
                 } catch (SQLException e) {
@@ -53,40 +46,40 @@ public class UserService {
                 }
 
                 WalletService wallet = new WalletDaoImpl().getWallet(userID);
-                Level level = new LevelDaoImpl().getLevel(userID);
+                LevelModel levelModel = new LevelDaoImpl().getLevel(userID);
 
-                newUser = new CodecoolerModel(rawUser, wallet, artifacts, level);
+                newUserModel = new CodecoolerModel(rawUser, wallet, artifacts, levelModel);
                 break;
 
             case MENTOR:
-                newUser = new MentorModel(rawUser);
+                newUserModel = new MentorModel(rawUser);
                 break;
 
             case ADMIN:
-                newUser = new AdminModel(rawUser);
+                newUserModel = new AdminModel(rawUser);
                 break;
         }
-        return newUser;
+        return newUserModel;
     }
 
-    public boolean updateUser(User user) {
+    public boolean updateUser(UserModel userModel) {
 
         UserDaoImpl userDao = new UserDaoImpl();
         int userID = -1;
 
         try {
-            userDao.updateUser(user);
-            userID = userDao.getUserId(user.getName());
+            userDao.updateUser(userModel);
+            userID = userDao.getUserId(userModel.getName());
         } catch (SQLException e) {
             ExceptionLog.add(e);
             return false;
         }
 
-        if (user.getRole() == Role.CODECOOLER) {
+        if (userModel.getRole() == Role.CODECOOLER) {
 
             ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
 
-            CodecoolerModel codecooler = (CodecoolerModel) user;
+            CodecoolerModel codecooler = (CodecoolerModel) userModel;
             // update codecooler artifacts
             for (ArtifactModel artifact : codecooler.getCodecoolerArtifacts()) {
 
@@ -99,7 +92,7 @@ public class UserService {
             }
 
             new WalletDaoImpl().updateWallet(userID, codecooler.getWallet());
-            new LevelDaoImpl().updateExperience(userID, codecooler.getLevel());
+            new LevelDaoImpl().updateExperience(userID, codecooler.getLevelModel());
         }
         return true;
     }
@@ -107,47 +100,47 @@ public class UserService {
     public boolean createCodecooler(String nickname, String email, String password) {
 
         WalletService wallet = new WalletService(0);
-        Level level = new Level(0);
+        LevelModel levelModel = new LevelModel(0);
 
-        Group<String> studentGroups = new Group<>("student groups");
+        GroupModel<String> studentGroups = new GroupModel<>("student groups");
         studentGroups.add("codecoolers");
 
-        Group<ArtifactModel> artifacts = new Group<>("user artifacts");
-        CodecoolerModel codecooler = new CodecoolerModel(new RawUser(Role.CODECOOLER, nickname, email, password, studentGroups), wallet, artifacts, level);
+        GroupModel<ArtifactModel> artifacts = new GroupModel<>("userModel artifacts");
+        CodecoolerModel codecooler = new CodecoolerModel(new RawUserModel(Role.CODECOOLER, nickname, email, password, studentGroups), wallet, artifacts, levelModel);
 
-        User user = getUser(nickname);
-        // add user if they do not exist in the database
-        return user == null ? addUser(codecooler) : false;
+        UserModel userModel = getUser(nickname);
+        // add userModel if they do not exist in the database
+        return userModel == null ? addUser(codecooler) : false;
     }
 
-    private Group<User> getCastGroup(Group<User> beforeCast) {
+    private GroupModel<UserModel> getCastGroup(GroupModel<UserModel> beforeCast) {
 
-        Group<User> afterCast = new Group<>(beforeCast.getName());
+        GroupModel<UserModel> afterCast = new GroupModel<>(beforeCast.getName());
 
-        for (User user : beforeCast) {
+        for (UserModel userModel : beforeCast) {
 
             /* note: getUser below returns an object of a specialized type*/
-            afterCast.add(getUser(user.getName()));
+            afterCast.add(getUser(userModel.getName()));
         }
 
         return afterCast;
     }
 
-    public Group<User> getUserGroup(String groupName) {
+    public GroupModel<UserModel> getUserGroup(String groupName) {
 
-        Group<User> specializedGroup = null;
+        GroupModel<UserModel> specializedGroupModel = null;
         try {
-            specializedGroup = getCastGroup(new UserDaoImpl().getUserGroup(groupName));
+            specializedGroupModel = getCastGroup(new UserDaoImpl().getUserGroup(groupName));
 
         } catch (SQLException e) {
             ExceptionLog.add(e);
         }
-        return specializedGroup;
+        return specializedGroupModel;
     }
 
-    public Group<Group<User>> getAllUsers() {
+    public GroupModel<GroupModel<UserModel>> getAllUsers() {
 
-        Group<Group<User>> allUsers = new Group<>("all users");
+        GroupModel<GroupModel<UserModel>> allUsers = new GroupModel<>("all users");
 
         for (String groupName : getUserGroupNames()) {
 
@@ -156,11 +149,11 @@ public class UserService {
         return allUsers;
     }
 
-    public boolean addUserAdherence(User user, String groupName) {
+    public boolean addUserAdherence(UserModel userModel, String groupName) {
 
         boolean added = true;
         try {
-            added = new UserDaoImpl().addUserAdherence(user, groupName);
+            added = new UserDaoImpl().addUserAdherence(userModel, groupName);
         } catch (SQLException e) {
             ExceptionLog.add(e);
             added = false;
@@ -168,25 +161,25 @@ public class UserService {
         return added;
     }
 
-    public void addUserGroup(Group<User> newGroup) {
+    public void addUserGroup(GroupModel<UserModel> newGroupModel) {
 
         try {
-            new UserDaoImpl().addUserGroup(newGroup);
+            new UserDaoImpl().addUserGroup(newGroupModel);
         } catch (SQLException e) {
             ExceptionLog.add(e);
         }
     }
 
-    private Group<String> sieveOutNonUserGroupNames(Group<String> groupNames) {
+    private GroupModel<String> sieveOutNonUserGroupNames(GroupModel<String> groupModelNames) {
 
-        Group<String> exclusionFilters = new Group<>("exclusion filters");
+        GroupModel<String> exclusionFilters = new GroupModel<>("exclusion filters");
         exclusionFilters.add("artifact");
         exclusionFilters.add("quest");
         exclusionFilters.add("mentor");
         exclusionFilters.add("admin");
 
-        Group<String> sieved = new Group<>("group names except for those like exclusion filters");
-        for (String groupName : groupNames) {
+        GroupModel<String> sieved = new GroupModel<>("group names except for those like exclusion filters");
+        for (String groupName : groupModelNames) {
 
             boolean hasToBeIncluded = true;
             for (String exclusionFilter : exclusionFilters) {
@@ -205,40 +198,40 @@ public class UserService {
         return sieved;
     }
 
-    public Group<String> getUserGroupNames() {
+    public GroupModel<String> getUserGroupNames() {
 
-        Group<String> groupNames = new Group<>("user group names");
+        GroupModel<String> groupModelNames = new GroupModel<>("user group names");
         try {
-            groupNames = new UserDaoImpl().getAllGroupNames();
+            groupModelNames = new UserDaoImpl().getAllGroupNames();
         } catch (SQLException e) {
             ExceptionLog.add(e);
-            return groupNames;
+            return groupModelNames;
         }
 
         /* sieve out non-user groups */
-        return sieveOutNonUserGroupNames(groupNames);
+        return sieveOutNonUserGroupNames(groupModelNames);
     }
 
-    public boolean addUser(User user) {
+    public boolean addUser(UserModel userModel) {
 
         UserDaoImpl userDao = new UserDaoImpl();
         int userID = -1;
         try {
-            userDao.addUser(user);
-            userID = userDao.getUserId(user.getName());
+            userDao.addUser(userModel);
+            userID = userDao.getUserId(userModel.getName());
         } catch (SQLException e) {
             ExceptionLog.add(e);
             return false;
         }
 
-        if (user.getRole() == Role.CODECOOLER) {
+        if (userModel.getRole() == Role.CODECOOLER) {
 
-            CodecoolerModel codecooler = (CodecoolerModel)user;
+            CodecoolerModel codecooler = (CodecoolerModel) userModel;
 
             /* we don't add any artifacts - a stock codecooler does not have any*/
 
             new WalletDaoImpl().addWallet(userID, codecooler.getWallet());
-            new LevelDaoImpl().addExperience(userID, codecooler.getLevel());
+            new LevelDaoImpl().addExperience(userID, codecooler.getLevelModel());
         }
         return true;
     }

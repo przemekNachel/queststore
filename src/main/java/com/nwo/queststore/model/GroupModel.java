@@ -1,16 +1,16 @@
-package generic_group;
+package main.java.com.nwo.queststore.model;
 
 import iterator.IteratorImpl;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Group<T> implements Iterable<T> {
+public class GroupModel<T> implements Iterable<T> {
 
     private String name;
     private ArrayList<T> group;
 
-    public Group(String name) {
+    public GroupModel(String name) {
 
         group = new ArrayList<T>();
         setName(name);
