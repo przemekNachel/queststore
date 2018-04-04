@@ -4,25 +4,106 @@
     <meta charset="UTF-8">
     <title>QuestStore - Mentor Page</title>
     <link href="https://fonts.googleapis.com/css?family=Lato:400i,700i" rel="stylesheet">
-    <link href="vendors/css/ionicons.min.css" rel="stylesheet">
     <link href="vendors/css/normalize.css" rel="stylesheet">
+    <link href="vendors/css/ionicons.min.css" rel="stylesheet">
     <link href="resources/css/style.css" rel="stylesheet">
+
 </head>
-<body class="cms mentor">
-    <div class="left-bar">
-        <div class="logo">
-            <span class="icon"></span> <span style="color: #5ca4cb">Quest</span><span style="color:#d9484b;">Store</span>
+<body class="cms">
+<div class="top-bar">
+    <div class="welcome-box">Welcome, nigga</div>
+</div>
+<ul class="dropdown hidden">
+    <li class="dropdown-toggle"><a href="#" class="link">Account</a></li>
+    <li class="dropdown-toggle"><a href="#" class="link">Logout</a></li>
+</ul>
+
+<div class="content">
+    <div class="content-header">
+        <div class="content-header-label">Dashboard</div>
+    </div>
+    <div id="dashboard">
+
+    </div>
+    <div id="class-management" class="">
+        <div class="row">
+            <h3 class="heading">Classes</h3>
+            <table style="width:100%">
+                <tr>
+                    <th>Name</th>
+                    <th>Number of members</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <td>Codecoolers</td>
+                    <td>50</td>
+                    <td class="edit-icons">
+                        <ul class="nav">
+                            <li class="nav-tab"><i class="ion-trash-a edit-icon"></i></li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon"></i></li>
+                            <li class="nav-tab"><i class="ion-android-people edit-icon"></i></li>
+                        </ul>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>Java users</td>
+                    <td>123123</td>
+                    <td class="edit-icons">
+                        <ul class="nav">
+                            <li class="nav-tab"><i class="ion-trash-a edit-icon"></i></li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon"></i></li>
+                            <li class="nav-tab"><i class="ion-android-people edit-icon"></i></li>
+                        </ul>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>HTML Programers</td>
+                    <td>99123</td>
+                    <td class="edit-icons">
+                        <ul class="nav">
+                            <li class="nav-tab"><i class="ion-trash-a edit-icon"></i></li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon"></i></li>
+                            <li class="nav-tab"><i class="ion-android-people edit-icon"></i></li>
+                        </ul>
+                    </td>
+
+                </tr>
+            </table>
+
         </div>
     </div>
-    <div class="top-bar">
-        <div class="welcome-box">Welcome, nigga</div>
-    </div>
+</div>
 
-    <div class="content">
-        <div class="content-header">
-            <div class="content-header-label">Dashboard</div>
-        </div>
-    </div>
+<div class="left-bar">
+    <div class="logo">
+        <span class="icon"></span> <span style="color: #5ca4cb">Quest</span><span style="color:#d9484b;">Store</span>
 
+    </div>
+    <ul class="options">
+        <li class="option selected">
+            <i class="ion-ios-home-outline option-icon"></i>
+            <p class="option-text">Dashboard</p>
+        </li>
+        <li class="option">
+            <i class="ion-ios-person-outline option-icon"></i>
+            <p class="option-text">User management</p>
+        </li>
+        <li class="option">
+            <i class="ion-ios-people-outline option-icon"></i>
+            <p class="option-text">Class management</p>
+        </li>
+        <li class="option">
+            <i class="ion-social-bitcoin-outline option-icon"></i>
+            <p class="option-text">Artifact management</p>
+        </li>
+        <li class="option">
+            <i class="ion-ios-bookmarks-outline option-icon"></i>
+            <p class="option-text">Quest management</p>
+        </li>
+    </ul>
+</div>
+<script src="resources/js/app.js"></script>
 </body>
 </html>
