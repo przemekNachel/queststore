@@ -13,6 +13,8 @@ import user.service.UserService;
 import user.user.User;
 import user.wallet.WalletService;
 
+import java.util.Optional;
+
 public class MentorController extends AbstractUserController {
 
     private MentorView view;
@@ -25,6 +27,7 @@ public class MentorController extends AbstractUserController {
                                 new MenuOption("0", "Exit"),
                                 new MenuOption("1", "Create a codecooler"),
                                 new MenuOption("2", "Assign a codecooler to a group"),
+                                new MenuOption("3", "Mark codecooler's quest completion"),
                                 new MenuOption("3", "Mark codecooler's quest completion"),
                                 new MenuOption("4", "Mark codecooler's artifact usage"),
                                 new MenuOption("5", "Create artifact"),
@@ -122,8 +125,10 @@ public class MentorController extends AbstractUserController {
 
     private void displayAllQuests() {
 
+        Optional<Group<Group<QuestModel>>> questModelGroup = Optional.ofNullable(questSvc.getAllQuests());
+
         view.printLine("\n--- Available Quests ---");
-        for (Group<QuestModel> questGroups : questSvc.getAllQuests()) {
+        for (Group<QuestModel> questGroups : questModelGroup.orElse(new Group<>("quest"))) {
 
             for (QuestModel quest : questGroups) {
 
@@ -384,7 +389,7 @@ public class MentorController extends AbstractUserController {
             view.print(view.totalCoolcoins + String.valueOf(totalBalance));
             view.print(view.avarageBalance + String.valueOf(averageCodecoolerBalance));
 
-        } catch (ArithmeticException e) {
+        } catch (ArithmeticException | NullPointerException e) {
 
             view.printLine("No codecoolers found");
         }

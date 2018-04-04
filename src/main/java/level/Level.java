@@ -1,7 +1,9 @@
 package level;
 
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.TreeMap;
 
 public class Level {
@@ -28,21 +30,26 @@ public class Level {
     }
 
     public String getCurrentLevel() {
-        Map<Integer, String> segregatedLevels = new TreeMap<>(levels);
+        String higherThanAnyExistingLevel = "";
+        NavigableMap<Integer, String> segregatedLevels = new TreeMap<>(levels);
         for (Map.Entry<Integer, String> entry : segregatedLevels.entrySet()) {
-            if (entry.getKey() > experienceGained) {
-                return entry.getValue();
+            Map.Entry<Integer, String> nextEntry = segregatedLevels.higherEntry(entry.getKey());
+            try {
+                if (experienceGained >= entry.getKey() && experienceGained < nextEntry.getKey()) {
+                    return entry.getValue();
+                }
+            }catch(NullPointerException e){
+                higherThanAnyExistingLevel = "MASTER OF MASTERS LEVEL OVER 9000";
             }
         }
-        String higherThenAnyExistingLevel = "MASTER OF MASTERS LEVEL OVER 9000";
-        return higherThenAnyExistingLevel;
+        return higherThanAnyExistingLevel;
     }
 
     public void addExperience(int experiencePoints) {
         experienceGained += experiencePoints;
     }
 
-    public Integer getCurrentExpirience() {
+    public Integer getCurrentExperience() {
         return experienceGained;
     }
 }
