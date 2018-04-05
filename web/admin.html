@@ -2,16 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>QuestStore - Mentor Page</title>
+    <title>QuestStore - Admin Page</title>
     <link href="https://fonts.googleapis.com/css?family=Lato:400i,700i" rel="stylesheet">
     <link href="vendors/css/normalize.css" rel="stylesheet">
     <link href="vendors/css/ionicons.min.css" rel="stylesheet">
     <link href="resources/css/style.css" rel="stylesheet">
-    <script src="vendors/js/jquery-3.3.1.min.js"></script>
-    <script src="vendors/js/include.js"></script>
 
 </head>
-<body class="cms mentor">
+<body class="cms admin">
 
 <div class="top-bar">
     <div class="welcome-box">Welcome, nigga</div>
@@ -25,15 +23,108 @@
     <div class="content-header">
         <div class="content-header-label">Dashboard</div>
     </div>
-</div>
-
-<div data-include="topbar"></div>
-    <div class="left-bar">
-        <div class="logo">
-            <span class="icon"></span> <span style="color: #5ca4cb">Quest</span><span style="color:#d9484b;">Store</span>
+    <div id="dashboard">
+        <div id="data-rectangles" class="data-rectangles">
+            <div class="rectangle">
+                <div class="rectangle-bar">
+                    Hello administrator
+                </div>
+                <div id="full-name" class="rectangle-content">
+                    John Smith
+                </div>
+            </div>
         </div>
     </div>
+    <div id="user-management" class="hidden">
+        <div class="row">
+            <h3 class="heading">Users</h3>
+            <table style="width:100%">
+                <tr>
+                    <th>Name</th>
+                    <th>Last name</th>
+                    <th>Email</th>
+                    <th>Type</th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td>Jacek</td>
+                    <td>Placek</td>
+                    <td>japa@email.com</td>
+                    <td>Student</td>
+                    <td class="edit-icons">
+                        <i class="ion-edit edit-icon" title="Edit user"></i>
+                        <i class="ion-clipboard edit-icon" title="Show user"></i>
+                        <i class="ion-trash-a edit-icon" title="Remove user"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Henryk</td>
+                    <td>Kokos</td>
+                    <td>heko@email.com</td>
+                    <td>Student</td>
+                    <td class="edit-icons">
+                        <i class="ion-edit edit-icon" title="Edit user"></i>
+                        <i class="ion-clipboard edit-icon" title="Show user"></i>
+                        <i class="ion-trash-a edit-icon" title="Remove user"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Kunegunda</td>
+                    <td>Pazur</td>
+                    <td>pazurki@buziaczek.pl</td>
+                    <td>Mentor</td>
+                    <td class="edit-icons">
+                        <i class="ion-edit edit-icon" title="Edit user"></i>
+                        <i class="ion-clipboard edit-icon" title="Show user"></i>
+                        <i class="ion-trash-a edit-icon" title="Remove user"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>John</td>
+                    <td>Smith</td>
+                    <td>john@email.com</td>
+                    <td>Administrator</td>
+                    <td class="edit-icons">
+                        <i class="ion-edit edit-icon" title="Edit user"></i>
+                        <i class="ion-clipboard edit-icon" title="Show user"></i>
+                        <i class="ion-trash-a edit-icon" title="Remove user"></i>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div id="class-management" class="hidden">
 
+    </div>
+
+    <div id="level-management" class="hidden">
+
+    </div>
+</div>
+
+<div class="left-bar">
+    <div class="logo">
+        <span class="icon"></span> <span style="color: #5ca4cb">Quest</span><span style="color:#d9484b;">Store</span>
+    </div>
+    <ul class="options">
+        <li class="option selected" id="switch-dashboard">
+            <i class="ion-ios-home-outline option-icon"></i>
+            <p class="option-text">Dashboard</p>
+        </li>
+        <li class="option" id="switch-user-management">
+            <i class="ion-ios-person-outline option-icon"></i>
+            <p class="option-text">User management</p>
+        </li>
+        <li class="option" id="switch-class-management">
+            <i class="ion-ios-people-outline option-icon"></i>
+            <p class="option-text">Class management</p>
+        </li>
+        <li class="option" id="switch-level-management">
+            <i class="ion-ios-bookmarks-outline option-icon"></i>
+            <p class="option-text">Level management</p>
+        </li>
+    </ul>
+</div>
 <script src="resources/js/app.js"></script>
 </body>
 </html>
