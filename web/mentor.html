@@ -23,7 +23,32 @@
         <div class="content-header-label">Dashboard</div>
     </div>
     <div id="dashboard" class="">
-
+        <div id="data-rectangles" class="data-rectangles">
+            <div class="rectangle">
+                <div class="rectangle-bar">
+                    Position
+                </div>
+                <div id="position" class="rectangle-content">
+                    Mentor
+                </div>
+            </div>
+            <div class="rectangle">
+                <div class="rectangle-bar">
+                    Money
+                </div>
+                <div id="money" class="rectangle-content">
+                    1000
+                </div>
+            </div>
+            <div class="rectangle">
+                <div class="rectangle-bar">
+                    Class
+                </div>
+                <div id="mentor-class" class="rectangle-content">
+                    KRK-2017-2
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="user-management" class="hidden">
@@ -31,13 +56,41 @@
     </div>
 
     <div id="artifact-management" class="hidden">
-
+        <div class="row">
+            <form>
+                <h3 class="heading">New artifact</h3>
+                <div class="row">
+                    <label class="input-label" for="artifact-name">Name</label>
+                    <input class="input-field" type="text" id="artifact-name" required/>
+                </div>
+                <div class="row">
+                    <label class="input-label" for="artifact-price">Price</label>
+                    <input class="input-field" type="number" id="artifact-price" required/>
+                </div>
+                <div class="row">
+                    <label class="input-label" for="artifact-description">Description</label>
+                    <input class="input-field" type="text" id="artifact-description" required/>
+                </div>
+                <input type="submit" class="button submit-button" value="Create">
+            </form>
+        </div>
     </div>
 
     <div id="quest-management" class="hidden">
 
     </div>
     <div id="class-management" class="hidden">
+
+        <div class="row">
+            <h3 class="heading">New class</h3>
+            <form>
+                <div class="row">
+                    <label class="input-label" for="class-name">Class name</label>
+                    <input class="input-field" type="text" id="class-name" required/>
+                </div>
+                <input type="submit" class="button submit-button" value="Create">
+            </form>
+        </div>
         <div class="row">
             <h3 class="heading">Classes</h3>
             <table style="width:100%">
@@ -51,9 +104,9 @@
                     <td>50</td>
                     <td class="edit-icons">
                         <ul class="nav">
-                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title = "Delete class"></i></li>
-                            <li class="nav-tab"><i class="ion-edit edit-icon" title = "Edit class"></i></li>
-                            <li class="nav-tab"><i class="ion-android-people edit-icon" title = "Assign mentor"></i></li>
+                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete class"></i></li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon" title="Edit class"></i></li>
+                            <li class="nav-tab"><i class="ion-android-people edit-icon" title="Assign mentor"></i></li>
                         </ul>
                     </td>
 
@@ -63,9 +116,9 @@
                     <td>123123</td>
                     <td class="edit-icons">
                         <ul class="nav">
-                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title = "Delete class"></i></li>
-                            <li class="nav-tab"><i class="ion-edit edit-icon" title = "Edit class"></i></li>
-                            <li class="nav-tab"><i class="ion-android-people edit-icon" title = "Assign mentor"></i></li>
+                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete class"></i></li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon" title="Edit class"></i></li>
+                            <li class="nav-tab"><i class="ion-android-people edit-icon" title="Assign mentor"></i></li>
                         </ul>
                     </td>
 
@@ -75,8 +128,8 @@
                     <td>99123</td>
                     <td class="edit-icons">
                         <ul class="nav">
-                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title = "Delete class"></i></li>
-                            <li class="nav-tab"><i class="ion-edit edit-icon" title = "Edit class"></i></li>
+                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete class"></i></li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon" title="Edit class"></i></li>
                             <li class="nav-tab"><i class="ion-android-people edit-icon"></i></li>
                         </ul>
                     </td>
