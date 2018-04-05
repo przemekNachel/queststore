@@ -112,7 +112,7 @@ td:first-of-type {
     font-size: 200%;
 }
 
-.input-field{
+.input-field, .input-select{
     display: inline-block;
     width: 80%;
 }
