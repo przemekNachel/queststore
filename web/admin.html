@@ -37,6 +37,32 @@
     </div>
     <div id="user-management" class="hidden">
         <div class="row">
+            <form>
+                <h3 class="heading">New user</h3>
+                <div class="row">
+                    <label class="input-label" for="user-type">Type</label>
+                    <select class="input-select" id="user-type">
+                        <option value="student">Student</option>
+                        <option value="mentor">Mentor</option>
+                        <option value="administrator">Administrator</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <label class="input-label" for="user-name">Name</label>
+                    <input class="input-field" type="text" id="user-name" required/>
+                </div>
+                <div class="row">
+                    <label class="input-label" for="user-last-name">Last name</label>
+                    <input class="input-field" type="text" id="user-last-name" required/>
+                </div>
+                <div class="row">
+                    <label class="input-label" for="user-email">Email</label>
+                    <input class="input-field" type="text" id="user-email" required/>
+                </div>
+                <input type="submit" class="button submit-button" value="Create">
+            </form>
+        </div>
+        <div class="row">
             <h3 class="heading">Users</h3>
             <table style="width:100%">
                 <tr>
@@ -95,6 +121,63 @@
     </div>
     <div id="class-management" class="hidden">
 
+        <div class="row">
+            <h3 class="heading">New class</h3>
+            <form>
+                <div class="row">
+                    <label class="input-label" for="class-name">Class name</label>
+                    <input class="input-field" type="text" id="class-name" required/>
+                </div>
+                <input type="submit" class="button submit-button" value="Create">
+            </form>
+        </div>
+        <div class="row">
+            <h3 class="heading">Classes</h3>
+            <table style="width:100%">
+                <tr>
+                    <th>Name</th>
+                    <th>Number of members</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <td>Codecoolers</td>
+                    <td>50</td>
+                    <td class="edit-icons">
+                        <ul class="nav">
+                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete class"></i></li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon" title="Edit class"></i></li>
+                            <li class="nav-tab"><i class="ion-android-people edit-icon" title="Assign mentor"></i></li>
+                        </ul>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>Java users</td>
+                    <td>123123</td>
+                    <td class="edit-icons">
+                        <ul class="nav">
+                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete class"></i></li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon" title="Edit class"></i></li>
+                            <li class="nav-tab"><i class="ion-android-people edit-icon" title="Assign mentor"></i></li>
+                        </ul>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>HTML Programers</td>
+                    <td>99123</td>
+                    <td class="edit-icons">
+                        <ul class="nav">
+                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete class"></i></li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon" title="Edit class"></i></li>
+                            <li class="nav-tab"><i class="ion-android-people edit-icon"></i></li>
+                        </ul>
+                    </td>
+
+                </tr>
+            </table>
+
+        </div>
     </div>
 
     <div id="level-management" class="hidden">
