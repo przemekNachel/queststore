@@ -240,7 +240,8 @@ body .cms {
 }
 
 .welcome-box:hover {
-    color: #15191e
+    color: #15191e;
+    cursor: pointer;
 }
 
 .content-header {
@@ -301,6 +302,7 @@ body .cms {
 
 .option:hover {
     background-color: #15191e;
+    cursor: pointer;
 }
 
 .option-icon {
@@ -323,6 +325,7 @@ p.option-text {
     display: inline-block;
     font-size: 200%;
     margin-right: 50px;
+    cursor: pointer;
 }
 
 .edit-icons {
