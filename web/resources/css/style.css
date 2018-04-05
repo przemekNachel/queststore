@@ -112,6 +112,17 @@ td:first-of-type {
     font-size: 200%;
 }
 
+.input-field, .input-select{
+    display: inline-block;
+    width: 80%;
+}
+
+.input-label {
+    width: 19%;
+    font-weight: bold;
+    display: inline-block;
+}
+
 /*--------------------------------------------------------------
     FORM PAGE
 --------------------------------------------------------------*/
@@ -188,7 +199,7 @@ td:first-of-type {
     CMS
 --------------------------------------------------------------*/
 
-body .cms {
+.cms {
     background: none;
 }
 
@@ -222,6 +233,7 @@ body .cms {
     right: 0;
     bottom: 0;
     background-color: white;
+    z-index: 1000;
 }
 
 .welcome-box {
