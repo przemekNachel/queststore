@@ -178,6 +178,31 @@
 
     <div id="quest-management" class="hidden">
         <div class="row">
+            <form>
+                <h3 class="heading">New quest</h3>
+                <div class="row">
+                    <label class="input-label" for="artifact-type">Type</label>
+                    <select class="input-select" id="artifact-type">
+                        <option value="normal">Normal</option>
+                        <option value="extra">Extra</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <label class="input-label" for="artifact-name">Name</label>
+                    <input class="input-field" type="text" id="artifact-name" required/>
+                </div>
+                <div class="row">
+                    <label class="input-label" for="artifact-price">Reward</label>
+                    <input class="input-field" type="number" id="artifact-price" required/>
+                </div>
+                <div class="row">
+                    <label class="input-label" for="artifact-description">Description</label>
+                    <input class="input-field" type="text" id="artifact-description" required/>
+                </div>
+                <input type="submit" class="button submit-button" value="Create">
+            </form>
+        </div>
+        <div class="row">
             <h3 class="heading">Quests</h3>
             <table style="width:100%">
                 <tr>
