@@ -7,8 +7,6 @@
     <link href="vendors/css/normalize.css" rel="stylesheet">
     <link href="vendors/css/ionicons.min.css" rel="stylesheet">
     <link href="resources/css/style.css" rel="stylesheet">
-    <script src="vendors/js/jquery-3.3.1.min.js"></script>
-    <script src="vendors/js/include.js"></script>
 
 </head>
 <body class="cms mentor">
@@ -24,7 +22,7 @@
     <div class="content-header">
         <div class="content-header-label">Dashboard</div>
     </div>
-    <div id="dashboard" class="hidden">
+    <div id="dashboard">
         <div id="data-rectangles" class="data-rectangles">
             <div class="rectangle">
                 <div class="rectangle-bar">
@@ -157,15 +155,15 @@
 
     </div>
     <ul class="options">
-        <li class="option selected">
+        <li class="option selected" id="switch-dashboard">
             <i class="ion-ios-home-outline option-icon"></i>
             <p class="option-text">Dashboard</p>
         </li>
-        <li class="option">
+        <li class="option" id="switch-buy-artifact">
             <i class="ion-social-bitcoin-outline option-icon"></i>
             <p class="option-text">Buy artifact</p>
         </li>
-        <li class="option">
+        <li class="option" id="switch-use-artifact">
             <i class="ion-ios-bolt-outline option-icon"></i>
             <p class="option-text">Use artifact</p>
         </li>
