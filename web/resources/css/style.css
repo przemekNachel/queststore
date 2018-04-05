@@ -235,7 +235,12 @@ body .cms {
     height: 70px;
     line-height: 70px;
     vertical-align: middle;
+    transition: color 0.3s;
 
+}
+
+.welcome-box:hover {
+    color: #15191e
 }
 
 .content-header {
