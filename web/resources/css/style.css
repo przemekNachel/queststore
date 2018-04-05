@@ -329,3 +329,43 @@ p.option-text {
     display: flex;
     justify-content: space-around;
 }
+
+/*--------------------------------------------------------------
+    CODECOOLER
+--------------------------------------------------------------*/
+
+.data-rectangles {
+    display: flex;
+    justify-content: space-around;
+    padding: 2%;
+}
+
+.rectangle-bar {
+    display: flex;
+    justify-content: space-around;
+    color: white;
+    background-color: #03a9f4;
+    font-size: 18px;
+    padding: 5px;
+    width: 100%;
+}
+
+.rectangle {
+    box-shadow: 1px 2px 1px 2px #888888;
+    width: 20%;
+}
+
+.rectangle * {
+    width: 100%
+}
+
+.rectangle-content {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    color: #000000;
+    background-color: #ffffff;
+    padding: 10px;
+    font-size: 20px;
+
+}
