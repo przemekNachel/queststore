@@ -4,14 +4,24 @@ import com.sun.net.httpserver.HttpExchange;
 
 import java.net.HttpCookie;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class CookiesUtil {
 
-    public static void addCookie(HttpExchange httpExchange, Session session) {
-        HttpCookie cookie = new HttpCookie("sessionId", session.getId());
+    public static void addSessionCookie(HttpExchange httpExchange, Session session) {
+        HttpCookie cookie = new HttpCookie("session", session.getId());
         httpExchange.getResponseHeaders().add("Set-Cookie", cookie.toString());
+    }
+
+    public static String getSessionID(String cookiesHeader) {
+        String sessionID = null;
+        for (HttpCookie httpCookie : getAllCookies(cookiesHeader)) {
+            if (httpCookie.getName().equalsIgnoreCase("session")) {
+                sessionID = httpCookie.getValue();
+            }
+        }
+
+        return sessionID;
     }
 
     public static boolean doesCookieExist(HttpExchange httpExchange) {
@@ -22,8 +32,8 @@ public class CookiesUtil {
         List<HttpCookie> cookiesList = new ArrayList<>();
         String[] singleCookie = cookiesHeader.split(";");
         for (String c : singleCookie) {
-            LinkedList<HttpCookie> l = (LinkedList<HttpCookie>) HttpCookie.parse(c);
-            cookiesList.add(l.getFirst());
+            List<HttpCookie> l = HttpCookie.parse(c);
+            cookiesList.add(l.get(0));
         }
         return cookiesList;
     }
