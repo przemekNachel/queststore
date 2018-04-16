@@ -1,0 +1,56 @@
+<th:block th:fragment="top-bar">
+    <div class="top-bar">
+        <div class="welcome-box">Welcome, [[${nickname}]]</div>
+    </div>
+    <ul class="dropdown hidden">
+        <li class="dropdown-toggle"><a href="#" class="link">Account</a></li>
+        <li class="dropdown-toggle"><a href="#" class="link">Logout</a></li>
+    </ul>
+</th:block>
+
+<head th:fragment="header (role)">
+    <meta charset="UTF-8">
+    <title>QuestStore Page [[${role}]]</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato:400i,700i" rel="stylesheet">
+    <link href="static/vendors/css/normalize.css" rel="stylesheet">
+    <link href="static/vendors/css/ionicons.min.css" rel="stylesheet">
+    <link href="static/resources/css/style.css" rel="stylesheet">
+</head>
+
+
+<th:block th:fragment="class-management">
+    <div id="class-management" class="hidden">
+
+        <div class="row">
+            <h3 class="heading">New class</h3>
+            <form>
+                <div class="row">
+                    <label class="input-label" for="class-name">Class name</label>
+                    <input class="input-field" type="text" id="class-name" required/>
+                </div>
+                <input type="submit" class="button submit-button" value="Create">
+            </form>
+        </div>
+        <div class="row">
+            <h3 class="heading">Classes</h3>
+            <table style="width:100%">
+                <tr>
+                    <th>Name</th>
+                    <th>Action</th>
+                </tr>
+                <tr th:each="class : ${classes}">
+                    <td>HTML Programers</td>
+                    <td class="edit-icons">
+                        <ul class="nav">
+                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete class"></i></li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon" title="Edit class"></i></li>
+                            <li class="nav-tab"><i class="ion-android-people edit-icon"></i></li>
+                        </ul>
+                    </td>
+
+                </tr>
+            </table>
+
+        </div>
+    </div>
+</th:block>
