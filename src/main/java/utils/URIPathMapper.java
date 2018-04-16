@@ -1,6 +1,7 @@
 package utils;
 
 
+import org.thymeleaf.context.Context;
 import template.ViewData;
 
 import java.util.HashMap;
@@ -11,6 +12,9 @@ public class URIPathMapper {
     private final HashMap<String, ViewData> mappings = new HashMap<>();
 
     private URIPathMapper() {
+        PathNameResolver.pathNameMapping.forEach((key, value) -> {
+            mappings.put(key, new ViewData(value, new Context()));
+        });
     }
 
     public static URIPathMapper getInstance() {
