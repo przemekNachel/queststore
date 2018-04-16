@@ -1,22 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>QuestStore - Mentor Page</title>
-    <link href="https://fonts.googleapis.com/css?family=Lato:400i,700i" rel="stylesheet">
-    <link href="static/vendors/css/normalize.css" rel="stylesheet">
-    <link href="static/vendors/css/ionicons.min.css" rel="stylesheet">
-    <link href="static/resources/css/style.css" rel="stylesheet">
-
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments :: header (role='Codecooler')">
 </head>
 <body class="cms mentor">
-<div class="top-bar">
-    <div class="welcome-box">Welcome, Mr. Smith</div>
-</div>
-<ul class="dropdown hidden">
-    <li class="dropdown-toggle"><a href="#" class="link">Account</a></li>
-    <li class="dropdown-toggle"><a href="#" class="link">Logout</a></li>
-</ul>
+<th:block th:include="fragments :: top-bar"/>
 
 <div class="content">
     <div class="content-header">
@@ -77,30 +65,6 @@
                         <i class="ion-ios-cart edit-icon" title="Buy artifact"></i>
                     </td>
                 </tr>
-                <tr>
-                    <td>Mysterious scroll</td>
-                    <td>Magic</td>
-                    <td>20000</td>
-                    <td class="edit-icons">
-                        <i class="ion-ios-cart edit-icon" title="Buy artifact"></i>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Stone</td>
-                    <td>Basic</td>
-                    <td>5</td>
-                    <td class="edit-icons">
-                        <i class="ion-ios-cart edit-icon" title="Buy artifact"></i>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Chair</td>
-                    <td>Basic</td>
-                    <td>100</td>
-                    <td class="edit-icons">
-                        <i class="ion-ios-cart edit-icon" title="Buy artifact"></i>
-                    </td>
-                </tr>
             </table>
         </div>
     </div>
@@ -116,13 +80,6 @@
                 </tr>
                 <tr>
                     <td>Stone</td>
-                    <td>Basic</td>
-                    <td class="edit-icons">
-                        <i class="ion-flash edit-icon" title="Use artifact"></i>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Chair</td>
                     <td>Basic</td>
                     <td class="edit-icons">
                         <i class="ion-flash edit-icon" title="Use artifact"></i>

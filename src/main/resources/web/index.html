@@ -1,25 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>QuestStore - Login Page</title>
-    <link href="https://fonts.googleapis.com/css?family=Lato:400i,700i" rel="stylesheet">
-    <link href="static/vendors/css/ionicons.min.css" rel="stylesheet">
-    <link href="static/vendors/css/normalize.css" rel="stylesheet">
-    <link href="static/resources/css/style.css" rel="stylesheet">
-</head>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments :: header (role='Main')">
 <body>
 <div class="start-panel">
     <div class="login-panel start-panel">
         <div class="logo">
             <span class="icon rotate"></span> <span style="color: #5ca4cb">Quest</span><span style="color:#d9484b;">Store</span>
         </div>
-        <form class="" action="mentor.html" method="post">
+        <form class="" action="login" method="post">
             <div class="form-row">
-                <input id="username" type="text" placeholder="Username">
+                <input name="username" type="text" placeholder="Username">
             </div>
             <div class="form-row">
-                <input id="password" type="password" placeholder="Password">
+                <input name="password" type="password" placeholder="Password">
             </div>
             <input class="button submit-button" type="submit" value="Login">
         </form>
