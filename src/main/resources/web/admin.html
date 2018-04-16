@@ -1,23 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>QuestStore - Admin Page</title>
-    <link href="https://fonts.googleapis.com/css?family=Lato:400i,700i" rel="stylesheet">
-    <link href="static/vendors/css/normalize.css" rel="stylesheet">
-    <link href="static/vendors/css/ionicons.min.css" rel="stylesheet">
-    <link href="static/resources/css/style.css" rel="stylesheet">
-
-</head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments :: header (role='Admin')">
 <body class="cms admin">
 
-<div class="top-bar">
-    <div class="welcome-box">Welcome, Mr. Smith</div>
-</div>
-<ul class="dropdown hidden">
-    <li class="dropdown-toggle"><a href="#" class="link">Account</a></li>
-    <li class="dropdown-toggle"><a href="#" class="link">Logout</a></li>
-</ul>
+
+<th:block th:include="fragments :: top-bar"/>
 
 <div class="content">
     <div class="content-header">
@@ -37,7 +25,7 @@
     </div>
     <div id="user-management" class="hidden">
         <div class="row">
-            <form>
+            <form method="post" action="http://localhost:8000/users/add">
                 <h3 class="heading">New user</h3>
                 <div class="row">
                     <label class="input-label" for="user-type">Type</label>
@@ -78,107 +66,15 @@
                     <td>japa@email.com</td>
                     <td>Student</td>
                     <td class="edit-icons">
-                        <i class="ion-edit edit-icon" title="Edit user"></i>
-                        <i class="ion-clipboard edit-icon" title="Show user"></i>
-                        <i class="ion-trash-a edit-icon" title="Remove user"></i>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Henryk</td>
-                    <td>Kokos</td>
-                    <td>heko@email.com</td>
-                    <td>Student</td>
-                    <td class="edit-icons">
-                        <i class="ion-edit edit-icon" title="Edit user"></i>
-                        <i class="ion-clipboard edit-icon" title="Show user"></i>
-                        <i class="ion-trash-a edit-icon" title="Remove user"></i>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Kunegunda</td>
-                    <td>Pazur</td>
-                    <td>pazurki@buziaczek.pl</td>
-                    <td>Mentor</td>
-                    <td class="edit-icons">
-                        <i class="ion-edit edit-icon" title="Edit user"></i>
-                        <i class="ion-clipboard edit-icon" title="Show user"></i>
-                        <i class="ion-trash-a edit-icon" title="Remove user"></i>
-                    </td>
-                </tr>
-                <tr>
-                    <td>John</td>
-                    <td>Smith</td>
-                    <td>john@email.com</td>
-                    <td>Administrator</td>
-                    <td class="edit-icons">
-                        <i class="ion-edit edit-icon" title="Edit user"></i>
-                        <i class="ion-clipboard edit-icon" title="Show user"></i>
-                        <i class="ion-trash-a edit-icon" title="Remove user"></i>
+                        <a class="ion-edit edit-icon" title="Edit user" href="http://localhost:8000/users/add"></a>
+                        <a class="ion-clipboard edit-icon" title="Show user"></a>
+                        <a class="ion-trash-a edit-icon" title="Remove user"></a>
                     </td>
                 </tr>
             </table>
         </div>
     </div>
-    <div id="class-management" class="hidden">
-
-        <div class="row">
-            <h3 class="heading">New class</h3>
-            <form>
-                <div class="row">
-                    <label class="input-label" for="class-name">Class name</label>
-                    <input class="input-field" type="text" id="class-name" required/>
-                </div>
-                <input type="submit" class="button submit-button" value="Create">
-            </form>
-        </div>
-        <div class="row">
-            <h3 class="heading">Classes</h3>
-            <table style="width:100%">
-                <tr>
-                    <th>Name</th>
-                    <th>Number of members</th>
-                    <th>Action</th>
-                </tr>
-                <tr>
-                    <td>Codecoolers</td>
-                    <td>50</td>
-                    <td class="edit-icons">
-                        <ul class="nav">
-                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete class"></i></li>
-                            <li class="nav-tab"><i class="ion-edit edit-icon" title="Edit class"></i></li>
-                            <li class="nav-tab"><i class="ion-android-people edit-icon" title="Assign mentor"></i></li>
-                        </ul>
-                    </td>
-
-                </tr>
-                <tr>
-                    <td>Java users</td>
-                    <td>123123</td>
-                    <td class="edit-icons">
-                        <ul class="nav">
-                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete class"></i></li>
-                            <li class="nav-tab"><i class="ion-edit edit-icon" title="Edit class"></i></li>
-                            <li class="nav-tab"><i class="ion-android-people edit-icon" title="Assign mentor"></i></li>
-                        </ul>
-                    </td>
-
-                </tr>
-                <tr>
-                    <td>HTML Programers</td>
-                    <td>99123</td>
-                    <td class="edit-icons">
-                        <ul class="nav">
-                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete class"></i></li>
-                            <li class="nav-tab"><i class="ion-edit edit-icon" title="Edit class"></i></li>
-                            <li class="nav-tab"><i class="ion-android-people edit-icon"></i></li>
-                        </ul>
-                    </td>
-
-                </tr>
-            </table>
-
-        </div>
-    </div>
+    <th:block th:replace="fragments :: class-management"/>
 
     <div id="level-management" class="hidden">
         <div class="row">
@@ -204,26 +100,6 @@
         <tr>
             <td class="level-table">Scratch Developer</td>
             <td class="level-table">999999</td>
-            <td class="edit-icons">
-                <ul class="nav">
-                    <li class="nav-tab"><i class="ion-trash-a edit-icon" title = "Delete level"></i></li>
-                    <li class="nav-tab"><i class="ion-edit edit-icon" title = "Edit level"></i></li>
-                </ul>
-            </td>
-        </tr>
-        <tr>
-            <td class="level-table">HTML newbie</td>
-            <td class="level-table">37</td>
-            <td class="edit-icons">
-                <ul class="nav">
-                    <li class="nav-tab"><i class="ion-trash-a edit-icon" title = "Delete level"></i></li>
-                    <li class="nav-tab"><i class="ion-edit edit-icon" title = "Edit level"></i></li>
-                </ul>
-            </td>
-        </tr>
-        <tr>
-            <td class="level-table">Junior Java Developer</td>
-            <td class="level-table">42</td>
             <td class="edit-icons">
                 <ul class="nav">
                     <li class="nav-tab"><i class="ion-trash-a edit-icon" title = "Delete level"></i></li>
