@@ -1,18 +1,25 @@
 package utils;
 
+import user.user.User;
+
 import java.util.UUID;
 
 public class Session {
 
     private String id;
-    private String username;
+    private User user;
 
-    public Session(String username) {
+    public Session(User username) {
         id = UUID.randomUUID().toString();
-        this.username = username;
+        this.user = username;
     }
 
     public String getId() {
         return id;
     }
+
+    public User getUser() {
+        return user;
+    }
 }
+
