@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>User details</title>
@@ -36,12 +36,11 @@
         .label {
             width: 50%;
         }
-
     </style>
 </head>
 <body>
 <div>
-    <h1>Name Lastname</h1>
+    <h1>[[${nickname}]]</h1>
     <table>
         <tr class="table_row">
             <td class="label">Type</td>
@@ -49,60 +48,39 @@
         </tr>
         <tr class="table_row">
             <td class="label">Email</td>
-            <td class="value">email@email.com</td>
+            <td class="value">[[${email}]]</td>
         </tr>
         <tr class="table_row">
             <td class="label">Coins</td>
-            <td class="value">9999999</td>
+            <td class="value">[[${coins}]]</td>
         </tr>
         <tr class="table_row">
             <td class="label">Coins earned</td>
-            <td class="value">9999999</td>
+            <td class="value">[[${coinsEarned}]]</td>
         </tr>
     </table>
 </div>
 <div>
     <h1>Artifacts</h1>
     <table>
-        <tr class="table_row">
-            <td>Artifact number one</td>
-        </tr>
-        <tr class="table_row">
-            <td>Artifact number two</td>
-        </tr>
-        <tr class="table_row">
-            <td>Artifact number three</td>
+        <tr th:each="artifact : ${artifacts}" class="table_row">
+            <td>[[${artifact.name}]]</td>
         </tr>
     </table>
 </div>
 <div>
     <h1>Used artifacts</h1>
     <table>
-        <tr class="table_row">
-            <td>Artifact uno</td>
-        </tr>
-        <tr class="table_row">
-            <td>Artifact dos</td>
-        </tr>
-        <tr class="table_row">
-            <td>Artifact tres</td>
+        <tr th:each="artifact : ${usedArtifacts}" class="table_row">
+            <td>[[${artifact.name}]]</td>
         </tr>
     </table>
 </div>
 <div>
     <h1>Belongs to groups</h1>
     <table>
-        <tr class="table_row">
-            <th class="label">Name</th>
-            <th class="label">Type</th>
-        </tr>
-        <tr class="table_row">
-            <td class="value">Krk 2017.2</td>
-            <td class="value">Class</td>
-        </tr>
-        <tr class="table_row">
-            <td class="value">Hard dragons of steel</td>
-            <td class="value">Team</td>
+        <tr th:each="group : ${groups}" class="table_row">
+            <td class="value">[[${group.name}]]</td>
         </tr>
     </table>
 </div>
