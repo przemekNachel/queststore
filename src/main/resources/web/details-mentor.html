@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link href="static/resources/css/user-details-popup.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>User details</title>
+</head>
+<body>
+<div>
+    <h1>[[${nickname}]]</h1>
+    <table>
+        <tr class="table_row">
+            <td class="label">Type</td>
+            <td class="value">Mentor</td>
+        </tr>
+        <tr class="table_row">
+            <td class="label">Email</td>
+            <td class="value">[[${email}]]</td>
+        </tr>
+    </table>
+</div>
+<div>
+    <h1>Assigned to groups</h1>
+    <table>
+        <tr th:each="group : ${groups}" class="table_row">
+            <td class="value">[[${group.name}]]</td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
