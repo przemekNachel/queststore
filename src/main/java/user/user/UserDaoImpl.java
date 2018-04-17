@@ -56,7 +56,7 @@ public class UserDaoImpl implements UserDao {
             int userId = 0, userPrivilegeLevelId = 0, balance = 0;//, expGained = 0, ;
             Group<Integer> groupIds;
 
-            userName = user.getName();
+            userName = user.getNickname();
             password = user.getPassword();
             email = user.getEmail();
             role = convertRole(user.getRole());
@@ -86,7 +86,7 @@ public class UserDaoImpl implements UserDao {
             Group<Integer> groupIds = null;
 
             // get basic user credentials (all strings + role)
-            userName = user.getName();
+            userName = user.getNickname();
             password = user.getPassword();
             email = user.getEmail();
 
@@ -140,7 +140,7 @@ public class UserDaoImpl implements UserDao {
         boolean addedAdherence = false;
         try {
 
-            int userId = getUserId(user.getName());
+            int userId = getUserId(user.getNickname());
             int groupId = getGroupId(groupName);
 
             Statement checkStatement = connect.createStatement();

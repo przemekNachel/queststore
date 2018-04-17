@@ -61,7 +61,7 @@ public class CodecoolerController extends AbstractUserController {
     public void buyArtifact() {
         ArtifactStoreController store = new ArtifactStoreController();
         store.buyProductProcess(currentUser);
-        currentUser = (CodecoolerModel) userSvc.getUser(currentUser.getName());
+        currentUser = (CodecoolerModel) userSvc.getUser(currentUser.getNickname());
     }
 
     private String codecoolerArtifactsToString(CodecoolerModel codecooler) {
@@ -84,7 +84,7 @@ public class CodecoolerController extends AbstractUserController {
 
         if (artifact != null) {
 
-            view.printLine("\n  Used artifact " + artifact.getName() + " by " + currentUser.getName());
+            view.printLine("\n  Used artifact " + artifact.getName() + " by " + currentUser.getNickname());
         } else {
 
             view.printLine(view.artifactNoSuch);

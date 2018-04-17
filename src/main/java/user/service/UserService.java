@@ -76,7 +76,7 @@ public class UserService {
 
         try {
             userDao.updateUser(user);
-            userID = userDao.getUserId(user.getName());
+            userID = userDao.getUserId(user.getNickname());
         } catch (SQLException e) {
             ExceptionLog.add(e);
             return false;
@@ -127,7 +127,7 @@ public class UserService {
         for (User user : beforeCast) {
 
             /* note: getUser below returns an object of a specialized type*/
-            afterCast.add(getUser(user.getName()));
+            afterCast.add(getUser(user.getNickname()));
         }
 
         return afterCast;
@@ -225,7 +225,7 @@ public class UserService {
         int userID = -1;
         try {
             userDao.addUser(user);
-            userID = userDao.getUserId(user.getName());
+            userID = userDao.getUserId(user.getNickname());
         } catch (SQLException e) {
             ExceptionLog.add(e);
             return false;

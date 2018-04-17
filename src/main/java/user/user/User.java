@@ -9,11 +9,11 @@ public abstract class User {
     protected String email;
     protected Group<String> associatedGroupNames;
 
-    public String getName() {
+    public String getNickname() {
         return nickname;
     }
 
-    public void setName(String nickname) {
+    public void setNickname(String nickname) {
         this.nickname = nickname;
     }
 

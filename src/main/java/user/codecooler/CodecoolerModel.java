@@ -18,7 +18,7 @@ public class CodecoolerModel extends RawUser {
 
     public CodecoolerModel(RawUser rawUser, WalletService wallet, Group<ArtifactModel> artifacts, Level level) {
         super(Role.CODECOOLER,
-                rawUser.getName(),
+                rawUser.getNickname(),
                 rawUser.getEmail(),
                 rawUser.getPassword(),
                 rawUser.getAssociatedGroupNames());

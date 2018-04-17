@@ -5,7 +5,7 @@ import console.menu.Menu;
 
 class AdminView extends AbstractConsoleView {
 
-    public String mentorNameQuestion = "Provide mentor name:";
+    public String mentorNameQuestion = "Provide mentor nickname:";
     public String mentorPasswordQuestion = "Type in password: ";
     public String mentorEmailQuestion = "Type in email: ";
     public String groupNameQuestion = "Provide group name:";
@@ -14,7 +14,7 @@ class AdminView extends AbstractConsoleView {
     public String levelThresholdQuestion = "Provide lvl's treshold";
     public String noSuchOption = "No such option!";
     public String assignMentorToGroupError = "Given group does not exist or mentor is already in group!";
-    public String noMentorOfSuchName = "There is no mentor of given name.";
+    public String noMentorOfSuchName = "There is no mentor of given nickname.";
     public String currentLevelsText = "Note: Creating a lvl with the same treshold as currently existing one will rename it \n" +
             "Currently existing levels:\n\nThres   Name";
 

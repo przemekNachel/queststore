@@ -304,7 +304,7 @@ public class MentorController extends AbstractUserController {
 
     private void markQuest(CodecoolerModel codecooler, quest.QuestModel quest) {
 
-        view.printLine("You are about to mark the quest \"" + quest.getName() + "\" for " + codecooler.getName() + ", completion of which is worth " + quest.getReward().toString());
+        view.printLine("You are about to mark the quest \"" + quest.getName() + "\" for " + codecooler.getNickname() + ", completion of which is worth " + quest.getReward().toString());
         String input = "";
         while (!input.equals("Y") && !input.equals("N")) {
             input = view.getStringFromUserInput("\n\n  Do you want to honor this achievement? [Y/N] ");
@@ -329,9 +329,9 @@ public class MentorController extends AbstractUserController {
         CodecoolerModel codecooler = getCodecoolerFromUserInput();
 
         // get artifact to be marked
-        Group<String> allowedArtifactNames = new Group<>("allowed artifact name user input");
+        Group<String> allowedArtifactNames = new Group<>("allowed artifact nickname user input");
         Group<ArtifactModel> userArtifacts = codecooler.getCodecoolerArtifacts();
-        String artifactsFormatted = "  Artifacts of codecooler " + codecooler.getName() + "\n\n:";
+        String artifactsFormatted = "  Artifacts of codecooler " + codecooler.getNickname() + "\n\n:";
         for (ArtifactModel currentArtifact : userArtifacts) {
 
             artifactsFormatted += "    " + currentArtifact + "\n";
@@ -339,7 +339,7 @@ public class MentorController extends AbstractUserController {
         }
         view.printLine(artifactsFormatted);
 
-        // get the name of the artifact to be marked
+        // get the nickname of the artifact to be marked
 
         String artifactName = getNameFromUserInput(view.artifactNameQuestion, view.artifactNotFoundError, allowedArtifactNames);
 
@@ -377,7 +377,7 @@ public class MentorController extends AbstractUserController {
                         CodecoolerModel codecooler = (CodecoolerModel) user;
 
                         wallet = codecooler.getWallet();
-                        view.print(codecooler.getName() + " " + wallet.toString() + "\n");
+                        view.print(codecooler.getNickname() + " " + wallet.toString() + "\n");
 
                         totalBalance += wallet.getBalance();
                         numberOfCodecoolers += 1;

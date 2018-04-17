@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpExchange;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import template.CodecoolerTemplateResolver;
 import template.ViewData;
 import user.user.Role;
 import user.user.User;
@@ -40,13 +41,13 @@ public class RequestRedirector {
     }
 
     private void redirectToMentor(HttpExchange exchange, ViewData template, User user) throws IOException {
-        template.setVariable("nickname", user.getName());
+        template.setVariable("name", user.getNickname());
         String content = engine.process(template.getName(), template.getContext());
         sendTemplate(exchange, content);
     }
 
     private void redirectToAdmin(HttpExchange exchange, ViewData template, User user) throws IOException {
-        template.setVariable("nickname", user.getName());
+        template.setVariable("name", user.getNickname());
         String content = engine.process(template.getName(), template.getContext());
         sendTemplate(exchange, content);
     }
@@ -57,8 +58,9 @@ public class RequestRedirector {
     }
 
     private void redirectToCodecooler(HttpExchange exchange, ViewData template, User user) throws IOException {
-//        template.setVariable("nickname", user.getName());
-        String content = engine.process(template.getName(), template.getContext());
+        CodecoolerTemplateResolver codecooler = new CodecoolerTemplateResolver(template, user);
+        ViewData codecoolerTemplate = codecooler.getTemplate();
+        String content = engine.process(codecoolerTemplate.getName(), codecoolerTemplate.getContext());
         sendTemplate(exchange, content);
     }
 

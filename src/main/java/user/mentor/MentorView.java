@@ -12,15 +12,15 @@ public class MentorView extends AbstractConsoleView {
     public String userAlreadyInDatabase = "user already in database.";
     public String codecoolerAlreadyInGroupOrGroupAbsent = "The codecooler *had* been added to the given group or the group does not exist.";
     public String artifactNotFoundError = "No such artifact found!";
-    public String artifactNameQuestion = "Provide artifact name: ";
+    public String artifactNameQuestion = "Provide artifact nickname: ";
     public String artifactDescQuestion = "Provide artifact description: ";
     public String artifactPriceQuestion = "Provide artifact price: ";
     public String GroupAssignmentQuestion = "Choose from availtble groups: ";
-    public String questNameQuestion = "Provide quest name: ";
+    public String questNameQuestion = "Provide quest nickname: ";
     public String chooseQuestNameQuestion = "Choose quest: ";
     public String questDescQuestion = "Provide quest description: ";
     public String questPriceQuestion = "Provide quest price: ";
-    public String markQuestNameQuestion = "Provide quest name: ";
+    public String markQuestNameQuestion = "Provide quest nickname: ";
     public String totalCoolcoins = "\n\n Total coolcoins owned: ";
     public String avarageBalance = "\n Average coolcoins owned: ";
 

@@ -20,7 +20,7 @@ public abstract class AbstractUserController {
         Group<String> stringGroup = new Group<>("user names");
         for (User user : userGroup) {
 
-            stringGroup.add(user.getName());
+            stringGroup.add(user.getNickname());
         }
         return stringGroup;
     }

@@ -7,7 +7,7 @@ public class AdminModel extends RawUser {
 
     public AdminModel(RawUser rawUser) {
         super(Role.ADMIN,
-                rawUser.getName(),
+                rawUser.getNickname(),
                 rawUser.getEmail(),
                 rawUser.getPassword(),
                 rawUser.getAssociatedGroupNames());

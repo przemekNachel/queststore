@@ -7,7 +7,7 @@ public class MentorModel extends RawUser {
 
     public MentorModel(RawUser rawUser) {
         super(Role.MENTOR,
-                rawUser.getName(),
+                rawUser.getNickname(),
                 rawUser.getEmail(),
                 rawUser.getPassword(),
                 rawUser.getAssociatedGroupNames());
