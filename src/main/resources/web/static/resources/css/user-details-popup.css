@@ -1,0 +1,32 @@
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+h1 {
+    padding-left: 2%;
+    background-color: #03a9f4;
+    font-style: italic;
+}
+
+p {
+    padding-left: 2%;
+}
+
+table {
+    width: 100%;
+}
+
+.table_row {
+    padding-left: 2%;
+    font-style: italic;
+    font-size: 26px;
+}
+
+.value {
+    width: 50%;
+}
+
+.label {
+    width: 50%;
+}
