@@ -87,7 +87,7 @@ public class ArtifactStoreController {
 
             for (User student : students) {
 
-                if (consumer.getName().equals(student.getName())) {
+                if (consumer.getNickname().equals(student.getNickname())) {
 
                     intersection.add((CodecoolerModel) consumer);
                 }
@@ -176,7 +176,7 @@ public class ArtifactStoreController {
 
         for (CodecoolerModel codecooler : consumers) {
 
-            if (codecooler.getName().equals(twin.getName())) {
+            if (codecooler.getNickname().equals(twin.getNickname())) {
 
                 return codecooler;
             }
