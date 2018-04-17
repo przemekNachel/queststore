@@ -24,7 +24,6 @@ public class RootRequestHandler implements HttpHandler {
         if (user == null) {
             redirector.redirect(httpExchange, "/");
         } else {
-            sessionManager.createSessionAndAssignToCookie(httpExchange, user);
             redirector.redirect(httpExchange, user);
         }
 
