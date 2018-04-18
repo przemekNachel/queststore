@@ -46,6 +46,8 @@ public class MentorTemplateResolver {
         }
         template.setVariable("students", students);
         template.setVariable("classes", mentor.getAssociatedGroupNames());
+        template.setVariable("quests_basic", questDao.getQuestGroup("quest_basic"));
+        template.setVariable("quests_extra", questDao.getQuestGroup("quest_extra"));
     }
 }
 
