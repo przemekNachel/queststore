@@ -32,18 +32,10 @@
             </div>
             <div class="rectangle">
                 <div class="rectangle-bar">
-                    Money
+                    Classes
                 </div>
-                <div id="money" class="rectangle-content">
-                    1000
-                </div>
-            </div>
-            <div class="rectangle">
-                <div class="rectangle-bar">
-                    Class
-                </div>
-                <div id="mentor-class" class="rectangle-content">
-                    KRK-2017-2
+                <div th:each="class : ${classes}" class="rectangle-content">
+                    [[${class}]]
                 </div>
             </div>
         </div>

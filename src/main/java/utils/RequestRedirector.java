@@ -5,6 +5,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import template.CodecoolerTemplateResolver;
+import template.MentorTemplateResolver;
 import template.ViewData;
 import user.user.Role;
 import user.user.User;
@@ -41,8 +42,9 @@ public class RequestRedirector {
     }
 
     private void redirectToMentor(HttpExchange exchange, ViewData template, User user) throws IOException {
-        template.setVariable("user", user);
-        String content = engine.process(template.getName(), template.getContext());
+        MentorTemplateResolver mentor = new MentorTemplateResolver(template, user);
+        ViewData mentorTemplate = mentor.getTemplate();
+        String content = engine.process(mentorTemplate.getName(), mentorTemplate.getContext());
         sendTemplate(exchange, content);
     }
 
