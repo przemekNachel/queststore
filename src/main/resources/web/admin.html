@@ -8,6 +8,16 @@
 <th:block th:include="fragments :: top-bar"/>
 
 <div class="content">
+
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            test
+        </div>
+
+    </div>
+
     <div class="content-header">
         <div class="content-header-label">Dashboard</div>
     </div>
@@ -50,21 +60,29 @@
             <h3 class="heading">Users</h3>
             <table style="width:100%">
                 <tr>
-                    <th>Name</th>
-                    <th>Last name</th>
+                    <th>Nickname</th>
                     <th>Email</th>
                     <th>Type</th>
                     <th></th>
                 </tr>
                 <tr>
                     <td>Jacek</td>
-                    <td>Placek</td>
                     <td>japa@email.com</td>
                     <td>Student</td>
                     <td class="edit-icons">
-                        <a class="ion-edit edit-icon" title="Edit user" href="http://localhost:8000/users/add"></a>
-                        <a class="ion-clipboard edit-icon" title="Show user"></a>
-                        <a class="ion-trash-a edit-icon" title="Remove user"></a>
+                        <i class="ion-edit edit-icon edit-user-button" title="Edit user"></i>
+                        <i class="ion-clipboard edit-icon" title="Show user"></i>
+                        <i class="ion-trash-a edit-icon" title="Remove user"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Zbigniew</td>
+                    <td>japa@email.com</td>
+                    <td>Student</td>
+                    <td class="edit-icons">
+                        <i class="ion-edit edit-icon edit-user-button" title="Edit user"></i>
+                        <i class="ion-clipboard edit-icon" title="Show user"></i>
+                        <i class="ion-trash-a edit-icon" title="Remove user"></i>
                     </td>
                 </tr>
             </table>
@@ -94,7 +112,20 @@
                     <td class="edit-icons">
                         <ul class="nav">
                             <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete class"></i></li>
-                            <li class="nav-tab"><i class="ion-edit edit-icon" title="Edit class"></i></li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon edit-class-button" title="Edit class"></i>
+                            </li>
+                            <li class="nav-tab"><i class="ion-android-people edit-icon"></i></li>
+                        </ul>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>HTML Programers</td>
+                    <td class="edit-icons">
+                        <ul class="nav">
+                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete class"></i></li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon edit-class-button" title="Edit class"></i>
+                            </li>
                             <li class="nav-tab"><i class="ion-android-people edit-icon"></i></li>
                         </ul>
                     </td>
@@ -107,36 +138,41 @@
 
     <div id="level-management" class="hidden">
         <div class="row">
-            <h3 class="heading">Level creation</h3>
+            <h3 class="heading">New level</h3>
+            <form action="/level/add">
+                <div class="row">
+                    <label class="input-label" for="name">Level name</label>
+                    <input class="input-field" name="name" id="name" type="text" placeholder="Enter level name.">
+                </div>
+                <div class="row">
+                    <label class="input-label" for="threshold">Threshold</label>
+                    <input class="input-field" name="threshold" id="threshold" type="number"
+                           placeholder="Enter level threshold.">
+                </div>
+                <input type="submit" class="button submit-button" value="Create">
+            </form>
+        </div>
+        <div class="row">
+            <h3 class="heading">Levels</h3>
             <table style="width:100%">
                 <tr>
                     <th>Name</th>
                     <th>Threshold</th>
+                    <th>Action</th>
                 </tr>
                 <tr>
-                    <td class="level-table"><input id="level-name" type="text" placeholder="Enter level name."></td>
-                    <td class="level-table"><input id="threshold" type="number" placeholder="Enter level threshold."></td>
+                    <td class="level-table">Scratch Developer</td>
+                    <td class="level-table">999999</td>
+                    <td class="edit-icons">
+                        <ul class="nav">
+                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete level"></i></li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon edit-level-button" title="Edit level"></i>
+                            </li>
+                        </ul>
+                    </td>
                 </tr>
             </table>
-            <input class="button submit-button" type="submit" value="Create">
         </div>
-        <table style="width:100%">
-        <tr>
-            <th>Name</th>
-            <th>Threshold</th>
-            <th>Action</th>
-        </tr>
-        <tr>
-            <td class="level-table">Scratch Developer</td>
-            <td class="level-table">999999</td>
-            <td class="edit-icons">
-                <ul class="nav">
-                    <li class="nav-tab"><i class="ion-trash-a edit-icon" title = "Delete level"></i></li>
-                    <li class="nav-tab"><i class="ion-edit edit-icon" title = "Edit level"></i></li>
-                </ul>
-            </td>
-        </tr>
-        </table>
     </div>
 </div>
 
@@ -163,16 +199,75 @@
         </li>
     </ul>
 </div>
+
+<div id="edit-user-form" style="display: none;">
+    <span class="close">&times;</span>
+    <form method="get" action="/user/edit">
+        <h3 class="heading">Edit user</h3>
+        <input class="input-field" type="hidden" name="previousnickname" id="previousnickname" value=""/>
+        <div class="row">
+            <label class="input-label" for="newnickname">New nickname</label>
+            <input class="input-field" type="text" name="newnickname" id="newnickname" required/>
+        </div>
+        <div class="row">
+            <label class="input-label" for="newemail">New email</label>
+            <input class="input-field" type="text" name="email" id="newemail" required/>
+        </div>
+        <div class="row">
+            <label class="input-label" for="type">Type</label>
+            <select class="input-select" name="type" id="type">
+                <option selected value="student">Student</option>
+                <option value="mentor">Mentor</option>
+                <option value="administrator">Administrator</option>
+            </select>
+        </div>
+        <input type="submit" class="button submit-button" value="Update">
+    </form>
+</div>
+
+<div id="edit-class-form" style="display: none;">
+    <span class="close">&times;</span>
+    <form method="get" action="/class/edit">
+        <h3 class="heading">Edit class</h3>
+        <input class="input-field" type="hidden" name="previousname" id="previousname" value=""/>
+        <div class="row">
+            <label class="input-label" for="class-name">New class name</label>
+            <input class="input-field" name="name" type="text" id="class-name" required/>
+        </div>
+        <input type="submit" class="button submit-button" value="Update">
+    </form>
+</div>
+
+<div id="edit-level-form" style="display: none;">
+    <span class="close">&times;</span>
+    <form method="get" action="/level/edit">
+        <h3 class="heading">Edit level</h3>
+        <input class="input-field" type="hidden" name="previousname" id="previousname" value=""/>
+        <div class="row">
+            <label class="input-label" for="name">New level name</label>
+            <input class="input-field" name="name" id="name" type="text" placeholder="Enter level name.">
+        </div>
+        <div class="row">
+            <label class="input-label" for="threshold">New threshold</label>
+            <input class="input-field" name="threshold" id="threshold" type="number"
+                   placeholder="Enter level threshold.">
+        </div>
+        <input type="submit" class="button submit-button" value="Update">
+    </form>
+</div>
+
+
 <script src="static/resources/js/app.js"></script>
 <script>
     let modal = document.getElementById('myModal');
     let modal_content = document.querySelector('.modal-content');
     let edit_user_form = document.getElementById('edit-user-form');
-    let edit_artifact_form = document.getElementById('edit-artifact-form');
+    let edit_class_form = document.getElementById('edit-class-form');
+    let edit_level_form = document.getElementById('edit-level-form');
 
     let edit_user_buttons = Array.from(document.getElementsByClassName('edit-user-button'));
-    let edit_artifact_buttons = Array.from(document.getElementsByClassName('edit-artifact-button'));
-    let edit_quest_buttons = Array.from(document.getElementsByClassName('edit-quest-button'));
+    let edit_class_buttons = Array.from(document.getElementsByClassName('edit-class-button'));
+    let edit_level_buttons = Array.from(document.getElementsByClassName('edit-level-button'));
 
     edit_user_buttons.forEach(element => {
 
@@ -195,53 +290,44 @@
         }
     });
 
-    edit_artifact_buttons.forEach(element => {
+    edit_class_buttons.forEach(element => {
 
         element.onclick = function(event) {
-            modal_content.innerHTML = edit_artifact_form.innerHTML;
+            modal_content.innerHTML = edit_class_form.innerHTML;
             modal.style.display = "block";
 
             let inputElements = Array.from(modal_content.getElementsByTagName('*'));
 
-//            inputElements.forEach(t => console.log(t));
 
-            let edit_artifact_data = Array.from(event.target.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('td'));
+            let edit_user_data = Array.from(event.target.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('TD'));
 
-            edit_artifact_data.forEach(t => console.log(t));
             let editHeader = inputElements.filter(t => t.tagName === "H3")[0];
-            editHeader.innerText = `Edit artifact - ${edit_artifact_data[0].innerText}`;
+            editHeader.innerText = `Edit user - ${edit_user_data[0].innerText}`;
 
             inputElements = inputElements.filter(t => t.tagName === "INPUT");
-            inputElements.forEach(t => console.log(t));
-            inputElements[0].setAttribute('value', edit_artifact_data[0].innerText);
-            inputElements[1].setAttribute('value', edit_artifact_data[0].innerText);
-            inputElements[2].setAttribute('value', edit_artifact_data[2].innerText);
-            inputElements[3].setAttribute('value', edit_artifact_data[3].innerText);
+            inputElements[0].setAttribute('value', edit_user_data[0].innerText);
+            inputElements[1].setAttribute('value', edit_user_data[0].innerText);
         }
     });
 
-    edit_quest_buttons.forEach(element => {
+    edit_level_buttons.forEach(element => {
 
         element.onclick = function(event) {
-            modal_content.innerHTML = edit_artifact_form.innerHTML;
+            modal_content.innerHTML = edit_level_form.innerHTML;
             modal.style.display = "block";
 
             let inputElements = Array.from(modal_content.getElementsByTagName('*'));
 
-//            inputElements.forEach(t => console.log(t));
 
-            let edit_artifact_data = Array.from(event.target.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('td'));
+            let edit_user_data = Array.from(event.target.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('TD'));
 
-            edit_artifact_data.forEach(t => console.log(t));
             let editHeader = inputElements.filter(t => t.tagName === "H3")[0];
-            editHeader.innerText = `Edit quest - ${edit_artifact_data[0].innerText}`;
+            editHeader.innerText = `Edit level - ${edit_user_data[0].innerText}`;
 
             inputElements = inputElements.filter(t => t.tagName === "INPUT");
-            inputElements.forEach(t => console.log(t));
-            inputElements[0].setAttribute('value', edit_artifact_data[0].innerText);
-            inputElements[1].setAttribute('value', edit_artifact_data[0].innerText);
-            inputElements[2].setAttribute('value', edit_artifact_data[2].innerText);
-            inputElements[3].setAttribute('value', edit_artifact_data[3].innerText);
+            inputElements[0].setAttribute('value', edit_user_data[0].innerText);
+            inputElements[1].setAttribute('value', edit_user_data[0].innerText);
+            inputElements[2].setAttribute('value', edit_user_data[1].innerText);
         }
     });
 
