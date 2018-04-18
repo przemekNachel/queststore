@@ -199,14 +199,30 @@
                     <th>Description</th>
                     <th></th>
                 </tr>
-                <tr>
-                    <td>Feed people</td>
-                    <td>Extra</td>
-                    <td>10000</td>
-                    <td>Make a cake for a codecoolers</td>
+                <tr th:each="quest : ${quests_basic}">
+                    <td>[[${quest.name}]]</td>
+                    <td>[[${quest.description}]]</td>
+                    <td>Basic</td>
+                    <td>[[${quest.reward}]]</td>
                     <td class="edit-icons">
                         <ul class="nav">
-                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete quest"></i></li>
+                            <li class="nav-tab">
+                                <a th:href="@{'http://localhost:8000/quest/remove?name=${quest.name}}"
+                                   class="ion-trash-a edit-icon" title="Delete quest"></a></li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon edit-quest-button" title="Edit quest"></i>
+                            </li>
+                        </ul>
+                    </td>
+                <tr th:each="quest : ${quests_extra}">
+                    <td>[[${quest.name}]]</td>
+                    <td>[[${quest.description}]]</td>
+                    <td>Extra</td>
+                    <td>[[${quest.reward}]]</td>
+                    <td class="edit-icons">
+                        <ul class="nav">
+                            <li class="nav-tab">
+                                <a th:href="@{'http://localhost:8000/quest/remove?name=${quest.name}}"
+                                   class="ion-trash-a edit-icon" title="Delete quest"></a></li>
                             <li class="nav-tab"><i class="ion-edit edit-icon edit-quest-button" title="Edit quest"></i>
                             </li>
                         </ul>
