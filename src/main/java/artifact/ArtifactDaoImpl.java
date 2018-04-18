@@ -229,13 +229,10 @@ public class ArtifactDaoImpl implements ArtifactDao {
         Connection con = connectToDatabase();
         Statement stmt = Objects.requireNonNull(con).createStatement();
 
-        String sql = "SELECT\n" +
-                "  artifact_store.artifact_id, name, descr, price, group_names.group_name\n" +
-                "FROM\n" +
-                "  artifact_store\n" +
-                "  INNER JOIN artifact_associations ON artifact_associations.association_id = artifact_store.artifact_id\n" +
-                "  INNER JOIN group_names ON group_names.group_id = artifact_associations.group_id\n" +
-                " WHERE group_name='" + groupName + "';";
+        String sql = "SELECT name, descr, price, group_name AS type FROM artifact_store " +
+                "JOIN artifact_associations ON artifact_store.artifact_id = artifact_associations.artifact_id " +
+                "JOIN group_names ON artifact_associations.group_id = group_names.group_id " +
+                "WHERE type != 'artifacts' AND type = '" + groupName + "';";
 
         ResultSet rs = stmt.executeQuery(sql);
 
