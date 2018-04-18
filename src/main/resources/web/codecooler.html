@@ -46,15 +46,26 @@
                 <tr>
                     <th>Name</th>
                     <th>Type</th>
+                    <th>Description</th>
                     <th>Price</th>
                     <th></th>
                 </tr>
-                <tr>
-                    <td>Wand of wisdom</td>
+                <tr th:each="artifact : ${magic_artifacts}">
+                    <td>[[${artifact.name}]]</td>
                     <td>Magic</td>
-                    <td>10000</td>
+                    <td>[[${artifact.price}]]</td>
                     <td class="edit-icons">
                         <i class="ion-ios-cart edit-icon" title="Buy artifact"></i>
+                    </td>
+                </tr>
+                <tr th:each="artifact : ${basic_artifacts}">
+                    <td>[[${artifact.name}]]</td>
+                    <td>Basic</td>
+                    <td>[[${artifact.description}]]</td>
+                    <td>[[${artifact.price}]]</td>
+                    <td class="edit-icons">
+                        <a th:href="@{'http://localhost:8000/artifact/buy?name=' + ${artifact.name}}"
+                           class="ion-ios-cart edit-icon" title="Buy artifact"></a>
                     </td>
                 </tr>
             </table>
