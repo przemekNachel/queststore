@@ -214,8 +214,10 @@
                     <td class="edit-icons">
                         <ul class="nav">
                             <li class="nav-tab">
-                                <a th:href="@{'http://localhost:8000/quest/remove?name=${quest.name}}"
-                                   class="ion-trash-a edit-icon" title="Delete quest"></a></li>
+                                <form action="/quest/remove" method="POST">
+                                    <input name="name" type="text" th:value="${quest.name}" hidden>
+                                    <button type="submit" class="ion-trash-a edit-icon" title="Delete quest"></button>
+                                </form>
                             <li class="nav-tab"><i class="ion-edit edit-icon edit-quest-button" title="Edit quest"></i>
                             </li>
                         </ul>
@@ -228,8 +230,10 @@
                     <td class="edit-icons">
                         <ul class="nav">
                             <li class="nav-tab">
-                                <a th:href="@{'http://localhost:8000/quest/remove?name=${quest.name}}"
-                                   class="ion-trash-a edit-icon" title="Delete quest"></a></li>
+                                <form action="/quest/remove" method="POST">
+                                    <input name="name" type="text" th:value="${quest.name}" hidden>
+                                    <button type="submit" class="ion-trash-a edit-icon" title="Delete quest"></button>
+                                </form>
                             <li class="nav-tab"><i class="ion-edit edit-icon edit-quest-button" title="Edit quest"></i>
                             </li>
                         </ul>
