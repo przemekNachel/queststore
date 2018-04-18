@@ -106,7 +106,7 @@
 
     <div id="artifact-management" class="hidden">
         <div class="row">
-            <form>
+            <form action="/artifact/add">
                 <h3 class="heading">New artifact</h3>
                 <div class="row">
                     <label class="input-label" for="artifact-type">Type</label>
@@ -283,6 +283,14 @@
         <div class="row">
             <label class="input-label" for="newemail">New email</label>
             <input class="input-field" type="text" name="email" id="newemail" required/>
+        </div>
+        <div class="row">
+            <label class="input-label" for="type">Type</label>
+            <select class="input-select" name="type" id="type">
+                <option selected value="student">Student</option>
+                <option disabled value="mentor">Mentor</option>
+                <option disabled value="administrator">Administrator</option>
+            </select>
         </div>
         <input type="submit" class="button submit-button" value="Update">
     </form>
