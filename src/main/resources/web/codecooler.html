@@ -30,18 +30,10 @@
             </div>
             <div class="rectangle">
                 <div class="rectangle-bar">
-                    Class
+                    Groups
                 </div>
-                <div id="your-class" class="rectangle-content">
-                    KRK-2017-2
-                </div>
-            </div>
-            <div class="rectangle">
-                <div class="rectangle-bar">
-                    Team
-                </div>
-                <div id="team" class="rectangle-content">
-                    iDontSpeakJava
+                <div th:each="class : ${classes}" class="rectangle-content">
+                    [[${class}]]
                 </div>
             </div>
         </div>

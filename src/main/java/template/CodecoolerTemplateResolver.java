@@ -24,5 +24,6 @@ public class CodecoolerTemplateResolver {
         template.setVariable("user", codecooler);
         template.setVariable("level", codecooler.getLevel().getCurrentLevel());
         template.setVariable("money", codecooler.getWallet().getBalance());
+        template.setVariable("classes", codecooler.getCodecoolerGroupDisplay());
     }
 }
