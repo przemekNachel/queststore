@@ -67,7 +67,7 @@ public class CodecoolerController extends AbstractUserController {
     private String codecoolerArtifactsToString(CodecoolerModel codecooler) {
 
         String result = "";
-        for (ArtifactModel artifact : codecooler.getCodecoolerArtifacts()) {
+        for (ArtifactModel artifact : codecooler.getArtifacts()) {
 
             result += "  " + artifact.getName() + "  " + (artifact.getUsageStatus() ? "USED" : "NOT USED") + "\n";
         }

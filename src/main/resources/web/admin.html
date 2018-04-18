@@ -25,27 +25,23 @@
     </div>
     <div id="user-management" class="hidden">
         <div class="row">
-            <form method="post" action="http://localhost:8000/users/add">
+            <form method="get" action="/users/add">
                 <h3 class="heading">New user</h3>
                 <div class="row">
-                    <label class="input-label" for="user-type">Type</label>
-                    <select class="input-select" id="user-type">
+                    <label class="input-label" for="type">Type</label>
+                    <select class="input-select" name ="type" id="type">
                         <option value="student">Student</option>
                         <option value="mentor">Mentor</option>
                         <option value="administrator">Administrator</option>
                     </select>
                 </div>
                 <div class="row">
-                    <label class="input-label" for="user-name">Name</label>
-                    <input class="input-field" type="text" id="user-name" required/>
+                    <label class="input-label" for="nickname">Nickname</label>
+                    <input class="input-field" type="text" name = "nickname" id="nickname" required/>
                 </div>
                 <div class="row">
-                    <label class="input-label" for="user-last-name">Last name</label>
-                    <input class="input-field" type="text" id="user-last-name" required/>
-                </div>
-                <div class="row">
-                    <label class="input-label" for="user-email">Email</label>
-                    <input class="input-field" type="text" id="user-email" required/>
+                    <label class="input-label" for="email">Email</label>
+                    <input class="input-field" type="text" name = "email" id="email" required/>
                 </div>
                 <input type="submit" class="button submit-button" value="Create">
             </form>
@@ -74,7 +70,40 @@
             </table>
         </div>
     </div>
-    <th:block th:replace="fragments :: class-management"/>
+    <div id="class-management" class="hidden">
+
+        <div class="row">
+            <h3 class="heading">New class</h3>
+            <form action="/class/add">
+                <div class="row">
+                    <label class="input-label" for="class-name">Class name</label>
+                    <input class="input-field" name = "name" type="text" id="class-name" required/>
+                </div>
+                <input type="submit" class="button submit-button" value="Create">
+            </form>
+        </div>
+        <div class="row">
+            <h3 class="heading">Classes</h3>
+            <table style="width:100%">
+                <tr>
+                    <th>Name</th>
+                    <th>Action</th>
+                </tr>
+                <tr th:each="class : ${classes}">
+                    <td>HTML Programers</td>
+                    <td class="edit-icons">
+                        <ul class="nav">
+                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete class"></i></li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon" title="Edit class"></i></li>
+                            <li class="nav-tab"><i class="ion-android-people edit-icon"></i></li>
+                        </ul>
+                    </td>
+
+                </tr>
+            </table>
+
+        </div>
+    </div>
 
     <div id="level-management" class="hidden">
         <div class="row">
@@ -135,5 +164,100 @@
     </ul>
 </div>
 <script src="static/resources/js/app.js"></script>
+<script>
+    let modal = document.getElementById('myModal');
+    let modal_content = document.querySelector('.modal-content');
+    let edit_user_form = document.getElementById('edit-user-form');
+    let edit_artifact_form = document.getElementById('edit-artifact-form');
+
+    let edit_user_buttons = Array.from(document.getElementsByClassName('edit-user-button'));
+    let edit_artifact_buttons = Array.from(document.getElementsByClassName('edit-artifact-button'));
+    let edit_quest_buttons = Array.from(document.getElementsByClassName('edit-quest-button'));
+
+    edit_user_buttons.forEach(element => {
+
+        element.onclick = function(event) {
+            modal_content.innerHTML = edit_user_form.innerHTML;
+            modal.style.display = "block";
+
+            let inputElements = Array.from(modal_content.getElementsByTagName('*'));
+
+
+            let edit_user_data = Array.from(event.target.parentNode.parentNode.getElementsByTagName('TD'));
+
+            let editHeader = inputElements.filter(t => t.tagName === "H3")[0];
+            editHeader.innerText = `Edit user - ${edit_user_data[0].innerText}`;
+
+            inputElements = inputElements.filter(t => t.tagName === "INPUT");
+            inputElements[0].setAttribute('value', edit_user_data[0].innerText);
+            inputElements[1].setAttribute('value', edit_user_data[0].innerText);
+            inputElements[2].setAttribute('value', edit_user_data[1].innerText);
+        }
+    });
+
+    edit_artifact_buttons.forEach(element => {
+
+        element.onclick = function(event) {
+            modal_content.innerHTML = edit_artifact_form.innerHTML;
+            modal.style.display = "block";
+
+            let inputElements = Array.from(modal_content.getElementsByTagName('*'));
+
+//            inputElements.forEach(t => console.log(t));
+
+            let edit_artifact_data = Array.from(event.target.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('td'));
+
+            edit_artifact_data.forEach(t => console.log(t));
+            let editHeader = inputElements.filter(t => t.tagName === "H3")[0];
+            editHeader.innerText = `Edit artifact - ${edit_artifact_data[0].innerText}`;
+
+            inputElements = inputElements.filter(t => t.tagName === "INPUT");
+            inputElements.forEach(t => console.log(t));
+            inputElements[0].setAttribute('value', edit_artifact_data[0].innerText);
+            inputElements[1].setAttribute('value', edit_artifact_data[0].innerText);
+            inputElements[2].setAttribute('value', edit_artifact_data[2].innerText);
+            inputElements[3].setAttribute('value', edit_artifact_data[3].innerText);
+        }
+    });
+
+    edit_quest_buttons.forEach(element => {
+
+        element.onclick = function(event) {
+            modal_content.innerHTML = edit_artifact_form.innerHTML;
+            modal.style.display = "block";
+
+            let inputElements = Array.from(modal_content.getElementsByTagName('*'));
+
+//            inputElements.forEach(t => console.log(t));
+
+            let edit_artifact_data = Array.from(event.target.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('td'));
+
+            edit_artifact_data.forEach(t => console.log(t));
+            let editHeader = inputElements.filter(t => t.tagName === "H3")[0];
+            editHeader.innerText = `Edit quest - ${edit_artifact_data[0].innerText}`;
+
+            inputElements = inputElements.filter(t => t.tagName === "INPUT");
+            inputElements.forEach(t => console.log(t));
+            inputElements[0].setAttribute('value', edit_artifact_data[0].innerText);
+            inputElements[1].setAttribute('value', edit_artifact_data[0].innerText);
+            inputElements[2].setAttribute('value', edit_artifact_data[2].innerText);
+            inputElements[3].setAttribute('value', edit_artifact_data[3].innerText);
+        }
+    });
+
+
+    let span = document.getElementsByClassName("close")[0];
+
+
+    span.onclick = function () {
+        modal.style.display = "none";
+    };
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
 </body>
 </html>

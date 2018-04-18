@@ -330,7 +330,7 @@ public class MentorController extends AbstractUserController {
 
         // get artifact to be marked
         Group<String> allowedArtifactNames = new Group<>("allowed artifact nickname user input");
-        Group<ArtifactModel> userArtifacts = codecooler.getCodecoolerArtifacts();
+        Group<ArtifactModel> userArtifacts = codecooler.getArtifacts();
         String artifactsFormatted = "  Artifacts of codecooler " + codecooler.getNickname() + "\n\n:";
         for (ArtifactModel currentArtifact : userArtifacts) {
 

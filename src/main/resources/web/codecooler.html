@@ -30,18 +30,10 @@
             </div>
             <div class="rectangle">
                 <div class="rectangle-bar">
-                    Class
+                    Groups
                 </div>
-                <div id="your-class" class="rectangle-content">
-                    KRK-2017-2
-                </div>
-            </div>
-            <div class="rectangle">
-                <div class="rectangle-bar">
-                    Team
-                </div>
-                <div id="team" class="rectangle-content">
-                    iDontSpeakJava
+                <div th:each="class : ${classes}" class="rectangle-content">
+                    [[${class}]]
                 </div>
             </div>
         </div>
@@ -54,15 +46,26 @@
                 <tr>
                     <th>Name</th>
                     <th>Type</th>
+                    <th>Description</th>
                     <th>Price</th>
                     <th></th>
                 </tr>
-                <tr>
-                    <td>Wand of wisdom</td>
+                <tr th:each="artifact : ${magic_artifacts}">
+                    <td>[[${artifact.name}]]</td>
                     <td>Magic</td>
-                    <td>10000</td>
+                    <td>[[${artifact.price}]]</td>
                     <td class="edit-icons">
                         <i class="ion-ios-cart edit-icon" title="Buy artifact"></i>
+                    </td>
+                </tr>
+                <tr th:each="artifact : ${basic_artifacts}">
+                    <td>[[${artifact.name}]]</td>
+                    <td>Basic</td>
+                    <td>[[${artifact.description}]]</td>
+                    <td>[[${artifact.price}]]</td>
+                    <td class="edit-icons">
+                        <a th:href="@{'http://localhost:8000/artifact/buy?name=' + ${artifact.name}}"
+                           class="ion-ios-cart edit-icon" title="Buy artifact"></a>
                     </td>
                 </tr>
             </table>
@@ -75,14 +78,15 @@
             <table style="width:100%">
                 <tr>
                     <th>Name</th>
-                    <th>Type</th>
+                    <th>Description</th>
                     <th></th>
                 </tr>
-                <tr>
-                    <td>Stone</td>
-                    <td>Basic</td>
+                <tr th:each="artifact : ${user_artifacts}">
+                    <td>[[${artifact.name}]]</td>
+                    <td>[[${artifact.description}]]</td>
                     <td class="edit-icons">
-                        <i class="ion-flash edit-icon" title="Use artifact"></i>
+                        <a th:href="@{'http://localhost:8000/artifact/use?name=' + ${artifact.name}}"
+                           class="ion-flash edit-icon" title="Use artifact"></i>
                     </td>
                 </tr>
             </table>

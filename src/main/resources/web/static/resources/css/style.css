@@ -352,6 +352,7 @@ p.option-text {
     font-size: 200%;
     margin-right: 50px;
     cursor: pointer;
+    color: inherit;
 }
 
 .edit-icons {

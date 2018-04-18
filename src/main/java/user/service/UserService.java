@@ -88,7 +88,7 @@ public class UserService {
 
             CodecoolerModel codecooler = (CodecoolerModel) user;
             // update codecooler artifacts
-            for (ArtifactModel artifact : codecooler.getCodecoolerArtifacts()) {
+            for (ArtifactModel artifact : codecooler.getArtifacts()) {
 
                 try {
                     artifactDao.updateUserArtifactsUsage(userID, artifact);
