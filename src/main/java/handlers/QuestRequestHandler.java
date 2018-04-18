@@ -31,19 +31,23 @@ public class QuestRequestHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         User user = sessionManager.getUserFromSession(httpExchange);
+        String URIPath = httpExchange.getRequestURI().getPath();
+        String method = httpExchange.getRequestMethod();
         if (user.getRole() == Role.MENTOR) {
-            if (httpExchange.getRequestMethod().equalsIgnoreCase("post")) {
-                String postInputData = new BufferedReader(new InputStreamReader(httpExchange.getRequestBody())).readLine();
-
-                Map<String, String> parameters = ParametersUtil.parseParameters(postInputData);
-                addNewQuest(parameters);
+            if (method.equalsIgnoreCase("post") && URIPath.equalsIgnoreCase("/quest/add")) {
+                handleAddNewQuest(httpExchange);
+            }else if(method.equalsIgnoreCase("post") && URIPath.equalsIgnoreCase("/quest/remove")){
+                handleRemoveQuest(httpExchange);
             }
         }
         redirector.redirect(httpExchange, user);
     }
 
-    public void addNewQuest(Map<String, String> parameters) {
+    public void handleAddNewQuest(HttpExchange exchange) throws IOException {
         QuestDaoImpl questDao = new QuestDaoImpl();
+        String postInputData = new BufferedReader(new InputStreamReader(exchange.getRequestBody())).readLine();
+        Map<String, String> parameters = ParametersUtil.parseParameters(postInputData);
+
         String name = parameters.get("name");
         String stringReward = parameters.get("reward");
         String description = parameters.get("description");
@@ -52,6 +56,20 @@ public class QuestRequestHandler implements HttpHandler {
         try {
             questDao.addQuest(newQuest);
         }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void handleRemoveQuest(HttpExchange exchange) throws IOException{
+        QuestDaoImpl questDao = new QuestDaoImpl();
+        String postInputData = new BufferedReader(new InputStreamReader(exchange.getRequestBody())).readLine();
+        Map<String, String> parameters = ParametersUtil.parseParameters(postInputData);
+
+        String questName = parameters.get("name");
+        try {
+            QuestModel quest = questDao.getQuest(questName);
+            questDao.deleteQuest(quest);
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
