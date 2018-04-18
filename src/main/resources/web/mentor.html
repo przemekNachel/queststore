@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns="http://www.w3.org/1999/xhtml">
 <head th:replace="fragments :: header (role='Mentor')">
+</head>
 <body class="cms">
 
 
@@ -201,9 +202,9 @@
                 </tr>
                 <tr th:each="quest : ${quests_basic}">
                     <td>[[${quest.name}]]</td>
-                    <td>[[${quest.description}]]</td>
                     <td>Basic</td>
                     <td>[[${quest.reward}]]</td>
+                    <td>[[${quest.description}]]</td>
                     <td class="edit-icons">
                         <ul class="nav">
                             <li class="nav-tab">
@@ -215,9 +216,9 @@
                     </td>
                 <tr th:each="quest : ${quests_extra}">
                     <td>[[${quest.name}]]</td>
-                    <td>[[${quest.description}]]</td>
                     <td>Extra</td>
                     <td>[[${quest.reward}]]</td>
+                    <td>[[${quest.description}]]</td>
                     <td class="edit-icons">
                         <ul class="nav">
                             <li class="nav-tab">
