@@ -267,30 +267,33 @@ public class ArtifactDaoImpl implements ArtifactDao {
     @Override
     public void addArtifactAdherence(String artifactName, String groupName) throws SQLException {
         Connection con = connectToDatabase();
-        Objects.requireNonNull(con).setAutoCommit(false);
-        Statement stmt = con.createStatement();
 
-        int groupId = getGroupId(con, groupName);
+        int artifactId;
+        int groupId;
 
-        Statement checkStatement = con.createStatement();
-        String query = "SELECT artifact_id FROM artifact_associations WHERE group_id='" + groupId + "';";
-        ResultSet checkRecord = checkStatement.executeQuery(query);
-        boolean addNew = !checkRecord.next();
-        checkStatement.close();
+        String artifactIdSql = "SELECT artifact_id FROM artifact_store WHERE name LIKE ?;";
+        String groupIdSql = "SELECT group_id FROM group_names WHERE group_name LIKE ?;";
+        String insertSql = "INSERT INTO artifact_associations(artifact_id, group_id) VALUES(?, ?);";
 
-        if (addNew) {
+        PreparedStatement artifactIdQuery = con.prepareStatement(artifactIdSql);
+        artifactIdQuery.setString(1, artifactName);
+        ResultSet artifactIdRs = artifactIdQuery.executeQuery();
+        artifactIdRs.next();
+        artifactId = artifactIdRs.getInt("artifact_id");
 
-            String sql = "INSERT INTO artifact_associations(artifact_id, group_id) " +
-                    "VALUES ((SELECT artifact_id FROM artifact_store WHERE name='" + artifactName + "'), " +
-                    "(SELECT group_id FROM group_names WHERE group_name='" + groupName + "'));";
-            stmt.executeUpdate(sql);
-        }
+        PreparedStatement groupIdQuery = con.prepareStatement(groupIdSql);
+        groupIdQuery.setString(1, groupName);
+        ResultSet groupIdRs = groupIdQuery.executeQuery();
+        groupIdRs.next();
+        groupId = groupIdRs.getInt("group_id");
+
+        PreparedStatement insertQuery = con.prepareStatement(insertSql);
+        insertQuery.setInt(1, artifactId);
+        insertQuery.setInt(2, groupId);
+        insertQuery.executeUpdate();
 
         con.commit();
-
-        stmt.close();
         con.close();
-
     }
 
     private int getGroupId(Connection connection, String groupName) throws SQLException {
