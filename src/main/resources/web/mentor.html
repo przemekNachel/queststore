@@ -68,13 +68,11 @@
                 <tr>
                     <th>Nickname</th>
                     <th>Email</th>
-                    <th>Type</th>
                     <th></th>
                 </tr>
-                <tr>
-                    <td>Jacek</td>
-                    <td>japa@email.com</td>
-                    <td>Student</td>
+                <tr th:each="user : ${users}" class="rectangle-content">
+                    <td>[[${user.nickname}]]</td>
+                    <td>[[${user.email}]]</td>
                     <td class="edit-icons">
                         <i class="ion-edit edit-icon edit-user-button" title="Edit user"></i>
                         <i class="ion-clipboard edit-icon" title="Show user"></i>
@@ -84,7 +82,6 @@
                 <tr>
                     <td>Zbigniew</td>
                     <td>japa@email.com</td>
-                    <td>Student</td>
                     <td class="edit-icons">
                         <i class="ion-edit edit-icon edit-user-button" title="Edit user"></i>
                         <i class="ion-clipboard edit-icon" title="Show user"></i>

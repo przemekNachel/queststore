@@ -9,6 +9,7 @@ import user.user.User;
 import user.user.UserDaoImpl;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class MentorTemplateResolver {
     private ViewData template;
@@ -37,6 +38,13 @@ public class MentorTemplateResolver {
     private void initializeVariables() throws SQLException {
         new LevelService().initializeLevels();
         template.setVariable("user", mentor);
+        ArrayList<User> students = new ArrayList<>();
+        for (String groupName : mentor.getAssociatedGroupNames()) {
+            for (User user : userDao.getUserGroup(groupName)) {
+                students.add(user);
+            }
+        }
+        template.setVariable("students", students);
         template.setVariable("classes", mentor.getAssociatedGroupNames());
     }
 }
