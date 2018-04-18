@@ -130,14 +130,20 @@
                     <th>Description</th>
                     <th></th>
                 </tr>
-                <tr>
-                    <td>Wand of wisdom</td>
+                <tr th:each="artifact : ${artifacts}">
+                    <td>[[${artifact.name}]]</td>
                     <td>Magic</td>
-                    <td>10000</td>
-                    <td>Some desc</td>
+                    <td>[[${artifact.price}]]</td>
+                    <td>[[${artifact.description}]]</td>
                     <td class="edit-icons">
                         <ul class="nav">
-                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete arftifact"></i></li>
+                            <li class="nav-tab">
+                                <form action="/artifact/remove" method="POST">
+                                    <input name="name" type="text" th:value="${artifact.name}" hidden>
+                                    <button type="submit" class="ion-trash-a edit-icon" style="border: none; background: none;" title="Delete artifact">
+                                </form>
+                                <!--<i class="ion-trash-a edit-icon" title="Delete arftifact"></i>-->
+                            </li>
                             <li class="nav-tab"><i class="ion-edit edit-icon edit-artifact-button"
                                                    title="Edit artifact"></i></li>
                         </ul>

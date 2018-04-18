@@ -270,6 +270,7 @@ public class ArtifactDaoImpl implements ArtifactDao {
 
         int artifactId;
         int groupId;
+        con.setAutoCommit(false);
 
         String artifactIdSql = "SELECT artifact_id FROM artifact_store WHERE name LIKE ?;";
         String groupIdSql = "SELECT group_id FROM group_names WHERE group_name LIKE ?;";
