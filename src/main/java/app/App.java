@@ -1,10 +1,7 @@
 package app;
 
 import com.sun.net.httpserver.HttpServer;
-import handlers.LoginRequestHandler;
-import handlers.LogoutRequestHandler;
-import handlers.RootRequestHandler;
-import handlers.StaticResourcesHandler;
+import handlers.*;
 import utils.RequestRedirector;
 import utils.SessionManager;
 
@@ -24,6 +21,11 @@ public class App {
         httpServer.createContext("/static", new StaticResourcesHandler());
         httpServer.createContext("/login", new LoginRequestHandler(sessionManager, redirector));
         httpServer.createContext("/logout", new LogoutRequestHandler(sessionManager, redirector));
+        httpServer.createContext("/user", new UserRequestHandler(sessionManager, redirector));
+        httpServer.createContext("/artifact", new ArtifactRequestHandler(sessionManager, redirector));
+        httpServer.createContext("/quest", new QuestRequestHandler(sessionManager, redirector));
+        httpServer.createContext("/class", new ClassRequestHandler(sessionManager, redirector));
+        httpServer.createContext("/level", new LevelRequestHandler(sessionManager, redirector));
         httpServer.start();
     }
 }

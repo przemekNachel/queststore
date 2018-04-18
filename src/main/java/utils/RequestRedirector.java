@@ -41,13 +41,13 @@ public class RequestRedirector {
     }
 
     private void redirectToMentor(HttpExchange exchange, ViewData template, User user) throws IOException {
-        template.setVariable("name", user.getNickname());
+        template.setVariable("user", user);
         String content = engine.process(template.getName(), template.getContext());
         sendTemplate(exchange, content);
     }
 
     private void redirectToAdmin(HttpExchange exchange, ViewData template, User user) throws IOException {
-        template.setVariable("name", user.getNickname());
+        template.setVariable("user", user);
         String content = engine.process(template.getName(), template.getContext());
         sendTemplate(exchange, content);
     }
