@@ -78,14 +78,15 @@
             <table style="width:100%">
                 <tr>
                     <th>Name</th>
-                    <th>Type</th>
+                    <th>Description</th>
                     <th></th>
                 </tr>
-                <tr>
-                    <td>Stone</td>
-                    <td>Basic</td>
+                <tr th:each="artifact : ${user_artifacts}">
+                    <td>[[${artifact.name}]]</td>
+                    <td>[[${artifact.description}]]</td>
                     <td class="edit-icons">
-                        <i class="ion-flash edit-icon" title="Use artifact"></i>
+                        <a th:href="@{'http://localhost:8000/artifact/use?name=' + ${artifact.name}}"
+                           class="ion-flash edit-icon" title="Use artifact"></i>
                     </td>
                 </tr>
             </table>

@@ -46,7 +46,7 @@ public class CodecoolerModel extends RawUser {
         return null;
     }
 
-    public Group<ArtifactModel> getCodecoolerArtifacts() {
+    public Group<ArtifactModel> getArtifacts() {
 
         return artifacts;
     }

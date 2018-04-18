@@ -36,5 +36,6 @@ public class CodecoolerTemplateResolver {
         template.setVariable("classes", codecooler.getCodecoolerGroupDisplay());
         template.setVariable("basic_artifacts", artifactDao.getArtifactGroup("artifact_basic"));
         template.setVariable("magic_artifacts", artifactDao.getArtifactGroup("artifact_magic"));
+        template.setVariable("user_artifacts", codecooler.getArtifacts());
     }
 }
