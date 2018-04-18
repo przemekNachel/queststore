@@ -42,6 +42,33 @@ public class ArtifactRequestHandler implements HttpHandler {
         redirector.redirect(httpExchange, user);
     }
 
+    private void handleRemoveArtifact(HttpExchange httpExchange) throws IOException {
+        String unparsedPostData = new BufferedReader(new InputStreamReader(httpExchange.getRequestBody())).readLine();
+
+        Map<String, String> parameters = ParametersUtil.parseParameters(unparsedPostData);
+        removeArtifact(parameters);
+    }
+
+    private void handleAddArtifact(HttpExchange httpExchange) throws IOException {
+        String unparsedPostData = new BufferedReader(new InputStreamReader(httpExchange.getRequestBody())).readLine();
+
+        Map<String, String> parameters = ParametersUtil.parseParameters(unparsedPostData);
+
+        ArtifactModel artifact = createArtifact(parameters);
+        addArtifactToDatabase(artifact, parameters.get("type"));
+    }
+
+    private void removeArtifact(Map<String, String> parameters) {
+        String name = parameters.get("name");
+        ArtifactDao dao = new ArtifactDaoImpl();
+        try {
+            ArtifactModel artifact = dao.getArtifactByName(name);
+            dao.deleteArtifact(artifact);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private ArtifactModel createArtifact(Map<String, String> parameters) {
         String name = parameters.get("name");
         String price = parameters.get("price");
