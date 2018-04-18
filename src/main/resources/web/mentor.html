@@ -96,11 +96,11 @@
 
     <div id="artifact-management" class="hidden">
         <div class="row">
-            <form action="/artifact/add">
+            <form method="post" action="/artifact/add">
                 <h3 class="heading">New artifact</h3>
                 <div class="row">
                     <label class="input-label" for="artifact-type">Type</label>
-                    <select class="input-select" id="artifact-type">
+                    <select class="input-select" name="type" id="artifact-type">
                         <option value="normal">Normal</option>
                         <option value="magic">Magic</option>
                     </select>
@@ -117,7 +117,7 @@
                     <label class="input-label" for="description">Description</label>
                     <input class="input-field" name="description" type="text" id="description" required/>
                 </div>
-                <input type="submit" class="button submit-button" value="Create">
+                <input type="submit" class="button submit-button" value="Add">
             </form>
         </div>
         <div class="row">
