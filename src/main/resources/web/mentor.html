@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns="http://www.w3.org/1999/xhtml">
 <head th:replace="fragments :: header (role='Mentor')">
+</head>
 <body class="cms">
 
 
@@ -32,18 +33,10 @@
             </div>
             <div class="rectangle">
                 <div class="rectangle-bar">
-                    Money
+                    Classes
                 </div>
-                <div id="money" class="rectangle-content">
-                    1000
-                </div>
-            </div>
-            <div class="rectangle">
-                <div class="rectangle-bar">
-                    Class
-                </div>
-                <div id="mentor-class" class="rectangle-content">
-                    KRK-2017-2
+                <div th:each="class : ${classes}" class="rectangle-content">
+                    [[${class}]]
                 </div>
             </div>
         </div>
@@ -76,13 +69,11 @@
                 <tr>
                     <th>Nickname</th>
                     <th>Email</th>
-                    <th>Type</th>
                     <th></th>
                 </tr>
-                <tr>
-                    <td>Jacek</td>
-                    <td>japa@email.com</td>
-                    <td>Student</td>
+                <tr th:each="user : ${users}" class="rectangle-content">
+                    <td>[[${user.nickname}]]</td>
+                    <td>[[${user.email}]]</td>
                     <td class="edit-icons">
                         <i class="ion-edit edit-icon edit-user-button" title="Edit user"></i>
                         <i class="ion-clipboard edit-icon" title="Show user"></i>
@@ -92,7 +83,6 @@
                 <tr>
                     <td>Zbigniew</td>
                     <td>japa@email.com</td>
-                    <td>Student</td>
                     <td class="edit-icons">
                         <i class="ion-edit edit-icon edit-user-button" title="Edit user"></i>
                         <i class="ion-clipboard edit-icon" title="Show user"></i>
@@ -210,14 +200,30 @@
                     <th>Description</th>
                     <th></th>
                 </tr>
-                <tr>
-                    <td>Feed people</td>
-                    <td>Extra</td>
-                    <td>10000</td>
-                    <td>Make a cake for a codecoolers</td>
+                <tr th:each="quest : ${quests_basic}">
+                    <td>[[${quest.name}]]</td>
+                    <td>Basic</td>
+                    <td>[[${quest.reward}]]</td>
+                    <td>[[${quest.description}]]</td>
                     <td class="edit-icons">
                         <ul class="nav">
-                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete quest"></i></li>
+                            <li class="nav-tab">
+                                <a th:href="@{'http://localhost:8000/quest/remove?name=${quest.name}}"
+                                   class="ion-trash-a edit-icon" title="Delete quest"></a></li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon edit-quest-button" title="Edit quest"></i>
+                            </li>
+                        </ul>
+                    </td>
+                <tr th:each="quest : ${quests_extra}">
+                    <td>[[${quest.name}]]</td>
+                    <td>Extra</td>
+                    <td>[[${quest.reward}]]</td>
+                    <td>[[${quest.description}]]</td>
+                    <td class="edit-icons">
+                        <ul class="nav">
+                            <li class="nav-tab">
+                                <a th:href="@{'http://localhost:8000/quest/remove?name=${quest.name}}"
+                                   class="ion-trash-a edit-icon" title="Delete quest"></a></li>
                             <li class="nav-tab"><i class="ion-edit edit-icon edit-quest-button" title="Edit quest"></i>
                             </li>
                         </ul>

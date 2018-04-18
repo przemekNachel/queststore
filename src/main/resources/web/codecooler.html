@@ -55,7 +55,8 @@
                     <td>Magic</td>
                     <td>[[${artifact.price}]]</td>
                     <td class="edit-icons">
-                        <i class="ion-ios-cart edit-icon" title="Buy artifact"></i>
+                        <a th:href="@{'http://localhost:8000/artifact/buy?name=' + ${artifact.name}}"
+                           class="ion-ios-cart edit-icon" title="Buy artifact"></a>i>
                     </td>
                 </tr>
                 <tr th:each="artifact : ${basic_artifacts}">
