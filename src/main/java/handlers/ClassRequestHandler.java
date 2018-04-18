@@ -28,6 +28,7 @@ public class ClassRequestHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
+
         User user = sessionManager.getUserFromSession(httpExchange);
         if (user == null || user.getRole() != Role.ADMIN) {
             redirector.redirect(httpExchange, "/");
@@ -45,8 +46,7 @@ public class ClassRequestHandler implements HttpHandler {
             Map<String, String> parameters = ParametersUtil.parseParameters(httpExchange.getRequestURI().getQuery());
             String groupName = parameters.getOrDefault("name", "");
             Group<User> newGroup = new Group<>(groupName);
-
-            if (disallowedGroupNames.contains(groupName) || groupName.isEmpty()) {
+            if (!disallowedGroupNames.contains(groupName) || groupName.isEmpty()) {
                 userSvc.addUserGroup(newGroup);
             }
         } catch (UnsupportedEncodingException e) {
