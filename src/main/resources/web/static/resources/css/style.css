@@ -221,7 +221,7 @@ td:first-of-type {
     height: 100%;
     width: 340px;
     background-color: #2a323c;
-    z-index: 9998;
+    z-index: 9997;
 
 }
 
@@ -293,7 +293,7 @@ td:first-of-type {
     right: 0;
     width: 260px;
     height: 61px;
-    z-index: 9999;
+    z-index: 9998;
 }
 
 .dropdown-toggle{

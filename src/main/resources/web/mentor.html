@@ -9,6 +9,14 @@
 
 
 <div class="content">
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            test
+        </div>
+
+    </div>
     <div class="content-header">
         <div class="content-header-label">Dashboard</div>
     </div>
@@ -43,44 +51,50 @@
 
     <div id="user-management" class="hidden">
         <div class="row">
-            <form>
-                <h3 class="heading">New student</h3>
+            <form method="get" action="/user/add">
+                <h3 class="heading">New user</h3>
                 <div class="row">
-                    <label class="input-label" for="user-type">Type</label>
-                    <select class="input-select" id="user-type">
-                        <option value="student" selected>Student</option>
+                    <label class="input-label" for="type">Type</label>
+                    <select class="input-select" name="type" id="type">
+                        <option selected value="student">Student</option>
+                        <option disabled value="mentor">Mentor</option>
+                        <option disabled value="administrator">Administrator</option>
                     </select>
                 </div>
                 <div class="row">
-                    <label class="input-label" for="user-name">Name</label>
-                    <input class="input-field" type="text" id="user-name" required/>
+                    <label class="input-label" for="nickname">Nickname</label>
+                    <input class="input-field" type="text" name="nickname" id="nickname" required/>
                 </div>
                 <div class="row">
-                    <label class="input-label" for="user-last-name">Last name</label>
-                    <input class="input-field" type="text" id="user-last-name" required/>
-                </div>
-                <div class="row">
-                    <label class="input-label" for="user-email">Email</label>
-                    <input class="input-field" type="text" id="user-email" required/>
+                    <label class="input-label" for="email">Email</label>
+                    <input class="input-field" type="text" name="email" id="email" required/>
                 </div>
                 <input type="submit" class="button submit-button" value="Create">
             </form>
             <h3 class="heading">Users</h3>
             <table style="width:100%">
                 <tr>
-                    <th>Name</th>
-                    <th>Last name</th>
+                    <th>Nickname</th>
                     <th>Email</th>
                     <th>Type</th>
                     <th></th>
                 </tr>
                 <tr>
                     <td>Jacek</td>
-                    <td>Placek</td>
                     <td>japa@email.com</td>
                     <td>Student</td>
                     <td class="edit-icons">
-                        <i class="ion-edit edit-icon" title="Edit user"></i>
+                        <i class="ion-edit edit-icon edit-user-button" title="Edit user"></i>
+                        <i class="ion-clipboard edit-icon" title="Show user"></i>
+                        <i class="ion-trash-a edit-icon" title="Remove user"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Zbigniew</td>
+                    <td>japa@email.com</td>
+                    <td>Student</td>
+                    <td class="edit-icons">
+                        <i class="ion-edit edit-icon edit-user-button" title="Edit user"></i>
                         <i class="ion-clipboard edit-icon" title="Show user"></i>
                         <i class="ion-trash-a edit-icon" title="Remove user"></i>
                     </td>
@@ -102,16 +116,16 @@
                     </select>
                 </div>
                 <div class="row">
-                    <label class="input-label" for="artifact-name">Name</label>
-                    <input class="input-field" type="text" id="artifact-name" required/>
+                    <label class="input-label" for="name">Name</label>
+                    <input class="input-field" name="name" type="text" id="name" required/>
                 </div>
                 <div class="row">
-                    <label class="input-label" for="artifact-price">Price</label>
-                    <input class="input-field" type="number" id="artifact-price" required/>
+                    <label class="input-label" for="price">Price</label>
+                    <input class="input-field" name="price" type="number" id="price" required/>
                 </div>
                 <div class="row">
-                    <label class="input-label" for="artifact-description">Description</label>
-                    <input class="input-field" type="text" id="artifact-description" required/>
+                    <label class="input-label" for="description">Description</label>
+                    <input class="input-field" name="description" type="text" id="description" required/>
                 </div>
                 <input type="submit" class="button submit-button" value="Create">
             </form>
@@ -123,16 +137,19 @@
                     <th>Name</th>
                     <th>Type</th>
                     <th>Price</th>
+                    <th>Description</th>
                     <th></th>
                 </tr>
                 <tr>
                     <td>Wand of wisdom</td>
                     <td>Magic</td>
                     <td>10000</td>
+                    <td>Some desc</td>
                     <td class="edit-icons">
                         <ul class="nav">
                             <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete arftifact"></i></li>
-                            <li class="nav-tab"><i class="ion-edit edit-icon" title="Edit artifact"></i></li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon edit-artifact-button"
+                                                   title="Edit artifact"></i></li>
                         </ul>
                     </td>
                 </tr>
@@ -162,23 +179,23 @@
             <form>
                 <h3 class="heading">New quest</h3>
                 <div class="row">
-                    <label class="input-label" for="quest-type">Type</label>
-                    <select class="input-select" id="quest-type">
+                    <label class="input-label" for="type">Type</label>
+                    <select class="input-select" name="type" id="type">
                         <option value="normal">Normal</option>
                         <option value="extra">Extra</option>
                     </select>
                 </div>
                 <div class="row">
-                    <label class="input-label" for="quest-name">Name</label>
-                    <input class="input-field" type="text" id="quest-name" required/>
+                    <label class="input-label" for="name">Name</label>
+                    <input class="input-field" name="name" type="text" id="name" required/>
                 </div>
                 <div class="row">
-                    <label class="input-label" for="quest-reward">Reward</label>
-                    <input class="input-field" type="number" id="quest-reward" required/>
+                    <label class="input-label" for="reward">Reward</label>
+                    <input class="input-field" name="reward" type="number" id="reward" required/>
                 </div>
                 <div class="row">
-                    <label class="input-label" for="quest-description">Description</label>
-                    <input class="input-field" type="text" id="quest-description" required/>
+                    <label class="input-label" for="description">Description</label>
+                    <input class="input-field" name="description" type="text" id="description" required/>
                 </div>
                 <input type="submit" class="button submit-button" value="Create">
             </form>
@@ -188,20 +205,21 @@
             <table style="width:100%">
                 <tr>
                     <th>Name</th>
-                    <th>Description</th>
                     <th>Type</th>
                     <th>Reward</th>
+                    <th>Description</th>
                     <th></th>
                 </tr>
                 <tr>
                     <td>Feed people</td>
-                    <td>Make a cake for a codecoolers</td>
                     <td>Extra</td>
                     <td>10000</td>
+                    <td>Make a cake for a codecoolers</td>
                     <td class="edit-icons">
                         <ul class="nav">
                             <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete quest"></i></li>
-                            <li class="nav-tab"><i class="ion-edit edit-icon" title="Edit quest"></i></li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon edit-quest-button" title="Edit quest"></i>
+                            </li>
                         </ul>
                     </td>
                 </tr>
@@ -225,7 +243,6 @@
             </table>
         </div>
     </div>
-    <th:block th:include="fragments :: class-management"/>
 </div>
 <div class="left-bar">
     <div class="logo">
@@ -242,10 +259,6 @@
             <i class="ion-ios-person-outline option-icon"></i>
             <p class="option-text">User management</p>
         </li>
-        <li class="option" id="switch-class-management">
-            <i class="ion-ios-people-outline option-icon"></i>
-            <p class="option-text">Class management</p>
-        </li>
         <li class="option" id="switch-artifact-management">
             <i class="ion-social-bitcoin-outline option-icon"></i>
             <p class="option-text">Artifact management</p>
@@ -257,6 +270,162 @@
     </ul>
 </div>
 
+
+<div id="edit-user-form" style="display: none;">
+    <span class="close">&times;</span>
+    <form method="get" action="/user/edit">
+        <h3 class="heading">Edit user</h3>
+        <input class="input-field" type="hidden" name="previousnickname" id="previousnickname" value=""/>
+        <div class="row">
+            <label class="input-label" for="newnickname">New nickname</label>
+            <input class="input-field" type="text" name="newnickname" id="newnickname" required/>
+        </div>
+        <div class="row">
+            <label class="input-label" for="newemail">New email</label>
+            <input class="input-field" type="text" name="email" id="newemail" required/>
+        </div>
+        <input type="submit" class="button submit-button" value="Update">
+    </form>
+</div>
+
+<div id="edit-artifact-form" style="display: none;">
+    <span class="close">&times;</span>
+    <form method="get" action="/artifact/edit">
+        <h3 class="heading">Edit artifact</h3>
+        <input class="input-field" type="hidden" name="previousname" id="previousname" value=""/>
+        <div class="row">
+            <label class="input-label" for="name">Name</label>
+            <input class="input-field" name="name" type="text" id="name" required/>
+        </div>
+        <div class="row">
+            <label class="input-label" for="price">Price</label>
+            <input class="input-field" name="price" type="number" id="price" required/>
+        </div>
+        <div class="row">
+            <label class="input-label" for="description">Description</label>
+            <input class="input-field" name="description" type="text" id="description" required/>
+        </div>
+        <input type="submit" class="button submit-button" value="Update">
+    </form>
+</div>
+
+<div id="edit-quest-form" style="display: none;">
+    <span class="close">&times;</span>
+    <form method="get" action="/quest/edit">
+        <h3 class="heading">Edit artifact</h3>
+        <input class="input-field" type="hidden" name="previousname" id="previousname" value=""/>
+        <div class="row">
+            <label class="input-label" for="name">Name</label>
+            <input class="input-field" name="name" type="text" id="name" required/>
+        </div>
+        <div class="row">
+            <label class="input-label" for="reward">Reward</label>
+            <input class="input-field" name="reward" type="number" id="reward" required/>
+        </div>
+        <div class="row">
+            <label class="input-label" for="description">Description</label>
+            <input class="input-field" name="description" type="text" id="description" required/>
+        </div>
+        <input type="submit" class="button submit-button" value="Update">
+    </form>
+</div>
+
+
 <script src="static/resources/js/app.js"></script>
+<script>
+    let modal = document.getElementById('myModal');
+    let modal_content = document.querySelector('.modal-content');
+    let edit_user_form = document.getElementById('edit-user-form');
+    let edit_artifact_form = document.getElementById('edit-artifact-form');
+
+    let edit_user_buttons = Array.from(document.getElementsByClassName('edit-user-button'));
+    let edit_artifact_buttons = Array.from(document.getElementsByClassName('edit-artifact-button'));
+    let edit_quest_buttons = Array.from(document.getElementsByClassName('edit-quest-button'));
+
+    edit_user_buttons.forEach(element => {
+
+        element.onclick = function (event) {
+            modal_content.innerHTML = edit_user_form.innerHTML;
+            modal.style.display = "block";
+
+            let inputElements = Array.from(modal_content.getElementsByTagName('*'));
+
+
+            let edit_user_data = Array.from(event.target.parentNode.parentNode.getElementsByTagName('TD'));
+
+            let editHeader = inputElements.filter(t => t.tagName === "H3")[0];
+            editHeader.innerText = `Edit user - ${edit_user_data[0].innerText}`;
+
+            inputElements = inputElements.filter(t => t.tagName === "INPUT");
+            inputElements[0].setAttribute('value', edit_user_data[0].innerText);
+            inputElements[1].setAttribute('value', edit_user_data[0].innerText);
+            inputElements[2].setAttribute('value', edit_user_data[1].innerText);
+        }
+    });
+
+    edit_artifact_buttons.forEach(element => {
+
+        element.onclick = function (event) {
+            modal_content.innerHTML = edit_artifact_form.innerHTML;
+            modal.style.display = "block";
+
+            let inputElements = Array.from(modal_content.getElementsByTagName('*'));
+
+//            inputElements.forEach(t => console.log(t));
+
+            let edit_artifact_data = Array.from(event.target.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('td'));
+
+            edit_artifact_data.forEach(t => console.log(t));
+            let editHeader = inputElements.filter(t => t.tagName === "H3")[0];
+            editHeader.innerText = `Edit artifact - ${edit_artifact_data[0].innerText}`;
+
+            inputElements = inputElements.filter(t => t.tagName === "INPUT");
+            inputElements.forEach(t => console.log(t));
+            inputElements[0].setAttribute('value', edit_artifact_data[0].innerText);
+            inputElements[1].setAttribute('value', edit_artifact_data[0].innerText);
+            inputElements[2].setAttribute('value', edit_artifact_data[2].innerText);
+            inputElements[3].setAttribute('value', edit_artifact_data[3].innerText);
+        }
+    });
+
+    edit_quest_buttons.forEach(element => {
+
+        element.onclick = function (event) {
+            modal_content.innerHTML = edit_artifact_form.innerHTML;
+            modal.style.display = "block";
+
+            let inputElements = Array.from(modal_content.getElementsByTagName('*'));
+
+//            inputElements.forEach(t => console.log(t));
+
+            let edit_artifact_data = Array.from(event.target.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('td'));
+
+            edit_artifact_data.forEach(t => console.log(t));
+            let editHeader = inputElements.filter(t => t.tagName === "H3")[0];
+            editHeader.innerText = `Edit quest - ${edit_artifact_data[0].innerText}`;
+
+            inputElements = inputElements.filter(t => t.tagName === "INPUT");
+            inputElements.forEach(t => console.log(t));
+            inputElements[0].setAttribute('value', edit_artifact_data[0].innerText);
+            inputElements[1].setAttribute('value', edit_artifact_data[0].innerText);
+            inputElements[2].setAttribute('value', edit_artifact_data[2].innerText);
+            inputElements[3].setAttribute('value', edit_artifact_data[3].innerText);
+        }
+    });
+
+
+    let span = document.getElementsByClassName("close")[0];
+
+
+    span.onclick = function () {
+        modal.style.display = "none";
+    };
+
+    window.onclick = function (event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
 </body>
 </html>
