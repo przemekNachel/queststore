@@ -30,14 +30,11 @@ public class ArtifactRequestHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         User user = sessionManager.getUserFromSession(httpExchange);
-        if (httpExchange.getRequestMethod().equals("POST")) {
-            String unparsedPostData = new BufferedReader(new InputStreamReader(httpExchange.getRequestBody())).readLine();
-
-            Map<String, String> parameters = ParametersUtil.parseParameters(unparsedPostData);
-            System.out.println(unparsedPostData);
-
-            ArtifactModel artifact = createArtifact(parameters);
-            addArtifactToDatabase(artifact, parameters.get("type"));
+        String URIPath = httpExchange.getRequestURI().getPath();
+        if (httpExchange.getRequestMethod().equals("POST") && URIPath.equals("/artifact/add")) {
+            handleAddArtifact(httpExchange);
+        } else if (httpExchange.getRequestMethod().equals("POST") && URIPath.equals("/artifact/remove")) {
+            handleRemoveArtifact(httpExchange);
         }
         redirector.redirect(httpExchange, user);
     }
