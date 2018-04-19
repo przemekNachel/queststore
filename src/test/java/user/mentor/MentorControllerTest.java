@@ -102,7 +102,7 @@ public class MentorControllerTest {
 
         assertEquals(questModel.getDescription(), "nowyOpis");
         assertEquals(questModel.getReward(), Integer.valueOf(123));
-        verify(questService).updateQuest(questModel);
+        verify(questService).updateQuest(questModel, questModel.getName());
 
     }
 

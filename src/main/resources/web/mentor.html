@@ -171,9 +171,9 @@
                     <th>Artifact</th>
                     <th></th>
                 </tr>
-                <tr>
-                    <td>Przemek Nachel</td>
-                    <td>Stone</td>
+                <tr th:each="owner : ${artifacts_owners}">
+                    <td>[[${owner.nickname}]]</td>
+                    <td>[[${owner.thing}]]</td>
                     <td class="edit-icons">
                         <i class="ion-checkmark edit-icon" title="Mark artifact"></i>
                     </td>
@@ -261,9 +261,9 @@
                     <th>Quest</th>
                     <th></th>
                 </tr>
-                <tr>
-                    <td>Przemek Nachel</td>
-                    <td>Feed people</td>
+                <tr th:each="owner : ${quests_owners}">
+                    <td>[[${owner.nickname}]]</td>
+                    <td>[[${owner.thing}]]</td>
                     <td class="edit-icons">
                         <i class="ion-checkmark edit-icon" title="Mark quest"></i>
                     </td>

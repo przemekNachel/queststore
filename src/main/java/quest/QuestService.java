@@ -43,11 +43,11 @@ public class QuestService {
         return quest;
     }
 
-    public boolean updateQuest(QuestModel quest) {
+    public boolean updateQuest(QuestModel quest, String previousName) {
 
         boolean updated = true;
         try {
-            new QuestDaoImpl().updateQuest(quest);
+            new QuestDaoImpl().updateQuest(quest, previousName);
         } catch (SQLException e) {
             ExceptionLog.add(e);
             updated = false;
