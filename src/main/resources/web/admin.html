@@ -28,7 +28,7 @@
                     Hello administrator
                 </div>
                 <div id="full-name" class="rectangle-content">
-                    John Smith
+                    [[${user.nickname}]]
                 </div>
             </div>
         </div>
@@ -65,20 +65,10 @@
                     <th>Type</th>
                     <th></th>
                 </tr>
-                <tr>
-                    <td>Jacek</td>
-                    <td>japa@email.com</td>
-                    <td>Student</td>
-                    <td class="edit-icons">
-                        <i class="ion-edit edit-icon edit-user-button" title="Edit user"></i>
-                        <i class="ion-clipboard edit-icon" title="Show user"></i>
-                        <i class="ion-trash-a edit-icon" title="Remove user"></i>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Zbigniew</td>
-                    <td>japa@email.com</td>
-                    <td>Student</td>
+                <tr th:each="user : ${users}">
+                    <td>[[${user.nickname}]]</td>
+                    <td>[[${user.email}]]</td>
+                    <td>[[${user.role}]]</td>
                     <td class="edit-icons">
                         <i class="ion-edit edit-icon edit-user-button" title="Edit user"></i>
                         <i class="ion-clipboard edit-icon" title="Show user"></i>

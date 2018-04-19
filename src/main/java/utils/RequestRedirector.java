@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpExchange;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import template.AdminTemplateResolver;
 import template.CodecoolerTemplateResolver;
 import template.MentorTemplateResolver;
 import template.ViewData;
@@ -49,8 +50,9 @@ public class RequestRedirector {
     }
 
     private void redirectToAdmin(HttpExchange exchange, ViewData template, User user) throws IOException {
-        template.setVariable("user", user);
-        String content = engine.process(template.getName(), template.getContext());
+        AdminTemplateResolver admin = new AdminTemplateResolver(template, user);
+        ViewData adminTemplate = admin.getTemplate();
+        String content = engine.process(adminTemplate.getName(), adminTemplate.getContext());
         sendTemplate(exchange, content);
     }
 
