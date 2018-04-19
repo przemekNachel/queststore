@@ -45,7 +45,7 @@ public class MentorTemplateResolver {
 
         for (User user : userDao.getUserGroup("codecoolers")) {
             CodecoolerModel codecooler = (CodecoolerModel) userService.getUser(user.getNickname());
-            for (QuestModel quest : questDao.getQuestGroup("quest")) {
+            for (QuestModel quest : questDao.getQuestGroup("quests")) {
                 questsOwners.add(new Owner(codecooler.getNickname(), quest.getName()));
             }
         }

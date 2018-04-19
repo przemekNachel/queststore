@@ -165,6 +165,7 @@ public class QuestDaoImpl implements QuestDao {
         String questIdSql = "SELECT quest_id FROM quest_store WHERE name LIKE ?;";
         String groupIdSql = "SELECT group_id FROM group_names WHERE group_name LIKE ?;";
         String insertSql = "INSERT INTO quest_associations(quest_id, group_id) VALUES(?, ?);";
+        String insertToQuestGroupSql = "INSERT INTO quest_associations(quest_id, group_id) VALUES(?, 3);";
 
         PreparedStatement questIdQuery = con.prepareStatement(questIdSql);
         questIdQuery.setString(1, questName);
@@ -182,6 +183,10 @@ public class QuestDaoImpl implements QuestDao {
         insertQuery.setInt(1, questId);
         insertQuery.setInt(2, groupId);
         insertQuery.executeUpdate();
+
+        PreparedStatement insertIntouestGroupQuery = con.prepareStatement(insertToQuestGroupSql);
+        insertIntouestGroupQuery.setInt(1, questId);
+        insertIntouestGroupQuery.executeUpdate();
 
         con.commit();
         con.close();
