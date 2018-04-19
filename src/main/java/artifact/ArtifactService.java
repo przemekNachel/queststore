@@ -78,7 +78,7 @@ public class ArtifactService {
 
         boolean updated = true;
         try {
-            new ArtifactDaoImpl().updateArtifact(artifact);
+            new ArtifactDaoImpl().updateArtifact(artifact.getName(), artifact);
         } catch (SQLException e) {
             ExceptionLog.add(e);
             updated = false;
