@@ -10,7 +10,7 @@ import java.util.Objects;
 public class QuestDaoImpl implements QuestDao {
     @Override
     public Connection connectToDatabase() throws SQLException {
-        String db_path = "jdbc:sqlite:database/database.db";
+        String db_path = "jdbc:log4jdbc:sqlite:database/database.db";
         return DriverManager.getConnection(db_path);
     }
 
@@ -40,15 +40,11 @@ public class QuestDaoImpl implements QuestDao {
         Statement stmt = con.createStatement();
         Objects.requireNonNull(con).setAutoCommit(false);
 
-        String questName = quest.getName();
-        String questDescr = quest.getDescription();
-        Integer questReward = quest.getReward();
-
-        String sql = ("UPDATE quest_store SET " +
-                "name='" + questName + "' " +
-                "descr='" + questDescr + "', " +
-                "reward='" + questReward + "' " +
-                "WHERE name='" + previousName + "';");
+        String sql = "UPDATE quest_store SET " +
+                "name='" + quest.getName() + "', " +
+                "descr='" + quest.getDescription() + "', " +
+                "reward='" + quest.getReward() + "' " +
+                "WHERE name='" + previousName + "'";
 
         stmt.executeUpdate(sql);
         con.commit();
@@ -74,22 +70,25 @@ public class QuestDaoImpl implements QuestDao {
 
     @Override
     public QuestModel getQuest(String name) throws SQLException {
-        Connection con = connectToDatabase();
-        Statement stmt = con.createStatement();
+        String sql = "SELECT * FROM quest_store WHERE name LIKE ?";
+        QuestModel questModel = null;
 
-        String sql = "SELECT * FROM quest_store WHERE name='" + name + "';";
+        try (Connection connection = connectToDatabase()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setString(1, name);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()) {
+                    String questName = resultSet.getString("name");
+                    String questDescr = resultSet.getString("descr");
+                    Integer questReward = resultSet.getInt("reward");
+                    questModel = new QuestModel(questName, questDescr, questReward);
+                }
 
-        ResultSet rs = stmt.executeQuery(sql);
+            }
+        }
 
-        String questName = rs.getString("name");
-        String questDescr = rs.getString("descr");
-        Integer questReward = rs.getInt("reward");
+        return questModel;
 
-        stmt.close();
-        rs.close();
-        con.close();
-
-        return new QuestModel(questName, questDescr, questReward);
     }
 
 

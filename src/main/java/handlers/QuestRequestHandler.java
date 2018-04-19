@@ -43,7 +43,6 @@ public class QuestRequestHandler implements HttpHandler {
         User user = sessionManager.getUserFromSession(httpExchange);
         String URIPath = httpExchange.getRequestURI().getPath();
         String method = httpExchange.getRequestMethod();
-        System.out.println(method);
         if (user.getRole() == Role.MENTOR) {
             if (method.equalsIgnoreCase("post") && URIPath.equalsIgnoreCase("/quest/add")) {
                 handleAddNewQuest(httpExchange);
@@ -95,12 +94,11 @@ public class QuestRequestHandler implements HttpHandler {
         QuestDaoImpl questDao = new QuestDaoImpl();
         Map<String, String> parameters = ParametersUtil.parseParameters(exchange.getRequestURI().getQuery());
         try {
-            QuestModel quest = questDao.getQuest(parameters.get("name"));
+            QuestModel quest = questDao.getQuest(parameters.get("previousname"));
             quest.setName(parameters.get("name"));
             quest.setDescription(parameters.get("description"));
             int reward = Integer.parseInt(parameters.get("reward"));
             quest.setReward(reward);
-            System.out.println(quest.getName() + quest.getDescription() + quest.getReward());
             questDao.updateQuest(quest, parameters.get("previousname"));
         }catch (SQLException e){
             e.printStackTrace();
