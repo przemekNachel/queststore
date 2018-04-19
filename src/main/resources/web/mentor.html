@@ -373,6 +373,7 @@
     let modal_content = document.querySelector('.modal-content');
     let edit_user_form = document.getElementById('edit-user-form');
     let edit_artifact_form = document.getElementById('edit-artifact-form');
+    let edit_quest_form = document.getElementById('edit-quest-form');
 
     let edit_user_buttons = Array.from(document.getElementsByClassName('edit-user-button'));
     let edit_artifact_buttons = Array.from(document.getElementsByClassName('edit-artifact-button'));
@@ -427,7 +428,7 @@
     edit_quest_buttons.forEach(element => {
 
         element.onclick = function (event) {
-            modal_content.innerHTML = edit_artifact_form.innerHTML;
+            modal_content.innerHTML = edit_quest_form.innerHTML;
             modal.style.display = "block";
 
             let inputElements = Array.from(modal_content.getElementsByTagName('*'));
