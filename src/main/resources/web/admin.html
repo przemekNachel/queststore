@@ -72,7 +72,8 @@
                     <td class="edit-icons">
                         <i class="ion-edit edit-icon edit-user-button" title="Edit user"></i>
                         <i class="ion-clipboard edit-icon" title="Show user"></i>
-                        <i class="ion-trash-a edit-icon" title="Remove user"></i>
+                        <a th:href="@{'http://localhost:8000/user/remove?nickname=' + ${user.nickname}}"
+                           class="ion-trash-a edit-icon" title="Remove user"></a>
                     </td>
                 </tr>
             </table>
