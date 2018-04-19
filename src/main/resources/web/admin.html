@@ -78,53 +78,6 @@
             </table>
         </div>
     </div>
-    <div id="class-management" class="hidden">
-
-        <div class="row">
-            <h3 class="heading">New class</h3>
-            <form action="/class/add">
-                <div class="row">
-                    <label class="input-label" for="class-name">Class name</label>
-                    <input class="input-field" name = "name" type="text" id="class-name" required/>
-                </div>
-                <input type="submit" class="button submit-button" value="Create">
-            </form>
-        </div>
-        <div class="row">
-            <h3 class="heading">Classes</h3>
-            <table style="width:100%">
-                <tr>
-                    <th>Name</th>
-                    <th>Action</th>
-                </tr>
-                <tr th:each="class : ${classes}">
-                    <td>HTML Programers</td>
-                    <td class="edit-icons">
-                        <ul class="nav">
-                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete class"></i></li>
-                            <li class="nav-tab"><i class="ion-edit edit-icon edit-class-button" title="Edit class"></i>
-                            </li>
-                            <li class="nav-tab"><i class="ion-android-people edit-icon"></i></li>
-                        </ul>
-                    </td>
-
-                </tr>
-                <tr>
-                    <td>HTML Programers</td>
-                    <td class="edit-icons">
-                        <ul class="nav">
-                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete class"></i></li>
-                            <li class="nav-tab"><i class="ion-edit edit-icon edit-class-button" title="Edit class"></i>
-                            </li>
-                            <li class="nav-tab"><i class="ion-android-people edit-icon"></i></li>
-                        </ul>
-                    </td>
-
-                </tr>
-            </table>
-
-        </div>
-    </div>
 
     <div id="level-management" class="hidden">
         <div class="row">
@@ -179,10 +132,7 @@
             <i class="ion-ios-person-outline option-icon"></i>
             <p class="option-text">User management</p>
         </li>
-        <li class="option" id="switch-class-management">
-            <i class="ion-ios-people-outline option-icon"></i>
-            <p class="option-text">Class management</p>
-        </li>
+
         <li class="option" id="switch-level-management">
             <i class="ion-ios-bookmarks-outline option-icon"></i>
             <p class="option-text">Level management</p>
@@ -215,19 +165,6 @@
     </form>
 </div>
 
-<div id="edit-class-form" style="display: none;">
-    <span class="close">&times;</span>
-    <form method="get" action="/class/edit">
-        <h3 class="heading">Edit class</h3>
-        <input class="input-field" type="hidden" name="previousname" id="previousname" value=""/>
-        <div class="row">
-            <label class="input-label" for="class-name">New class name</label>
-            <input class="input-field" name="name" type="text" id="class-name" required/>
-        </div>
-        <input type="submit" class="button submit-button" value="Update">
-    </form>
-</div>
-
 <div id="edit-level-form" style="display: none;">
     <span class="close">&times;</span>
     <form method="get" action="/level/edit">
@@ -252,11 +189,9 @@
     let modal = document.getElementById('myModal');
     let modal_content = document.querySelector('.modal-content');
     let edit_user_form = document.getElementById('edit-user-form');
-    let edit_class_form = document.getElementById('edit-class-form');
     let edit_level_form = document.getElementById('edit-level-form');
 
     let edit_user_buttons = Array.from(document.getElementsByClassName('edit-user-button'));
-    let edit_class_buttons = Array.from(document.getElementsByClassName('edit-class-button'));
     let edit_level_buttons = Array.from(document.getElementsByClassName('edit-level-button'));
 
     edit_user_buttons.forEach(element => {
@@ -280,25 +215,6 @@
         }
     });
 
-    edit_class_buttons.forEach(element => {
-
-        element.onclick = function(event) {
-            modal_content.innerHTML = edit_class_form.innerHTML;
-            modal.style.display = "block";
-
-            let inputElements = Array.from(modal_content.getElementsByTagName('*'));
-
-
-            let edit_user_data = Array.from(event.target.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('TD'));
-
-            let editHeader = inputElements.filter(t => t.tagName === "H3")[0];
-            editHeader.innerText = `Edit user - ${edit_user_data[0].innerText}`;
-
-            inputElements = inputElements.filter(t => t.tagName === "INPUT");
-            inputElements[0].setAttribute('value', edit_user_data[0].innerText);
-            inputElements[1].setAttribute('value', edit_user_data[0].innerText);
-        }
-    });
 
     edit_level_buttons.forEach(element => {
 
