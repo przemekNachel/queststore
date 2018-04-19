@@ -24,7 +24,6 @@ public class App {
         httpServer.createContext("/user", new UserRequestHandler(sessionManager, redirector));
         httpServer.createContext("/artifact", new ArtifactRequestHandler(sessionManager, redirector));
         httpServer.createContext("/quest", new QuestRequestHandler(sessionManager, redirector));
-        httpServer.createContext("/class", new ClassRequestHandler(sessionManager, redirector));
         httpServer.createContext("/level", new LevelRequestHandler(sessionManager, redirector));
         httpServer.start();
     }

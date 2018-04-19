@@ -86,7 +86,7 @@ public class UserRequestHandler implements HttpHandler {
         String type = parameters.get("type");
 
         if (type.equalsIgnoreCase("student")) createCodecooler(email, nickname);
-        else if (type.equalsIgnoreCase("student")) createMentor(email, nickname);
+        else if (type.equalsIgnoreCase("mentor")) createMentor(email, nickname);
 
     }
 

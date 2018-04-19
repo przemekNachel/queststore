@@ -28,21 +28,20 @@
                     Hello administrator
                 </div>
                 <div id="full-name" class="rectangle-content">
-                    John Smith
+                    [[${user.nickname}]]
                 </div>
             </div>
         </div>
     </div>
     <div id="user-management" class="hidden">
         <div class="row">
-            <form method="get" action="/users/add">
+            <form method="get" action="/user/add">
                 <h3 class="heading">New user</h3>
                 <div class="row">
                     <label class="input-label" for="type">Type</label>
                     <select class="input-select" name ="type" id="type">
                         <option value="student">Student</option>
                         <option value="mentor">Mentor</option>
-                        <option value="administrator">Administrator</option>
                     </select>
                 </div>
                 <div class="row">
@@ -65,74 +64,18 @@
                     <th>Type</th>
                     <th></th>
                 </tr>
-                <tr>
-                    <td>Jacek</td>
-                    <td>japa@email.com</td>
-                    <td>Student</td>
+                <tr th:each="user : ${users}">
+                    <td>[[${user.nickname}]]</td>
+                    <td>[[${user.email}]]</td>
+                    <td>[[${user.role}]]</td>
                     <td class="edit-icons">
                         <i class="ion-edit edit-icon edit-user-button" title="Edit user"></i>
                         <i class="ion-clipboard edit-icon" title="Show user"></i>
-                        <i class="ion-trash-a edit-icon" title="Remove user"></i>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Zbigniew</td>
-                    <td>japa@email.com</td>
-                    <td>Student</td>
-                    <td class="edit-icons">
-                        <i class="ion-edit edit-icon edit-user-button" title="Edit user"></i>
-                        <i class="ion-clipboard edit-icon" title="Show user"></i>
-                        <i class="ion-trash-a edit-icon" title="Remove user"></i>
+                        <a th:href="@{'http://localhost:8000/user/remove?nickname=' + ${user.nickname}}"
+                           class="ion-trash-a edit-icon" title="Remove user"></a>
                     </td>
                 </tr>
             </table>
-        </div>
-    </div>
-    <div id="class-management" class="hidden">
-
-        <div class="row">
-            <h3 class="heading">New class</h3>
-            <form action="/class/add">
-                <div class="row">
-                    <label class="input-label" for="class-name">Class name</label>
-                    <input class="input-field" name = "name" type="text" id="class-name" required/>
-                </div>
-                <input type="submit" class="button submit-button" value="Create">
-            </form>
-        </div>
-        <div class="row">
-            <h3 class="heading">Classes</h3>
-            <table style="width:100%">
-                <tr>
-                    <th>Name</th>
-                    <th>Action</th>
-                </tr>
-                <tr th:each="class : ${classes}">
-                    <td>HTML Programers</td>
-                    <td class="edit-icons">
-                        <ul class="nav">
-                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete class"></i></li>
-                            <li class="nav-tab"><i class="ion-edit edit-icon edit-class-button" title="Edit class"></i>
-                            </li>
-                            <li class="nav-tab"><i class="ion-android-people edit-icon"></i></li>
-                        </ul>
-                    </td>
-
-                </tr>
-                <tr>
-                    <td>HTML Programers</td>
-                    <td class="edit-icons">
-                        <ul class="nav">
-                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete class"></i></li>
-                            <li class="nav-tab"><i class="ion-edit edit-icon edit-class-button" title="Edit class"></i>
-                            </li>
-                            <li class="nav-tab"><i class="ion-android-people edit-icon"></i></li>
-                        </ul>
-                    </td>
-
-                </tr>
-            </table>
-
         </div>
     </div>
 
@@ -160,12 +103,11 @@
                     <th>Threshold</th>
                     <th>Action</th>
                 </tr>
-                <tr>
-                    <td class="level-table">Scratch Developer</td>
-                    <td class="level-table">999999</td>
+                <tr th:each="level : ${levels}">
+                    <td class="level-table">[[${level.value}]]</td>
+                    <td class="level-table">[[${level.key}]]</td>
                     <td class="edit-icons">
                         <ul class="nav">
-                            <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete level"></i></li>
                             <li class="nav-tab"><i class="ion-edit edit-icon edit-level-button" title="Edit level"></i>
                             </li>
                         </ul>
@@ -189,10 +131,7 @@
             <i class="ion-ios-person-outline option-icon"></i>
             <p class="option-text">User management</p>
         </li>
-        <li class="option" id="switch-class-management">
-            <i class="ion-ios-people-outline option-icon"></i>
-            <p class="option-text">Class management</p>
-        </li>
+
         <li class="option" id="switch-level-management">
             <i class="ion-ios-bookmarks-outline option-icon"></i>
             <p class="option-text">Level management</p>
@@ -225,19 +164,6 @@
     </form>
 </div>
 
-<div id="edit-class-form" style="display: none;">
-    <span class="close">&times;</span>
-    <form method="get" action="/class/edit">
-        <h3 class="heading">Edit class</h3>
-        <input class="input-field" type="hidden" name="previousname" id="previousname" value=""/>
-        <div class="row">
-            <label class="input-label" for="class-name">New class name</label>
-            <input class="input-field" name="name" type="text" id="class-name" required/>
-        </div>
-        <input type="submit" class="button submit-button" value="Update">
-    </form>
-</div>
-
 <div id="edit-level-form" style="display: none;">
     <span class="close">&times;</span>
     <form method="get" action="/level/edit">
@@ -262,11 +188,9 @@
     let modal = document.getElementById('myModal');
     let modal_content = document.querySelector('.modal-content');
     let edit_user_form = document.getElementById('edit-user-form');
-    let edit_class_form = document.getElementById('edit-class-form');
     let edit_level_form = document.getElementById('edit-level-form');
 
     let edit_user_buttons = Array.from(document.getElementsByClassName('edit-user-button'));
-    let edit_class_buttons = Array.from(document.getElementsByClassName('edit-class-button'));
     let edit_level_buttons = Array.from(document.getElementsByClassName('edit-level-button'));
 
     edit_user_buttons.forEach(element => {
@@ -290,25 +214,6 @@
         }
     });
 
-    edit_class_buttons.forEach(element => {
-
-        element.onclick = function(event) {
-            modal_content.innerHTML = edit_class_form.innerHTML;
-            modal.style.display = "block";
-
-            let inputElements = Array.from(modal_content.getElementsByTagName('*'));
-
-
-            let edit_user_data = Array.from(event.target.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('TD'));
-
-            let editHeader = inputElements.filter(t => t.tagName === "H3")[0];
-            editHeader.innerText = `Edit user - ${edit_user_data[0].innerText}`;
-
-            inputElements = inputElements.filter(t => t.tagName === "INPUT");
-            inputElements[0].setAttribute('value', edit_user_data[0].innerText);
-            inputElements[1].setAttribute('value', edit_user_data[0].innerText);
-        }
-    });
 
     edit_level_buttons.forEach(element => {
 
