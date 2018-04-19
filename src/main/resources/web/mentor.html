@@ -267,7 +267,12 @@
                     <td>[[${owner.nickname}]]</td>
                     <td>[[${owner.thing}]]</td>
                     <td class="edit-icons">
-                        <i class="ion-checkmark edit-icon" title="Mark quest"></i>
+                        <form action="/quest/remove" method="POST">
+                            <input name="name" type="text" th:value="${owner.thing}" hidden>
+                            <input name="nickname" type="text" th:value="${owner.nickname}" hidden>
+                            <button style="border: none; background: none;" type="submit"
+                                    class="ion-checkmark edit-icon" title="Mark quest"></button>
+                        </form>
                     </td>
                 </tr>
             </table>

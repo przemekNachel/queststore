@@ -111,8 +111,8 @@ public class QuestRequestHandler implements HttpHandler {
 
         String postInputData = new BufferedReader(new InputStreamReader(exchange.getRequestBody())).readLine();
         Map<String, String> parameters = ParametersUtil.parseParameters(postInputData);
-        String questName = parameters.get("questName");
-        String studentName = parameters.get("studentName");
+        String questName = parameters.get("name");
+        String studentName = parameters.get("nickname");
         try {
             QuestModel quest = questDao.getQuest(questName);
             CodecoolerModel codecooler = createCodecooler(studentName);
