@@ -124,22 +124,20 @@ public class QuestRequestHandler implements HttpHandler {
         }
     }
 
-    public CodecoolerModel createCodecooler(String userName) {
+    public CodecoolerModel createCodecooler(String userName) throws SQLException {
         UserDaoImpl userDao = new UserDaoImpl();
         WalletDaoImpl walletDao = new WalletDaoImpl();
         ArtifactDaoImpl artifactDao = new ArtifactDaoImpl();
         LevelDaoImpl levelDao = new LevelDaoImpl();
-        CodecoolerModel codecooler;
-        try {
-            RawUser user = userDao.getUser(userName);
-            int userID = new UserDaoImpl().getUserId(user.getNickname());
-            WalletService userWallet = walletDao.getWallet(userID);
-            Group<ArtifactModel> userArtifacts = artifactDao.getUserArtifacts(userID);
-            Level userLevel = levelDao.getLevel(userID);
-            codecooler = new CodecoolerModel(user, userWallet, userArtifacts, userLevel);
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
+
+        RawUser user = userDao.getUser(userName);
+        int userID = new UserDaoImpl().getUserId(user.getNickname());
+        WalletService userWallet = walletDao.getWallet(userID);
+        Group<ArtifactModel> userArtifacts = artifactDao.getUserArtifacts(userID);
+        Level userLevel = levelDao.getLevel(userID);
+
+        CodecoolerModel codecooler = new CodecoolerModel(user, userWallet, userArtifacts, userLevel);
+
         return codecooler;
     }
 
