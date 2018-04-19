@@ -1,6 +1,7 @@
 package template;
 
 import artifact.ArtifactDaoImpl;
+import level.LevelDaoImpl;
 import level.LevelService;
 import user.admin.AdminModel;
 import user.codecooler.CodecoolerModel;
@@ -10,6 +11,7 @@ import user.user.UserDaoImpl;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class AdminTemplateResolver {
 
@@ -18,6 +20,7 @@ public class AdminTemplateResolver {
     private CodecoolerModel codecooler;
     private AdminModel admin;
     private UserService userService;
+    private LevelDaoImpl levelDao;
     private UserDaoImpl userDao;
 
     public AdminTemplateResolver(ViewData template, User admin) {
@@ -26,6 +29,7 @@ public class AdminTemplateResolver {
         artifactDao = new ArtifactDaoImpl();
         userService = new UserService();
         userDao = new UserDaoImpl();
+        levelDao = new LevelDaoImpl();
     }
 
     public ViewData getTemplate() {
@@ -46,9 +50,9 @@ public class AdminTemplateResolver {
                 users.add(user);
             }
         }
-
-
+        Map<Integer, String> levels = levelDao.getLevelCollection();
         template.setVariable("user", admin);
         template.setVariable("users", users);
+        template.setVariable("levels", levels);
     }
 }

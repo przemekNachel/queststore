@@ -103,9 +103,9 @@
                     <th>Threshold</th>
                     <th>Action</th>
                 </tr>
-                <tr>
-                    <td class="level-table">Scratch Developer</td>
-                    <td class="level-table">999999</td>
+                <tr th:each="level : ${levels}">
+                    <td class="level-table">[[${level.value}]]</td>
+                    <td class="level-table">[[${level.key}]]</td>
                     <td class="edit-icons">
                         <ul class="nav">
                             <li class="nav-tab"><i class="ion-trash-a edit-icon" title="Delete level"></i></li>
