@@ -129,12 +129,12 @@ public class QuestDaoImpl implements QuestDao {
         Connection con = connectToDatabase();
         Statement stmt = Objects.requireNonNull(con).createStatement();
 
-        String sql = "SELECT\n" +
-                "  quest_store.quest_id, name, descr, reward, group_names.group_name\n" +
-                "FROM\n" +
-                "  quest_store\n" +
-                "  INNER JOIN quest_associations ON quest_associations.association_id = quest_store.quest_id\n" +
-                "  INNER JOIN group_names ON group_names.group_id = quest_associations.group_id\n" +
+        String sql = "SELECT " +
+                "quest_store.quest_id, name, descr, reward, group_names.group_name " +
+                "FROM " +
+                "quest_store " +
+                "INNER JOIN quest_associations ON quest_associations.quest_id = quest_store.quest_id " +
+                "INNER JOIN group_names ON group_names.group_id = quest_associations.group_id " +
                 " WHERE group_name='" + groupName + "';";
 
         ResultSet rs = stmt.executeQuery(sql);
@@ -154,32 +154,36 @@ public class QuestDaoImpl implements QuestDao {
     }
 
     @Override
-    public void addQuestAdherence(String name, String groupName) throws SQLException {
+    public void addQuestAdherence(String questName, String groupName) throws SQLException {
         Connection con = connectToDatabase();
-        Objects.requireNonNull(con).setAutoCommit(false);
-        Statement stmt = con.createStatement();
 
-        int groupId = getGroupId(con, groupName);
+        int questId;
+        int groupId;
+        con.setAutoCommit(false);
 
-        Statement checkStatement = con.createStatement();
-        String query = "SELECT quest_id FROM quest_associations WHERE group_id='" + groupId + "';";
-        ResultSet checkRecord = checkStatement.executeQuery(query);
-        boolean addNew = !checkRecord.next();
-        checkStatement.close();
+        String questIdSql = "SELECT quest_id FROM quest_store WHERE name LIKE ?;";
+        String groupIdSql = "SELECT group_id FROM group_names WHERE group_name LIKE ?;";
+        String insertSql = "INSERT INTO quest_associations(quest_id, group_id) VALUES(?, ?);";
 
-        if (addNew) {
+        PreparedStatement questIdQuery = con.prepareStatement(questIdSql);
+        questIdQuery.setString(1, questName);
+        ResultSet questIdRs = questIdQuery.executeQuery();
+        questIdRs.next();
+        questId = questIdRs.getInt("quest_id");
 
-            String sql = "INSERT INTO quest_associations(quest_id, group_id) " +
-                    "VALUES ((SELECT quest_id FROM quest_store WHERE name='" + name + "'), " +
-                    "(SELECT group_id FROM group_names WHERE group_name='" + groupName + "'));";
-            stmt.executeUpdate(sql);
-        }
+        PreparedStatement groupIdQuery = con.prepareStatement(groupIdSql);
+        groupIdQuery.setString(1, groupName);
+        ResultSet groupIdRs = groupIdQuery.executeQuery();
+        groupIdRs.next();
+        groupId = groupIdRs.getInt("group_id");
+
+        PreparedStatement insertQuery = con.prepareStatement(insertSql);
+        insertQuery.setInt(1, questId);
+        insertQuery.setInt(2, groupId);
+        insertQuery.executeUpdate();
 
         con.commit();
-
-        stmt.close();
         con.close();
-
     }
 
     private int getGroupId(Connection connection, String groupName) throws SQLException {

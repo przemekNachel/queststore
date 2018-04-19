@@ -71,22 +71,14 @@
                     <th>Email</th>
                     <th></th>
                 </tr>
-                <tr th:each="user : ${users}" class="rectangle-content">
+                <tr th:each="user : ${students}">
                     <td>[[${user.nickname}]]</td>
                     <td>[[${user.email}]]</td>
                     <td class="edit-icons">
                         <i class="ion-edit edit-icon edit-user-button" title="Edit user"></i>
                         <i class="ion-clipboard edit-icon" title="Show user"></i>
-                        <i class="ion-trash-a edit-icon" title="Remove user"></i>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Zbigniew</td>
-                    <td>japa@email.com</td>
-                    <td class="edit-icons">
-                        <i class="ion-edit edit-icon edit-user-button" title="Edit user"></i>
-                        <i class="ion-clipboard edit-icon" title="Show user"></i>
-                        <i class="ion-trash-a edit-icon" title="Remove user"></i>
+                        <a th:href="@{'http://localhost:8000/user/remove?nickname=' + ${user.nickname}}"
+                           class="ion-trash-a edit-icon" title="Remove user"></a>
                     </td>
                 </tr>
             </table>
@@ -177,7 +169,7 @@
                 <div class="row">
                     <label class="input-label" for="type">Type</label>
                     <select class="input-select" name="type" id="type">
-                        <option value="normal">Normal</option>
+                        <option value="basic">Basic</option>
                         <option value="extra">Extra</option>
                     </select>
                 </div>
