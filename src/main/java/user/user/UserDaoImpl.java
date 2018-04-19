@@ -9,7 +9,7 @@ import static user.user.Role.*;
 
 public class UserDaoImpl implements UserDao {
 
-    private static String JDBC = "jdbc:sqlite:database/database.db";
+    private static String JDBC = "jdbc:log4jdbc:sqlite:database/database.db";
 
     public RawUser getUser(String nickname) throws SQLException {
 
@@ -453,7 +453,7 @@ public class UserDaoImpl implements UserDao {
 
     // upgraders
 
-    private void upgradeCredentials(String password, String email, int userId) throws SQLException {
+    public void upgradeCredentials(String password, String email, int userId) throws SQLException {
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
@@ -466,6 +466,33 @@ public class UserDaoImpl implements UserDao {
             connect.commit();
         } finally {
             close(connect, statement);
+        }
+    }
+
+    public void upgradeCredentials(String nickname, String password, String email, int userId) throws SQLException {
+
+        String query = "UPDATE users SET password = ?, nickname = ?, email = ? WHERE user_id = ?";
+        try (Connection connection = establishConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                preparedStatement.setString(1, password);
+                preparedStatement.setString(2, nickname);
+                preparedStatement.setString(3, email);
+                preparedStatement.setInt(4, userId);
+                preparedStatement.executeUpdate();
+                connection.commit();
+            }
+        }
+    }
+
+    public void deleteUser(String nickname) {
+        String query = "DELETE FROM users WHERE nickname LIKE ?";
+        try (Connection connection = establishConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                preparedStatement.setString(1, nickname);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -492,7 +519,7 @@ public class UserDaoImpl implements UserDao {
 
         Connection connect = null;
         try {
-            Class.forName("org.sqlite.JDBC");
+            Class.forName("net.sf.log4jdbc.DriverSpy");
         } catch (ClassNotFoundException e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
