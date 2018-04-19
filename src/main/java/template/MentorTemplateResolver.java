@@ -2,6 +2,7 @@ package template;
 
 import artifact.ArtifactDaoImpl;
 import artifact.ArtifactModel;
+import generic_group.Group;
 import level.LevelService;
 import quest.QuestDao;
 import quest.QuestDaoImpl;
@@ -40,12 +41,7 @@ public class MentorTemplateResolver {
     private void initializeVariables() throws SQLException {
         new LevelService().initializeLevels();
         template.setVariable("user", mentor);
-        ArrayList<User> students = new ArrayList<>();
-        for (String groupName : mentor.getAssociatedGroupNames()) {
-            for (User user : userDao.getUserGroup(groupName)) {
-                students.add(user);
-            }
-        }
+        Group<User> students = userDao.getUserGroup("codecoolers");
         List<ArtifactModel> artifacts = new ArrayList<>();
         artifacts.addAll(artifactDao.getArtifactGroup("artifact_basic").getGroup());
         artifacts.addAll(artifactDao.getArtifactGroup("artifact_magic").getGroup());
