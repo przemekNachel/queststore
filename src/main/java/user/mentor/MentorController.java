@@ -394,4 +394,10 @@ public class MentorController extends AbstractUserController {
             view.printLine("No codecoolers found");
         }
     }
+
+    public void markStudentQuest(QuestModel quest, CodecoolerModel student){
+        Integer reward = quest.getReward();
+        student.getWallet().payIn(reward);
+        student.getLevel().addExperience(reward);
+    }
 }

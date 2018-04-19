@@ -63,6 +63,7 @@ public class UserService {
                 break;
 
             case ADMIN:
+
                 newUser = new AdminModel(rawUser);
                 break;
         }
