@@ -32,11 +32,14 @@ public class QuestRequestHandler implements HttpHandler {
         User user = sessionManager.getUserFromSession(httpExchange);
         String URIPath = httpExchange.getRequestURI().getPath();
         String method = httpExchange.getRequestMethod();
+        System.out.println(method);
         if (user.getRole() == Role.MENTOR) {
             if (method.equalsIgnoreCase("post") && URIPath.equalsIgnoreCase("/quest/add")) {
                 handleAddNewQuest(httpExchange);
             }else if(method.equalsIgnoreCase("post") && URIPath.equalsIgnoreCase("/quest/remove")){
                 handleRemoveQuest(httpExchange);
+            }else if(method.equalsIgnoreCase("get") && URIPath.equalsIgnoreCase("/quest/edit")){
+                handleEditQuest(httpExchange);
             }
         }
         redirector.redirect(httpExchange, user);
@@ -61,7 +64,7 @@ public class QuestRequestHandler implements HttpHandler {
         }
     }
 
-    private void handleRemoveQuest(HttpExchange exchange) throws IOException{
+    public void handleRemoveQuest(HttpExchange exchange) throws IOException{
         QuestDaoImpl questDao = new QuestDaoImpl();
         String postInputData = new BufferedReader(new InputStreamReader(exchange.getRequestBody())).readLine();
         Map<String, String> parameters = ParametersUtil.parseParameters(postInputData);
@@ -74,4 +77,21 @@ public class QuestRequestHandler implements HttpHandler {
             e.printStackTrace();
         }
     }
+
+    public void handleEditQuest(HttpExchange exchange) throws IOException{
+        QuestDaoImpl questDao = new QuestDaoImpl();
+        Map<String, String> parameters = ParametersUtil.parseParameters(exchange.getRequestURI().getQuery());
+        try {
+            QuestModel quest = questDao.getQuest(parameters.get("name"));
+            quest.setName(parameters.get("name"));
+            quest.setDescription(parameters.get("description"));
+            int reward = Integer.parseInt(parameters.get("reward"));
+            quest.setReward(reward);
+            System.out.println(quest.getName() + quest.getDescription() + quest.getReward());
+            questDao.updateQuest(quest, parameters.get("previousname"));
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
 }
