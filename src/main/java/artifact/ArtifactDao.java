@@ -21,7 +21,7 @@ public interface ArtifactDao {
 
     void addArtifact(ArtifactModel artifact) throws SQLException;
 
-    void updateArtifact(ArtifactModel artifact) throws SQLException;
+    void updateArtifact(String oldName, ArtifactModel artifact) throws SQLException;
 
     void addArtifactGroup(Group<ArtifactModel> group) throws SQLException;
 

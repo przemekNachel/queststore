@@ -18,6 +18,16 @@ import java.util.Map;
 
 public class ArtifactRequestHandler implements HttpHandler {
 
+    private static final String POST = "POST";
+    private static final String ADD_ARTIFACT_PATH = "/artifact/add";
+    private static final String REMOVE_ARTIFACT_PATH = "/artifact/remove";
+    private static final String EDIT_ARTIFACT_PATH = "/artifact/edit";
+
+    private static final String ARTIFACT_NAME = "name";
+    private static final String ARTIFACT_TYPE = "type";
+    private static final String ARTIFACT_DESCRIPTION = "description";
+    private static final String ARTIFACT_PRICE = "price";
+    private static final String PREVIOUS_NAME = "previousname";
 
     private final SessionManager sessionManager;
     private final RequestRedirector redirector;
@@ -31,13 +41,25 @@ public class ArtifactRequestHandler implements HttpHandler {
     public void handle(HttpExchange httpExchange) throws IOException {
         User user = sessionManager.getUserFromSession(httpExchange);
         String URIPath = httpExchange.getRequestURI().getPath();
-        if (httpExchange.getRequestMethod().equals("POST") && URIPath.equals("/artifact/add")) {
+        String requestMethod = httpExchange.getRequestMethod();
+
+        if (requestMethod.equals(POST) && URIPath.equals(ADD_ARTIFACT_PATH)) {
             handleAddArtifact(httpExchange);
-        } else if (httpExchange.getRequestMethod().equals("POST") && URIPath.equals("/artifact/remove")) {
+        } else if (requestMethod.equals(POST) && URIPath.equals(REMOVE_ARTIFACT_PATH)) {
             handleRemoveArtifact(httpExchange);
+        } else if (requestMethod.equals(POST) && URIPath.equals(EDIT_ARTIFACT_PATH)) {
+            handleEditArtifact(httpExchange);
         }
         redirector.redirect(httpExchange, user);
     }
+
+    private void handleEditArtifact(HttpExchange httpExchange) throws IOException {
+        String unparsedPostData = new BufferedReader(new InputStreamReader(httpExchange.getRequestBody())).readLine();
+        Map<String, String> parameters = ParametersUtil.parseParameters(unparsedPostData);
+        System.out.println(unparsedPostData);
+        editArtifact(parameters);
+    }
+
 
     private void handleRemoveArtifact(HttpExchange httpExchange) throws IOException {
         String unparsedPostData = new BufferedReader(new InputStreamReader(httpExchange.getRequestBody())).readLine();
@@ -52,11 +74,11 @@ public class ArtifactRequestHandler implements HttpHandler {
         Map<String, String> parameters = ParametersUtil.parseParameters(unparsedPostData);
 
         ArtifactModel artifact = createArtifact(parameters);
-        addArtifactToDatabase(artifact, parameters.get("type"));
+        addArtifactToDatabase(artifact, parameters.get(ARTIFACT_TYPE));
     }
 
     private void removeArtifact(Map<String, String> parameters) {
-        String name = parameters.get("name");
+        String name = parameters.get(ARTIFACT_NAME);
         ArtifactDao dao = new ArtifactDaoImpl();
         try {
             ArtifactModel artifact = dao.getArtifactByName(name);
@@ -66,10 +88,24 @@ public class ArtifactRequestHandler implements HttpHandler {
         }
     }
 
+    private void editArtifact(Map<String, String> parameters) {
+        ArtifactDao dao = new ArtifactDaoImpl();
+        String oldName = parameters.get(PREVIOUS_NAME);
+
+        try {
+            ArtifactModel artifact = dao.getArtifactByName(oldName);
+            setArtifactToUpdate(artifact, parameters);
+            dao.updateArtifact(oldName, artifact);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private ArtifactModel createArtifact(Map<String, String> parameters) {
-        String name = parameters.get("name");
-        String price = parameters.get("price");
-        String description = parameters.get("description");
+        String name = parameters.get(ARTIFACT_NAME);
+        String price = parameters.get(ARTIFACT_PRICE);
+        String description = parameters.get(ARTIFACT_DESCRIPTION);
         return new ArtifactModel(name, description, Integer.parseInt(price));
     }
 
@@ -79,10 +115,19 @@ public class ArtifactRequestHandler implements HttpHandler {
         try {
             dao.addArtifact(artifact);
             dao.addArtifactAdherence(artifact.getName(), type);
-            System.out.println("Success");
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void setArtifactToUpdate(ArtifactModel artifact, Map<String, String> parameters) {
+        String newName = parameters.get(ARTIFACT_NAME);
+        String newPrice = parameters.get(ARTIFACT_PRICE);
+        String newDescription = parameters.get(ARTIFACT_DESCRIPTION);
+
+        artifact.setDescription(newDescription);
+        artifact.setName(newName);
+        artifact.setPrice(Integer.valueOf(newPrice));
     }
 
     private String convertType(String type) {
