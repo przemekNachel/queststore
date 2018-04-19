@@ -2,7 +2,6 @@ package handlers;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import quest.QuestDao;
 import quest.QuestDaoImpl;
 import quest.QuestModel;
 import user.user.Role;
@@ -49,12 +48,14 @@ public class QuestRequestHandler implements HttpHandler {
         Map<String, String> parameters = ParametersUtil.parseParameters(postInputData);
 
         String name = parameters.get("name");
+        String type = parameters.get("type");
         String stringReward = parameters.get("reward");
         String description = parameters.get("description");
         int reward = Integer.parseInt(stringReward);
         QuestModel newQuest = new QuestModel(name, description, reward);
         try {
             questDao.addQuest(newQuest);
+            questDao.addQuestAdherence(name, "quest_" + type);
         }catch (SQLException e){
             e.printStackTrace();
         }
