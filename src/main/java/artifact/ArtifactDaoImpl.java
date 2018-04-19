@@ -165,24 +165,24 @@ public class ArtifactDaoImpl implements ArtifactDao {
     }
 
     @Override
-    public void updateArtifact(ArtifactModel artifact) throws SQLException {
-        String artName = artifact.getName();
-        String artDesc = artifact.getDescription();
-        float artPrice = artifact.getPrice();
+    public void updateArtifact(String oldName, ArtifactModel newArtifact) throws SQLException {
+        String name = newArtifact.getName();
+        String description = newArtifact.getDescription();
+        int price = newArtifact.getPrice();
 
         Connection con = connectToDatabase();
         Objects.requireNonNull(con).setAutoCommit(false);
-        Statement stmt = con.createStatement();
 
-        String sql = ("UPDATE artifact_store SET " +
-                "descr='" + artDesc + "', " +
-                "price='" + artPrice + "' " +
-                "WHERE name='" + artName + "';");
+        String sql = "UPDATE artifact_store SET name = ?, descr = ?, price = ?  WHERE name = ? ";
+        PreparedStatement statement = con.prepareStatement(sql);
+        statement.setString(1, name);
+        statement.setString(2, description);
+        statement.setInt(3, price);
+        statement.setString(4, oldName);
 
-        stmt.executeUpdate(sql);
+        statement.executeUpdate();
+
         con.commit();
-
-        stmt.close();
         con.close();
 
 
