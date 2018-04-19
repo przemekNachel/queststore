@@ -122,7 +122,26 @@
                     <th>Description</th>
                     <th></th>
                 </tr>
-                <tr th:each="artifact : ${artifacts}">
+                <tr th:each="artifact : ${artifacts_normal}">
+                    <td>[[${artifact.name}]]</td>
+                    <td>Normal</td>
+                    <td>[[${artifact.price}]]</td>
+                    <td>[[${artifact.description}]]</td>
+                    <td class="edit-icons">
+                        <ul class="nav">
+                            <li class="nav-tab">
+                                <form action="/artifact/remove" method="POST">
+                                    <input name="name" type="text" th:value="${artifact.name}" hidden>
+                                    <button type="submit" class="ion-trash-a edit-icon" style="border: none; background: none;" title="Delete artifact">
+                                </form>
+                                <!--<i class="ion-trash-a edit-icon" title="Delete arftifact"></i>-->
+                            </li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon edit-artifact-button"
+                                                   title="Edit artifact"></i></li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr th:each="artifact : ${artifacts_magic}">
                     <td>[[${artifact.name}]]</td>
                     <td>Magic</td>
                     <td>[[${artifact.price}]]</td>
@@ -132,7 +151,8 @@
                             <li class="nav-tab">
                                 <form action="/artifact/remove" method="POST">
                                     <input name="name" type="text" th:value="${artifact.name}" hidden>
-                                    <button type="submit" class="ion-trash-a edit-icon" style="border: none; background: none;" title="Delete artifact">
+                                    <button type="submit" class="ion-trash-a edit-icon"
+                                            style="border: none; background: none;" title="Delete artifact">
                                 </form>
                                 <!--<i class="ion-trash-a edit-icon" title="Delete arftifact"></i>-->
                             </li>
