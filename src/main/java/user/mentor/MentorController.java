@@ -237,7 +237,7 @@ public class MentorController extends AbstractUserController {
         quest.setDescription(newDesc);
         quest.setReward(newReward);
 
-        questSvc.updateQuest(quest);
+        questSvc.updateQuest(quest, quest.getName());
     }
 
     private void createQuest() {
