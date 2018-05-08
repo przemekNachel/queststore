@@ -10,7 +10,6 @@ import level.LevelDaoImpl;
 import quest.QuestDaoImpl;
 import quest.QuestModel;
 import user.codecooler.CodecoolerModel;
-import user.mentor.MentorController;
 import user.user.RawUser;
 import user.user.Role;
 import user.user.User;
@@ -46,11 +45,11 @@ public class QuestRequestHandler implements HttpHandler {
         if (user.getRole() == Role.MENTOR) {
             if (method.equalsIgnoreCase("post") && URIPath.equalsIgnoreCase("/quest/add")) {
                 handleAddNewQuest(httpExchange);
-            }else if(method.equalsIgnoreCase("post") && URIPath.equalsIgnoreCase("/quest/remove")){
+            } else if (method.equalsIgnoreCase("post") && URIPath.equalsIgnoreCase("/quest/remove")) {
                 handleRemoveQuest(httpExchange);
-            }else if(method.equalsIgnoreCase("get") && URIPath.equalsIgnoreCase("/quest/edit")){
+            } else if (method.equalsIgnoreCase("get") && URIPath.equalsIgnoreCase("/quest/edit")) {
                 handleEditQuest(httpExchange);
-            }else if(URIPath.equalsIgnoreCase("/quest/mark")){
+            } else if (URIPath.equalsIgnoreCase("/quest/mark")) {
                 handleMarkQuest(httpExchange);
             }
         }
@@ -71,12 +70,12 @@ public class QuestRequestHandler implements HttpHandler {
         try {
             questDao.addQuest(newQuest);
             questDao.addQuestAdherence(name, "quest_" + type);
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void handleRemoveQuest(HttpExchange exchange) throws IOException{
+    public void handleRemoveQuest(HttpExchange exchange) throws IOException {
         QuestDaoImpl questDao = new QuestDaoImpl();
         String postInputData = new BufferedReader(new InputStreamReader(exchange.getRequestBody())).readLine();
         Map<String, String> parameters = ParametersUtil.parseParameters(postInputData);
@@ -90,7 +89,7 @@ public class QuestRequestHandler implements HttpHandler {
         }
     }
 
-    public void handleEditQuest(HttpExchange exchange) throws IOException{
+    public void handleEditQuest(HttpExchange exchange) throws IOException {
         QuestDaoImpl questDao = new QuestDaoImpl();
         Map<String, String> parameters = ParametersUtil.parseParameters(exchange.getRequestURI().getQuery());
         try {
@@ -100,24 +99,32 @@ public class QuestRequestHandler implements HttpHandler {
             int reward = Integer.parseInt(parameters.get("reward"));
             quest.setReward(reward);
             questDao.updateQuest(quest, parameters.get("previousname"));
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void handleMarkQuest(HttpExchange exchange) throws IOException{
-        MentorController mentorController = new MentorController();
+    public void handleMarkQuest(HttpExchange exchange) throws IOException {
         QuestDaoImpl questDao = new QuestDaoImpl();
 
         String postInputData = new BufferedReader(new InputStreamReader(exchange.getRequestBody())).readLine();
         Map<String, String> parameters = ParametersUtil.parseParameters(postInputData);
         String questName = parameters.get("name");
         String studentName = parameters.get("nickname");
+
         try {
             QuestModel quest = questDao.getQuest(questName);
             CodecoolerModel codecooler = createCodecooler(studentName);
-            mentorController.markStudentQuest(quest, codecooler);
-        }catch (SQLException e){
+            System.out.println(codecooler.getWallet().getBalance());
+
+            int reward = quest.getReward();
+            codecooler.getWallet().payIn(reward);
+            codecooler.getLevel().addExperience(reward);
+
+            new WalletDaoImpl().updateWallet(new UserDaoImpl().getUserId(codecooler.getNickname()), codecooler.getWallet());
+
+            System.out.println(codecooler.getWallet().getBalance());
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -134,9 +141,8 @@ public class QuestRequestHandler implements HttpHandler {
         Group<ArtifactModel> userArtifacts = artifactDao.getUserArtifacts(userID);
         Level userLevel = levelDao.getLevel(userID);
 
-        CodecoolerModel codecooler = new CodecoolerModel(user, userWallet, userArtifacts, userLevel);
+        return new CodecoolerModel(user, userWallet, userArtifacts, userLevel);
 
-        return codecooler;
     }
 
 

@@ -267,7 +267,7 @@
                     <td>[[${owner.nickname}]]</td>
                     <td>[[${owner.thing}]]</td>
                     <td class="edit-icons">
-                        <form action="/quest/remove" method="POST">
+                        <form action="/quest/mark" method="POST">
                             <input name="name" type="text" th:value="${owner.thing}" hidden>
                             <input name="nickname" type="text" th:value="${owner.nickname}" hidden>
                             <button style="border: none; background: none;" type="submit"
