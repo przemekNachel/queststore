@@ -11,6 +11,5 @@ public class MentorModel extends RawUser {
                 rawUser.getEmail(),
                 rawUser.getPassword(),
                 rawUser.getAssociatedGroupNames());
-
     }
 }

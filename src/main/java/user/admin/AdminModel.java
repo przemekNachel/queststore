@@ -11,6 +11,5 @@ public class AdminModel extends RawUser {
                 rawUser.getEmail(),
                 rawUser.getPassword(),
                 rawUser.getAssociatedGroupNames());
-
     }
 }

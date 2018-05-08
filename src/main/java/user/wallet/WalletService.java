@@ -1,15 +1,13 @@
 package user.wallet;
 
 public class WalletService {
-    int balance = 0;
+    private int balance;
 
     public WalletService(int initialBalance) {
-
         this.balance = initialBalance;
     }
 
     public boolean canAfford(int amount) {
-
         return this.balance >= amount;
     }
 
@@ -22,7 +20,6 @@ public class WalletService {
     }
 
     public int getBalance() {
-
         return balance;
     }
 

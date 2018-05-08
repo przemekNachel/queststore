@@ -1,6 +1,5 @@
 package level;
 
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NavigableMap;

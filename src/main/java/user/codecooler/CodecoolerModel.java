@@ -3,7 +3,6 @@ package user.codecooler;
 import artifact.ArtifactModel;
 import generic_group.Group;
 import level.Level;
-import level.LevelService;
 import user.user.RawUser;
 import user.user.Role;
 import user.wallet.WalletService;
@@ -47,24 +46,7 @@ public class CodecoolerModel extends RawUser {
     }
 
     public Group<ArtifactModel> getArtifacts() {
-
         return artifacts;
-    }
-
-    public String getStatisticsDisplay() {
-
-        LevelService levelService = new LevelService();
-        levelService.initializeLevels();
-        String statistics;
-        String walletBalance;
-        String currentLevelStats;
-
-        currentLevelStats = "Current level " + level.getCurrentLevel() + " Xp: " + Integer.toString(level.getCurrentExperience());
-        walletBalance = "\nWallet balance: " + wallet.toString() + "\n\n";
-
-        statistics = currentLevelStats + walletBalance;
-
-        return statistics;
     }
 
     public String getCodecoolerGroupDisplay() {
