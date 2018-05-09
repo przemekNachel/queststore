@@ -10,7 +10,7 @@ import java.util.Objects;
 public class QuestDaoImpl implements QuestDao {
     @Override
     public Connection connectToDatabase() throws SQLException {
-        String db_path = "jdbc:log4jdbc:sqlite:database/database.db";
+        String db_path = "jdbc:mysql://54.37.232.83:3306/queststore?user=queststore&password=kuuurla&serverTimezone=UTC&useSSL=false";
         return DriverManager.getConnection(db_path);
     }
 

@@ -7,12 +7,7 @@ import java.util.Map;
 public class LevelDaoImpl {
 
     private static Connection connect() throws java.sql.SQLException {
-        try {
-            Class.forName("org.sqlite.JDBC");
-        } catch (ClassNotFoundException e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-        }
-        String JDBC = "jdbc:sqlite:database/database.db";
+        String JDBC = "jdbc:mysql://54.37.232.83:3306/queststore?user=queststore&password=kuuurla&serverTimezone=UTC&useSSL=false";
         Connection connect = DriverManager.getConnection(JDBC);
         connect.setAutoCommit(false);
         return connect;
