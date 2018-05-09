@@ -89,8 +89,8 @@ public class ArtifactRequestHandler implements HttpHandler {
     }
 
     private void editArtifact(Map<String, String> parameters) {
-        ArtifactDao dao = new ArtifactDaoImpl();
         String oldName = parameters.get(PREVIOUS_NAME);
+        ArtifactDao dao = new ArtifactDaoImpl();
 
         try {
             ArtifactModel artifact = dao.getArtifactByName(oldName);

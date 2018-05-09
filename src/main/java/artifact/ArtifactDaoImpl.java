@@ -12,7 +12,7 @@ public class ArtifactDaoImpl implements ArtifactDao {
     @Override
     public Connection connectToDatabase() throws SQLException {
 
-        String dbPath = "jdbc:sqlite:database/database.db";
+        String dbPath = "jdbc:log4jdbc:mysql://54.37.232.83:3306/queststore?user=queststore&password=kuuurla&serverTimezone=UTC&useSSL=false";
         return DriverManager.getConnection(dbPath);
     }
 
@@ -60,23 +60,26 @@ public class ArtifactDaoImpl implements ArtifactDao {
 
     @Override
     public ArtifactModel getArtifactByName(String name) throws SQLException {
-        Connection con = connectToDatabase();
-        Statement stmt = Objects.requireNonNull(con).createStatement();
+        String sql = "SELECT * FROM artifact_store WHERE name LIKE ?";
+        ArtifactModel artifactModel = null;
 
-        String sql = ("SELECT * FROM artifact_store WHERE name='" + name + "';");
-        ResultSet rs = stmt.executeQuery(sql);
+        try (Connection connection = connectToDatabase()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setString(1, name);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()) {
+                    String artifactName = resultSet.getString("name");
+                    String artifactDescr = resultSet.getString("descr");
+                    Integer artifactReward = resultSet.getInt("price");
+                    artifactModel = new ArtifactModel(artifactName, artifactDescr, artifactReward);
+                }
 
+            }
+        }
 
-        String artName = rs.getString("name");
-        String artDesc = rs.getString("descr");
-        Integer artPrice = rs.getInt("price");
-
-        stmt.close();
-        rs.close();
-        con.close();
-
-        return new ArtifactModel(artName, artDesc, artPrice);
+        return artifactModel;
     }
+
 
     @Override
     public ArtifactModel getArtifactById(int artifactId) throws SQLException {
@@ -87,9 +90,14 @@ public class ArtifactDaoImpl implements ArtifactDao {
         ResultSet rs = stmt.executeQuery(sql);
 
 
-        String artName = rs.getString("name");
-        String artDesc = rs.getString("descr");
-        Integer artPrice = rs.getInt("price");
+        String artName = null, artDesc = null;
+        int artPrice = 0;
+        if (rs.next()) {
+            System.out.printf("test");
+            artName = rs.getString("name");
+            artDesc = rs.getString("descr");
+            artPrice = rs.getInt("price");
+        }
 
         stmt.close();
         rs.close();
@@ -226,15 +234,16 @@ public class ArtifactDaoImpl implements ArtifactDao {
     public Group<ArtifactModel> getArtifactGroup(String groupName) throws SQLException {
         Group<ArtifactModel> group = new Group<>(groupName);
 
+        String sql = "SELECT name, descr, price, group_name FROM artifact_store JOIN artifact_associations ON artifact_store.artifact_id = artifact_associations.artifact_id JOIN group_names ON artifact_associations.group_id = group_names.group_id WHERE group_name != ? AND group_name = ?";
+
         Connection con = connectToDatabase();
-        Statement stmt = Objects.requireNonNull(con).createStatement();
+        PreparedStatement preparedStatement = con.prepareStatement(sql);
 
-        String sql = "SELECT name, descr, price, group_name AS type FROM artifact_store " +
-                "JOIN artifact_associations ON artifact_store.artifact_id = artifact_associations.artifact_id " +
-                "JOIN group_names ON artifact_associations.group_id = group_names.group_id " +
-                "WHERE type != 'artifacts' AND type = '" + groupName + "';";
+        preparedStatement.setString(1, "artifacts");
+        preparedStatement.setString(2, groupName);
 
-        ResultSet rs = stmt.executeQuery(sql);
+
+        ResultSet rs = preparedStatement.executeQuery();
 
         while (rs.next()) {
             String name = rs.getString("name");
@@ -243,7 +252,7 @@ public class ArtifactDaoImpl implements ArtifactDao {
             group.add(new ArtifactModel(name, descr, price));
         }
 
-        stmt.close();
+        preparedStatement.close();
         rs.close();
         con.close();
 

@@ -5,7 +5,7 @@ import java.sql.*;
 
 public class WalletDaoImpl implements WalletDao {
 
-    private static String JDBC = "jdbc:sqlite:database/database.db";
+    private static String JDBC = "jdbc:mysql://54.37.232.83:3306/queststore?user=queststore&password=kuuurla&serverTimezone=UTC&useSSL=false";
 
     public WalletService getWallet(int userID) {
 
@@ -90,12 +90,6 @@ public class WalletDaoImpl implements WalletDao {
     }
 
     private Connection establishConnection() throws SQLException {
-
-        try {
-            Class.forName("org.sqlite.JDBC");
-        } catch (ClassNotFoundException e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-        }
         Connection connect = DriverManager.getConnection(WalletDaoImpl.JDBC);
         connect.setAutoCommit(false);
         return connect;

@@ -9,7 +9,7 @@ import static user.user.Role.*;
 
 public class UserDaoImpl implements UserDao {
 
-    private static String JDBC = "jdbc:log4jdbc:sqlite:database/database.db";
+    private static String JDBC = "jdbc:log4jdbc:mysql://54.37.232.83:3306/queststore?user=queststore&password=kuuurla&serverTimezone=UTC&useSSL=false";
 
     public RawUser getUser(String nickname) throws SQLException {
 
