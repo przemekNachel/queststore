@@ -20,9 +20,23 @@ import java.util.UUID;
 
 public class UserRequestHandler implements HttpHandler {
 
+    private static final String ADD_USER_PATH = "/user/add";
+    private static final String REMOVE_USER_PATH = "/user/remove";
+    private static final String EDIT_USER_PATH = "/user/edit";
+
+    private static final String USER_NICKNAME = "nickname";
+    private static final String USER_EMAIL = "email";
+    private static final String USER_TYPE = "type";
+    private static final String USER_PREVIOUS_NICKNAME = "previousnickname";
+    private static final String USER_NEW_NICKNAME = "newnickname";
+    private static final String STUDENT_TYPE = "student";
+    private static final String MENTOR_TYPE = "mentor";
+    private static final String MENTOR_GROUPS = "mentor groups";
+    private static final String MENTORS = "mentors";
 
     private final SessionManager sessionManager;
     private final RequestRedirector redirector;
+
     private final UserService userSvc = new UserService();
     private final UserDaoImpl userDao = new UserDaoImpl();
 
@@ -40,11 +54,11 @@ public class UserRequestHandler implements HttpHandler {
 
         if (user == null || user.getRole() == Role.CODECOOLER) {
             redirector.redirect(httpExchange, ",");
-        } else if (path.equalsIgnoreCase("/user/add")) {
+        } else if (path.equalsIgnoreCase(ADD_USER_PATH)) {
             processAddUserRequest(parameters);
-        } else if (path.equalsIgnoreCase("/user/remove")) {
+        } else if (path.equalsIgnoreCase(REMOVE_USER_PATH)) {
             processRemoveUserRequest(parameters);
-        } else if (path.equalsIgnoreCase("/user/edit")) {
+        } else if (path.equalsIgnoreCase(EDIT_USER_PATH)) {
             processEditUserRequest(parameters);
         }
 
@@ -57,9 +71,9 @@ public class UserRequestHandler implements HttpHandler {
             parameters.forEach((key, value) -> {
                 System.out.println(key + " " + value);
             });
-            String previousNickname = parameters.get("previousnickname");
-            String newNickname = parameters.get("newnickname");
-            String email = parameters.get("email");
+            String previousNickname = parameters.get(USER_PREVIOUS_NICKNAME);
+            String newNickname = parameters.get(USER_NEW_NICKNAME);
+            String email = parameters.get(USER_EMAIL);
 
             User user = userSvc.getUser(previousNickname);
 
@@ -72,27 +86,25 @@ public class UserRequestHandler implements HttpHandler {
     }
 
     private void processRemoveUserRequest(Map<String, String> parameters) {
-        String nickname = parameters.get("nickname");
+        String nickname = parameters.get(USER_NICKNAME);
 
         userDao.deleteUser(nickname);
     }
 
     private void processAddUserRequest(Map<String, String> parameters) {
+        String email = parameters.get(USER_EMAIL);
+        String nickname = parameters.get(USER_NICKNAME);
+        String type = parameters.get(USER_TYPE);
 
-
-        String email = parameters.get("email");
-        String nickname = parameters.get("nickname");
-        String type = parameters.get("type");
-
-        if (type.equalsIgnoreCase("student")) createCodecooler(email, nickname);
-        else if (type.equalsIgnoreCase("mentor")) createMentor(email, nickname);
+        if (type.equalsIgnoreCase(STUDENT_TYPE)) createCodecooler(email, nickname);
+        else if (type.equalsIgnoreCase(MENTOR_TYPE)) createMentor(email, nickname);
 
     }
 
     private void createMentor(String email, String nickname) {
         String password = UUID.randomUUID().toString();
-        Group<String> mentorGroups = new Group<>("mentor groups");
-        mentorGroups.add("mentors");
+        Group<String> mentorGroups = new Group<>(MENTOR_GROUPS);
+        mentorGroups.add(MENTORS);
         MentorModel mentor = new MentorModel(new RawUser(Role.MENTOR, nickname, email, password, mentorGroups));
 
         userSvc.addUser(mentor);

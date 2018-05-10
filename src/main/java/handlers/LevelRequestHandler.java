@@ -18,6 +18,10 @@ import java.util.Map;
 
 public class LevelRequestHandler implements HttpHandler {
 
+    private static final String ADD_LEVEL_PATH = "/level/add";
+    private static final String LEVEL_NAME = "name";
+    private static final String LEVEL_THRESHOLD = "threshold";
+
 
     private final SessionManager sessionManager;
     private final RequestRedirector redirector;
@@ -33,7 +37,7 @@ public class LevelRequestHandler implements HttpHandler {
         User user = sessionManager.getUserFromSession(httpExchange);
         if (user == null || user.getRole() != Role.ADMIN) {
             redirector.redirect(httpExchange, "/");
-        } else if (httpExchange.getRequestURI().getPath().equalsIgnoreCase("/level/add")) {
+        } else if (httpExchange.getRequestURI().getPath().equalsIgnoreCase(ADD_LEVEL_PATH)) {
             processAddLevelRequest(httpExchange);
         }
 
@@ -47,11 +51,9 @@ public class LevelRequestHandler implements HttpHandler {
 
             LevelService levelService = new LevelService();
             levelService.initializeLevels();
-
-            HashMap<Integer, String> levels = Level.getLevels();
-
-            String levelName = parameters.get("name");
-            String threshold = parameters.getOrDefault("threshold", "0");
+            
+            String levelName = parameters.get(LEVEL_NAME);
+            String threshold = parameters.getOrDefault(LEVEL_THRESHOLD, "0");
 
             Group<String> disallowedLevelNames = new Group<>("disallowed level names");
 

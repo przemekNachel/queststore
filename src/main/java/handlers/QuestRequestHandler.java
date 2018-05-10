@@ -28,6 +28,17 @@ import java.util.Map;
 
 public class QuestRequestHandler implements HttpHandler {
 
+    private static final String ADD_QUEST_PATH = "/quest/add";
+    private static final String REMOVE_QUEST_PATH = "/quest/remove";
+    private static final String EDIT_QUEST_PATH = "/quest/edit";
+    private static final String MARK_QUEST_PATH = "/quest/mark";
+
+    private static final String QUEST_NAME = "name";
+    private static final String QUEST_PREVIOUS_NAME = "previousname";
+    private static final String QUEST_TYPE = "type";
+    private static final String QUEST_REWARD = "reward";
+    private static final String QUEST_DESCRIPTION = "description";
+    private static final String STUDENT_NAME = "nickname";
 
     private final SessionManager sessionManager;
     private final RequestRedirector redirector;
@@ -41,15 +52,14 @@ public class QuestRequestHandler implements HttpHandler {
     public void handle(HttpExchange httpExchange) throws IOException {
         User user = sessionManager.getUserFromSession(httpExchange);
         String URIPath = httpExchange.getRequestURI().getPath();
-        String method = httpExchange.getRequestMethod();
         if (user.getRole() == Role.MENTOR) {
-            if (method.equalsIgnoreCase("post") && URIPath.equalsIgnoreCase("/quest/add")) {
+            if (URIPath.equalsIgnoreCase(ADD_QUEST_PATH)) {
                 handleAddNewQuest(httpExchange);
-            } else if (method.equalsIgnoreCase("post") && URIPath.equalsIgnoreCase("/quest/remove")) {
+            } else if (URIPath.equalsIgnoreCase(REMOVE_QUEST_PATH)) {
                 handleRemoveQuest(httpExchange);
-            } else if (method.equalsIgnoreCase("get") && URIPath.equalsIgnoreCase("/quest/edit")) {
+            } else if (URIPath.equalsIgnoreCase(EDIT_QUEST_PATH)) {
                 handleEditQuest(httpExchange);
-            } else if (URIPath.equalsIgnoreCase("/quest/mark")) {
+            } else if (URIPath.equalsIgnoreCase(MARK_QUEST_PATH)) {
                 handleMarkQuest(httpExchange);
             }
         }
@@ -61,10 +71,10 @@ public class QuestRequestHandler implements HttpHandler {
         String postInputData = new BufferedReader(new InputStreamReader(exchange.getRequestBody())).readLine();
         Map<String, String> parameters = ParametersUtil.parseParameters(postInputData);
 
-        String name = parameters.get("name");
-        String type = parameters.get("type");
-        String stringReward = parameters.get("reward");
-        String description = parameters.get("description");
+        String name = parameters.get(QUEST_NAME);
+        String type = parameters.get(QUEST_TYPE);
+        String stringReward = parameters.get(QUEST_REWARD);
+        String description = parameters.get(QUEST_DESCRIPTION);
         int reward = Integer.parseInt(stringReward);
         QuestModel newQuest = new QuestModel(name, description, reward);
         try {
@@ -80,7 +90,7 @@ public class QuestRequestHandler implements HttpHandler {
         String postInputData = new BufferedReader(new InputStreamReader(exchange.getRequestBody())).readLine();
         Map<String, String> parameters = ParametersUtil.parseParameters(postInputData);
 
-        String questName = parameters.get("name");
+        String questName = parameters.get(QUEST_NAME);
         try {
             QuestModel quest = questDao.getQuest(questName);
             questDao.deleteQuest(quest);
@@ -93,12 +103,12 @@ public class QuestRequestHandler implements HttpHandler {
         QuestDaoImpl questDao = new QuestDaoImpl();
         Map<String, String> parameters = ParametersUtil.parseParameters(exchange.getRequestURI().getQuery());
         try {
-            QuestModel quest = questDao.getQuest(parameters.get("previousname"));
-            quest.setName(parameters.get("name"));
-            quest.setDescription(parameters.get("description"));
-            int reward = Integer.parseInt(parameters.get("reward"));
+            QuestModel quest = questDao.getQuest(parameters.get(QUEST_PREVIOUS_NAME));
+            quest.setName(parameters.get(QUEST_NAME));
+            quest.setDescription(parameters.get(QUEST_DESCRIPTION));
+            int reward = Integer.parseInt(parameters.get(QUEST_REWARD));
             quest.setReward(reward);
-            questDao.updateQuest(quest, parameters.get("previousname"));
+            questDao.updateQuest(quest, parameters.get(QUEST_PREVIOUS_NAME));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -109,8 +119,8 @@ public class QuestRequestHandler implements HttpHandler {
 
         String postInputData = new BufferedReader(new InputStreamReader(exchange.getRequestBody())).readLine();
         Map<String, String> parameters = ParametersUtil.parseParameters(postInputData);
-        String questName = parameters.get("name");
-        String studentName = parameters.get("nickname");
+        String questName = parameters.get(QUEST_NAME);
+        String studentName = parameters.get(STUDENT_NAME);
 
         try {
             QuestModel quest = questDao.getQuest(questName);
