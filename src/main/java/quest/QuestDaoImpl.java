@@ -93,36 +93,6 @@ public class QuestDaoImpl implements QuestDao {
 
 
     @Override
-    public Group<Group<QuestModel>> getAllQuests() throws SQLException {
-        Group<Group<QuestModel>> allQuests = new Group<>("All quests");
-        Group<String> groupNames = getQuestGroupNames();
-        Iterator<String> groupNamesIter = groupNames.getIterator();
-
-        while (groupNamesIter.hasNext()) {
-            allQuests.add(getQuestGroup(groupNamesIter.next()));
-        }
-
-        return allQuests;
-    }
-
-    @Override
-    public Group<String> getQuestGroupNames() throws SQLException {
-        Group<String> groupsNames = new Group<>("generic_group.Group name");
-
-        Connection con = connectToDatabase();
-        Statement stmt = Objects.requireNonNull(con).createStatement();
-
-        String sql = "SELECT group_name FROM group_names WHERE group_name LIKE 'quest%';";
-        ResultSet rs = stmt.executeQuery(sql);
-
-        while (rs.next()) {
-            String group_name = rs.getString("group_name");
-            groupsNames.add(group_name);
-        }
-        return groupsNames;
-    }
-
-    @Override
     public Group<QuestModel> getQuestGroup(String groupName) throws SQLException {
         Group<QuestModel> group = new Group<>(groupName);
 
@@ -189,27 +159,5 @@ public class QuestDaoImpl implements QuestDao {
 
         con.commit();
         con.close();
-    }
-
-    private int getGroupId(Connection connection, String groupName) throws SQLException {
-
-        Statement statement = connection.createStatement();
-        ResultSet results = null;
-        int id = -1;
-        try {
-
-            String query = "SELECT group_id FROM group_names WHERE group_name='"
-                    + groupName + "';";
-            results = statement.executeQuery(query);
-
-            if (results.next()) {
-                id = results.getInt("group_id");
-            }
-        } finally {
-
-            results.close();
-            statement.close();
-        }
-        return id;
     }
 }
