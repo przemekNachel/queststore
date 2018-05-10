@@ -15,6 +15,7 @@ public class UserDaoImpl implements UserDao {
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
+        statement.setFetchSize(250);
         ResultSet extractRole = null;
         RawUser tempUsr = null;
 
@@ -51,6 +52,7 @@ public class UserDaoImpl implements UserDao {
     public void addUser(User user) throws SQLException {
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
+        statement.setFetchSize(250);
         try {
             String userName = null, password = null, email = null, role = null;
             int userId = 0, userPrivilegeLevelId = 0, balance = 0;//, expGained = 0, ;
@@ -79,6 +81,7 @@ public class UserDaoImpl implements UserDao {
     public void updateUser(User user) throws SQLException {
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
+        statement.setFetchSize(250);
 
         try {
             String userName = null, password = null, email = null;
@@ -105,6 +108,7 @@ public class UserDaoImpl implements UserDao {
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
+        statement.setFetchSize(250);
         ResultSet results = null;
         Group<String> groupsNames = new Group<>("generic_group.Group names");
 
@@ -137,6 +141,7 @@ public class UserDaoImpl implements UserDao {
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
+        statement.setFetchSize(250);
         boolean addedAdherence = false;
         try {
 
@@ -168,6 +173,7 @@ public class UserDaoImpl implements UserDao {
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
+        statement.setFetchSize(250);
 
         try {
             String query = "INSERT INTO group_names(group_name) " +
@@ -184,6 +190,7 @@ public class UserDaoImpl implements UserDao {
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
+        statement.setFetchSize(250);
         ResultSet results = null;
         Group<String> groups = new Group<>("all groups");
         try {
@@ -204,6 +211,7 @@ public class UserDaoImpl implements UserDao {
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
+        statement.setFetchSize(250);
         ResultSet results = null;
         int id = -1;
         try {
@@ -225,6 +233,7 @@ public class UserDaoImpl implements UserDao {
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
+        statement.setFetchSize(250);
         ResultSet results = null;
         int id = -1;
         try {
@@ -248,6 +257,7 @@ public class UserDaoImpl implements UserDao {
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
+        statement.setFetchSize(250);
         ResultSet results = null;
         RawUser user = null;
 
@@ -278,6 +288,7 @@ public class UserDaoImpl implements UserDao {
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
+        statement.setFetchSize(250);
         ResultSet results = null;
         try {
             String name, password, email;
@@ -312,6 +323,7 @@ public class UserDaoImpl implements UserDao {
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
+        statement.setFetchSize(250);
         Group<String> associatedGroups = new Group<>("associated user groups");
         ResultSet results = null;
         try {
@@ -338,6 +350,7 @@ public class UserDaoImpl implements UserDao {
     private Group<Integer> getUserGroupIds(User user) throws SQLException {
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
+        statement.setFetchSize(250);
         ResultSet results = null;
         Group<Integer> groupIds = new Group<>("Group ids");
         try {
@@ -362,6 +375,7 @@ public class UserDaoImpl implements UserDao {
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
+        statement.setFetchSize(250);
         int userPrivilegeLevelId = -1;
         ResultSet getPrivLevelResult = null;
         try {
@@ -409,6 +423,7 @@ public class UserDaoImpl implements UserDao {
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
+        statement.setFetchSize(250);
         try {
             String updateUsers = "INSERT INTO users(nickname, password, email) " +
                     "VALUES ('" + userName + "', '" + password + "', '" + email + "');";
@@ -423,6 +438,7 @@ public class UserDaoImpl implements UserDao {
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
+        statement.setFetchSize(250);
         try {
             String updatePrivileges = "INSERT INTO user_roles" +
                     "(user_id, user_privilege_level_id) " +
@@ -438,6 +454,7 @@ public class UserDaoImpl implements UserDao {
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
+        statement.setFetchSize(250);
         try {
             String updateAssociations;
             for (Integer groupId : groupIds) {
@@ -457,6 +474,7 @@ public class UserDaoImpl implements UserDao {
 
         Connection connect = establishConnection();
         Statement statement = connect.createStatement();
+        statement.setFetchSize(250);
         try {
             String updateUsers = "UPDATE users " +
                     "SET password='" + password + "', email='" + email + "' " +
