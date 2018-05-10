@@ -33,11 +33,9 @@ public class RequestRedirector {
     public void redirect(HttpExchange exchange, User user) throws IOException {
         if (user.getRole() == Role.CODECOOLER) {
             redirectToCodecooler(exchange, uriPathMapper.getMapping("/student"), user);
-        }
-        if (user.getRole() == Role.ADMIN) {
+        } else if (user.getRole() == Role.ADMIN) {
             redirectToAdmin(exchange, uriPathMapper.getMapping("/admin"), user);
-        }
-        if (user.getRole() == Role.MENTOR) {
+        } else if (user.getRole() == Role.MENTOR) {
             redirectToMentor(exchange, uriPathMapper.getMapping("/mentor"), user);
         }
     }

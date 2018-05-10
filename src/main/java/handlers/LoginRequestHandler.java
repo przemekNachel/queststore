@@ -38,6 +38,7 @@ public class LoginRequestHandler implements HttpHandler {
 
     public User getUserFromRequest(HttpExchange exchange) throws IOException {
         String parametres = new BufferedReader(new InputStreamReader(exchange.getRequestBody())).readLine();
+        if (parametres == null) return null;
         System.out.println(parametres);
         Map<String, String> params = ParametersUtil.parseParameters(parametres);
 

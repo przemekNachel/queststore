@@ -18,6 +18,7 @@ public class LevelDaoImpl {
             HashMap<Integer, String> levels = new HashMap<>();
             Connection databaseConnection = connect();
             Statement statement = databaseConnection.createStatement();
+            statement.setFetchSize(250);
             ResultSet rs = statement.executeQuery("SELECT * FROM predefined_levels;");
 
             while (rs.next()) {
@@ -42,6 +43,7 @@ public class LevelDaoImpl {
         try {
             Connection databaseConnection = connect();
             Statement statement = databaseConnection.createStatement();
+            statement.setFetchSize(250);
 
             String sqlCommand = "DELETE FROM predefined_levels";
             statement.executeUpdate(sqlCommand);
@@ -71,6 +73,7 @@ public class LevelDaoImpl {
         try {
             connect = connect();
             statement = connect.createStatement();
+            statement.setFetchSize(250);
 
             String query = "SELECT experience_gained FROM user_experience WHERE user_id='" + userID + "';";
             ResultSet results = statement.executeQuery(query);
@@ -117,6 +120,7 @@ public class LevelDaoImpl {
 
             connect = connect();
             statement = connect.createStatement();
+            statement.setFetchSize(250);
 
             statement.executeUpdate(updateQuery);
 

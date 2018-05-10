@@ -2,6 +2,7 @@ package template;
 
 import artifact.ArtifactDaoImpl;
 import artifact.ArtifactModel;
+import generic_group.Group;
 import level.LevelService;
 import quest.QuestDao;
 import quest.QuestDaoImpl;
@@ -14,6 +15,9 @@ import user.user.UserDaoImpl;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MentorTemplateResolver {
     private ViewData template;
@@ -34,25 +38,30 @@ public class MentorTemplateResolver {
 
     private void initializeVariables() throws SQLException {
         new LevelService().initializeLevels();
-        ArrayList<Owner> aftifactsOwners = new ArrayList<>();
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+        ArrayList<Owner> artifactsOwners = new ArrayList<>();
         ArrayList<Owner> questsOwners = new ArrayList<>();
-        for (User user : userDao.getUserGroup("codecoolers")) {
-            CodecoolerModel codecooler = (CodecoolerModel) userService.getUser(user.getNickname());
+        Group<User> codecoolers = userDao.getUserGroup("codecoolers");
+        Group<CodecoolerModel> codecoolerModels = new Group<>("codecoolers");
+        codecoolers.forEach(user -> CompletableFuture.runAsync(() -> {
+            codecoolerModels.add((CodecoolerModel) user);
+        }, executor));
+        for (CodecoolerModel codecooler : codecoolerModels) {
             for (ArtifactModel artifact : codecooler.getArtifacts()) {
-                aftifactsOwners.add(new Owner(codecooler.getNickname(), artifact.getName()));
+                artifactsOwners.add(new Owner(codecooler.getNickname(), artifact.getName()));
             }
+
         }
 
-        for (User user : userDao.getUserGroup("codecoolers")) {
-            CodecoolerModel codecooler = (CodecoolerModel) userService.getUser(user.getNickname());
+        for (CodecoolerModel codecooler : codecoolerModels) {
             for (QuestModel quest : questDao.getQuestGroup("quests")) {
                 questsOwners.add(new Owner(codecooler.getNickname(), quest.getName()));
             }
         }
-        template.setVariable("artifacts_owners", aftifactsOwners);
+        template.setVariable("artifacts_owners", artifactsOwners);
         template.setVariable("quests_owners", questsOwners);
         template.setVariable("user", mentor);
-        template.setVariable("students", userDao.getUserGroup("codecoolers"));
+        template.setVariable("students", codecoolers);
         template.setVariable("classes", mentor.getAssociatedGroupNames());
         template.setVariable("artifacts_normal", artifactDao.getArtifactGroup("artifact_basic"));
         template.setVariable("artifacts_magic", artifactDao.getArtifactGroup("artifact_magic"));

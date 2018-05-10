@@ -3,7 +3,6 @@ package quest;
 import generic_group.Group;
 
 import java.sql.*;
-import java.util.Iterator;
 import java.util.Objects;
 
 
@@ -18,6 +17,7 @@ public class QuestDaoImpl implements QuestDao {
     public void addQuest(QuestModel quest) throws SQLException {
         Connection con = connectToDatabase();
         Statement stmt = con.createStatement();
+        stmt.setFetchSize(250);
         Objects.requireNonNull(con).setAutoCommit(false);
 
         String questName = quest.getName();
@@ -38,6 +38,7 @@ public class QuestDaoImpl implements QuestDao {
     public void updateQuest(QuestModel quest, String previousName) throws SQLException {
         Connection con = connectToDatabase();
         Statement stmt = con.createStatement();
+        stmt.setFetchSize(250);
         Objects.requireNonNull(con).setAutoCommit(false);
 
         String sql = "UPDATE quest_store SET " +
@@ -57,6 +58,7 @@ public class QuestDaoImpl implements QuestDao {
     public void deleteQuest(QuestModel quest) throws SQLException {
         Connection con = connectToDatabase();
         Statement stmt = con.createStatement();
+        stmt.setFetchSize(250);
         Objects.requireNonNull(con).setAutoCommit(false);
 
         String sql = "DELETE from quest_store WHERE name='" + quest.getName() + "';";
@@ -75,6 +77,7 @@ public class QuestDaoImpl implements QuestDao {
 
         try (Connection connection = connectToDatabase()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setFetchSize(250);
                 preparedStatement.setString(1, name);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()) {
@@ -98,6 +101,7 @@ public class QuestDaoImpl implements QuestDao {
 
         Connection con = connectToDatabase();
         Statement stmt = Objects.requireNonNull(con).createStatement();
+        stmt.setFetchSize(250);
 
         String sql = "SELECT " +
                 "quest_store.quest_id, name, descr, reward, group_names.group_name " +
@@ -137,23 +141,27 @@ public class QuestDaoImpl implements QuestDao {
         String insertToQuestGroupSql = "INSERT INTO quest_associations(quest_id, group_id) VALUES(?, 3);";
 
         PreparedStatement questIdQuery = con.prepareStatement(questIdSql);
+        questIdQuery.setFetchSize(250);
         questIdQuery.setString(1, questName);
         ResultSet questIdRs = questIdQuery.executeQuery();
         questIdRs.next();
         questId = questIdRs.getInt("quest_id");
 
         PreparedStatement groupIdQuery = con.prepareStatement(groupIdSql);
+        groupIdQuery.setFetchSize(250);
         groupIdQuery.setString(1, groupName);
         ResultSet groupIdRs = groupIdQuery.executeQuery();
         groupIdRs.next();
         groupId = groupIdRs.getInt("group_id");
 
         PreparedStatement insertQuery = con.prepareStatement(insertSql);
+        insertQuery.setFetchSize(250);
         insertQuery.setInt(1, questId);
         insertQuery.setInt(2, groupId);
         insertQuery.executeUpdate();
 
         PreparedStatement insertIntouestGroupQuery = con.prepareStatement(insertToQuestGroupSql);
+        insertIntouestGroupQuery.setFetchSize(250);
         insertIntouestGroupQuery.setInt(1, questId);
         insertIntouestGroupQuery.executeUpdate();
 

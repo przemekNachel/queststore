@@ -35,6 +35,7 @@ public class ArtifactDaoImpl implements ArtifactDao {
         Group<ArtifactModel> group = new Group<>("User's artifacts: ");
         Connection con = connectToDatabase();
         Statement stmt = Objects.requireNonNull(con).createStatement();
+        stmt.setFetchSize(250);
 
         String sql = "SELECT name, descr, price, used FROM artifact_store " +
                 "JOIN user_artifacts USING (artifact_id) " +
@@ -65,6 +66,7 @@ public class ArtifactDaoImpl implements ArtifactDao {
 
         try (Connection connection = connectToDatabase()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setFetchSize(250);
                 preparedStatement.setString(1, name);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()) {
@@ -85,6 +87,7 @@ public class ArtifactDaoImpl implements ArtifactDao {
     public ArtifactModel getArtifactById(int artifactId) throws SQLException {
         Connection con = connectToDatabase();
         Statement stmt = Objects.requireNonNull(con).createStatement();
+        stmt.setFetchSize(250);
 
         String sql = ("SELECT * FROM artifact_store WHERE artifact_id=" + artifactId + ";");
         ResultSet rs = stmt.executeQuery(sql);
@@ -115,6 +118,7 @@ public class ArtifactDaoImpl implements ArtifactDao {
         Connection con = connectToDatabase();
         Objects.requireNonNull(con).setAutoCommit(false);
         Statement stmt = con.createStatement();
+        stmt.setFetchSize(250);
 
         String sql = ("INSERT INTO artifact_store (name, descr, price)" +
                 "VALUES('" + artName + "', '" + artDesc + "', '" + artPrice + "');");
@@ -136,6 +140,8 @@ public class ArtifactDaoImpl implements ArtifactDao {
         Objects.requireNonNull(con).setAutoCommit(false);
         Statement checkStmt = Objects.requireNonNull(con).createStatement();
 
+        checkStmt.setFetchSize(250);
+
         // check if there is a record in the first place
         String check = "SELECT artifact_id FROM user_artifacts WHERE user_id='" + userId + "'" +
                 " AND artifact_id=(SELECT artifact_id FROM artifact_store WHERE name='" + artName + "');";
@@ -150,6 +156,7 @@ public class ArtifactDaoImpl implements ArtifactDao {
             /* add new record */
             String getIdQuery = "SELECT artifact_id FROM artifact_store WHERE name='" + artName + "';";
             Statement idStmt = con.createStatement();
+            idStmt.setFetchSize(250);
             artifactRecord = idStmt.executeQuery(getIdQuery);
             int artifactID = artifactRecord.getInt("artifact_id");
 
@@ -162,6 +169,7 @@ public class ArtifactDaoImpl implements ArtifactDao {
 
             /* update */
             Statement updateStmt = con.createStatement();
+            updateStmt.setFetchSize(250);
             String sql = "UPDATE user_artifacts SET used='" + artStatus + "' WHERE user_id='" + userId + "'" +
                     " AND artifact_id=(SELECT artifact_id FROM artifact_store WHERE name='" + artName + "');";
             updateStmt.executeUpdate(sql);
@@ -183,6 +191,7 @@ public class ArtifactDaoImpl implements ArtifactDao {
 
         String sql = "UPDATE artifact_store SET name = ?, descr = ?, price = ?  WHERE name = ? ";
         PreparedStatement statement = con.prepareStatement(sql);
+        statement.setFetchSize(250);
         statement.setString(1, name);
         statement.setString(2, description);
         statement.setInt(3, price);
@@ -203,6 +212,7 @@ public class ArtifactDaoImpl implements ArtifactDao {
         Connection con = connectToDatabase();
         Objects.requireNonNull(con).setAutoCommit(false);
         Statement stmt = con.createStatement();
+        stmt.setFetchSize(250);
 
         String sql = "DELETE from artifact_store WHERE name='" + artName + "';";
 
@@ -219,6 +229,7 @@ public class ArtifactDaoImpl implements ArtifactDao {
 
         Connection con = connectToDatabase();
         Statement stmt = Objects.requireNonNull(con).createStatement();
+        stmt.setFetchSize(250);
 
         String sql = "SELECT group_name FROM group_names WHERE group_name LIKE 'artifact%'";
         ResultSet rs = stmt.executeQuery(sql);
@@ -238,6 +249,7 @@ public class ArtifactDaoImpl implements ArtifactDao {
 
         Connection con = connectToDatabase();
         PreparedStatement preparedStatement = con.prepareStatement(sql);
+        preparedStatement.setFetchSize(250);
 
         preparedStatement.setString(1, "artifacts");
         preparedStatement.setString(2, groupName);
@@ -264,6 +276,7 @@ public class ArtifactDaoImpl implements ArtifactDao {
         Connection con = connectToDatabase();
         Objects.requireNonNull(con).setAutoCommit(false);
         Statement stmt = con.createStatement();
+        stmt.setFetchSize(250);
 
         String sql = "INSERT INTO group_names (group_name) VALUES ('" + group.getName() + "');";
         stmt.executeUpdate(sql);
@@ -286,18 +299,21 @@ public class ArtifactDaoImpl implements ArtifactDao {
         String insertSql = "INSERT INTO artifact_associations(artifact_id, group_id) VALUES(?, ?);";
 
         PreparedStatement artifactIdQuery = con.prepareStatement(artifactIdSql);
+        artifactIdQuery.setFetchSize(250);
         artifactIdQuery.setString(1, artifactName);
         ResultSet artifactIdRs = artifactIdQuery.executeQuery();
         artifactIdRs.next();
         artifactId = artifactIdRs.getInt("artifact_id");
 
         PreparedStatement groupIdQuery = con.prepareStatement(groupIdSql);
+        groupIdQuery.setFetchSize(250);
         groupIdQuery.setString(1, groupName);
         ResultSet groupIdRs = groupIdQuery.executeQuery();
         groupIdRs.next();
         groupId = groupIdRs.getInt("group_id");
 
         PreparedStatement insertQuery = con.prepareStatement(insertSql);
+        insertQuery.setFetchSize(250);
         insertQuery.setInt(1, artifactId);
         insertQuery.setInt(2, groupId);
         insertQuery.executeUpdate();
@@ -309,6 +325,7 @@ public class ArtifactDaoImpl implements ArtifactDao {
     private int getGroupId(Connection connection, String groupName) throws SQLException {
 
         Statement statement = connection.createStatement();
+        statement.setFetchSize(250);
         ResultSet results = null;
         int id = -1;
         try {
