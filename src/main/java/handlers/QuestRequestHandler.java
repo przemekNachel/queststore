@@ -28,6 +28,10 @@ import java.util.Map;
 
 public class QuestRequestHandler implements HttpHandler {
 
+    private static final String ADD_QUEST_PATH = "/quest/add";
+    private static final String REMOVE_QUEST_PATH = "/quest/remove";
+    private static final String EDIT_QUEST_PATH = "/quest/edit";
+    private static final String MARK_QUEST_PATH = "/quest/mark";
 
     private final SessionManager sessionManager;
     private final RequestRedirector redirector;
@@ -41,15 +45,14 @@ public class QuestRequestHandler implements HttpHandler {
     public void handle(HttpExchange httpExchange) throws IOException {
         User user = sessionManager.getUserFromSession(httpExchange);
         String URIPath = httpExchange.getRequestURI().getPath();
-        String method = httpExchange.getRequestMethod();
         if (user.getRole() == Role.MENTOR) {
-            if (method.equalsIgnoreCase("post") && URIPath.equalsIgnoreCase("/quest/add")) {
+            if (URIPath.equalsIgnoreCase(ADD_QUEST_PATH)) {
                 handleAddNewQuest(httpExchange);
-            } else if (method.equalsIgnoreCase("post") && URIPath.equalsIgnoreCase("/quest/remove")) {
+            } else if (URIPath.equalsIgnoreCase(REMOVE_QUEST_PATH)) {
                 handleRemoveQuest(httpExchange);
-            } else if (method.equalsIgnoreCase("get") && URIPath.equalsIgnoreCase("/quest/edit")) {
+            } else if (URIPath.equalsIgnoreCase(EDIT_QUEST_PATH)) {
                 handleEditQuest(httpExchange);
-            } else if (URIPath.equalsIgnoreCase("/quest/mark")) {
+            } else if (URIPath.equalsIgnoreCase(MARK_QUEST_PATH)) {
                 handleMarkQuest(httpExchange);
             }
         }
