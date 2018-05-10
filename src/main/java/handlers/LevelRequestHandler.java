@@ -51,9 +51,7 @@ public class LevelRequestHandler implements HttpHandler {
 
             LevelService levelService = new LevelService();
             levelService.initializeLevels();
-
-            //HashMap<Integer, String> levels = Level.getLevels();
-
+            
             String levelName = parameters.get(LEVEL_NAME);
             String threshold = parameters.getOrDefault(LEVEL_THRESHOLD, "0");
 
