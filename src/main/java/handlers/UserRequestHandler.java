@@ -57,7 +57,6 @@ public class UserRequestHandler implements HttpHandler {
             parameters.forEach((key, value) -> {
                 System.out.println(key + " " + value);
             });
-            String type = parameters.get("type");
             String previousNickname = parameters.get("previousnickname");
             String newNickname = parameters.get("newnickname");
             String email = parameters.get("email");
