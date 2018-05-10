@@ -15,6 +15,9 @@ import java.util.Map;
 
 public class LoginRequestHandler implements HttpHandler {
 
+    private static final String USER_NAME = "username";
+    private static final String USER_PASSWORD = "password";
+
     private final SessionManager sessionManager;
     private final RequestRedirector requestRedirector;
 
@@ -41,8 +44,8 @@ public class LoginRequestHandler implements HttpHandler {
         System.out.println(parametres);
         Map<String, String> params = ParametersUtil.parseParameters(parametres);
 
-        String username = params.get("username");
-        String password = params.get("password");
+        String username = params.get(USER_NAME);
+        String password = params.get(USER_PASSWORD);
         System.out.println(username + " " + password);
         return login(username, password);
 
