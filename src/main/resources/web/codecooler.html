@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments :: header (role='Codecooler')">
+</head>
+<body class="cms mentor">
+<th:block th:include="fragments :: top-bar"/>
+
+<div class="content">
+    <div class="content-header">
+        <div class="content-header-label">Dashboard</div>
+    </div>
+    <div id="dashboard">
+        <div id="data-rectangles" class="data-rectangles">
+            <div class="rectangle">
+                <div class="rectangle-bar">
+                    Level
+                </div>
+                <div id="level" class="rectangle-content">
+                    [[${level}]]
+                </div>
+            </div>
+            <div class="rectangle">
+                <div class="rectangle-bar">
+                    Money
+                </div>
+                <div id="money" class="rectangle-content">
+                    [[${money}]]
+                </div>
+            </div>
+            <div class="rectangle">
+                <div class="rectangle-bar">
+                    Groups
+                </div>
+                <div th:each="class : ${classes}" class="rectangle-content">
+                    [[${class}]]
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="buy-artifact" class="hidden">
+        <div class="row">
+            <h3 class="heading">Artifacts</h3>
+            <table style="width:100%">
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th></th>
+                </tr>
+                <tr th:each="artifact : ${magic_artifacts}">
+                    <td>[[${artifact.name}]]</td>
+                    <td>Magic</td>
+                    <td>[[${artifact.description}]]</td>
+                    <td>[[${artifact.price}]]</td>
+                    <td class="edit-icons">
+                        <a th:href="@{'http://localhost:8000/artifact/buy?name=' + ${artifact.name}}"
+                           class="ion-ios-cart edit-icon" title="Buy artifact"></a>
+                    </td>
+                </tr>
+                <tr th:each="artifact : ${basic_artifacts}">
+                    <td>[[${artifact.name}]]</td>
+                    <td>Basic</td>
+                    <td>[[${artifact.description}]]</td>
+                    <td>[[${artifact.price}]]</td>
+                    <td class="edit-icons">
+                        <a th:href="@{'http://localhost:8000/artifact/buy?name=' + ${artifact.name}}"
+                           class="ion-ios-cart edit-icon" title="Buy artifact"></a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="use-artifact" class="hidden">
+        <div class="row">
+            <h3 class="heading">Your artifacts</h3>
+            <table style="width:100%">
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+                <tr th:each="artifact : ${user_artifacts}">
+                    <td>[[${artifact.name}]]</td>
+                    <td>[[${artifact.description}]]</td>
+
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="left-bar">
+    <div class="logo">
+        <span class="icon rotate"></span> <span style="color: #5ca4cb">Quest</span><span style="color:#d9484b;">Store</span>
+
+    </div>
+    <ul class="options">
+        <li class="option selected" id="switch-dashboard">
+            <i class="ion-ios-home-outline option-icon"></i>
+            <p class="option-text">Dashboard</p>
+        </li>
+        <li class="option" id="switch-buy-artifact">
+            <i class="ion-social-bitcoin-outline option-icon"></i>
+            <p class="option-text">Buy artifact</p>
+        </li>
+        <li class="option" id="switch-use-artifact">
+            <i class="ion-ios-bolt-outline option-icon"></i>
+            <p class="option-text">Use artifact</p>
+        </li>
+    </ul>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<script src="/static/resources/js/app.js"></script>
+<th:block th:include="fragments :: cookie-script"/>
+</body>
+</html>

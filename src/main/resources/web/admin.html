@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments :: header (role='Admin')">
+<body class="cms admin">
+
+
+<th:block th:include="fragments :: top-bar"/>
+
+<div class="content">
+
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            test
+        </div>
+
+    </div>
+
+    <div class="content-header">
+        <div class="content-header-label">Dashboard</div>
+    </div>
+    <div id="dashboard">
+        <div id="data-rectangles" class="data-rectangles">
+            <div class="rectangle">
+                <div class="rectangle-bar">
+                    Hello administrator
+                </div>
+                <div id="full-name" class="rectangle-content">
+                    [[${user.nickname}]]
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="user-management" class="hidden">
+        <div class="row">
+            <form method="get" action="/user/add">
+                <h3 class="heading">New user</h3>
+                <div class="row">
+                    <label class="input-label" for="type">Type</label>
+                    <select class="input-select" name ="type" id="type">
+                        <option value="student">Student</option>
+                        <option value="mentor">Mentor</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <label class="input-label" for="nickname">Nickname</label>
+                    <input class="input-field" type="text" name = "nickname" id="nickname" required/>
+                </div>
+                <div class="row">
+                    <label class="input-label" for="email">Email</label>
+                    <input class="input-field" type="text" name = "email" id="email" required/>
+                </div>
+                <input type="submit" class="button submit-button" value="Create">
+            </form>
+        </div>
+        <div class="row">
+            <h3 class="heading">Users</h3>
+            <table style="width:100%">
+                <tr>
+                    <th>Nickname</th>
+                    <th>Email</th>
+                    <th>Type</th>
+                    <th></th>
+                </tr>
+                <tr th:each="user : ${users}">
+                    <td>[[${user.nickname}]]</td>
+                    <td>[[${user.email}]]</td>
+                    <td>[[${user.role}]]</td>
+                    <td class="edit-icons">
+                        <i class="ion-edit edit-icon edit-user-button" title="Edit user"></i>
+                        <i class="ion-clipboard edit-icon" title="Show user"></i>
+                        <a th:href="@{'http://localhost:8000/user/remove?nickname=' + ${user.nickname}}"
+                           class="ion-trash-a edit-icon" title="Remove user"></a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="level-management" class="hidden">
+        <div class="row">
+            <h3 class="heading">New level</h3>
+            <form action="/level/add">
+                <div class="row">
+                    <label class="input-label" for="name">Level name</label>
+                    <input class="input-field" name="name" id="name" type="text" placeholder="Enter level name.">
+                </div>
+                <div class="row">
+                    <label class="input-label" for="threshold">Threshold</label>
+                    <input class="input-field" name="threshold" id="threshold" type="number"
+                           placeholder="Enter level threshold.">
+                </div>
+                <input type="submit" class="button submit-button" value="Create">
+            </form>
+        </div>
+        <div class="row">
+            <h3 class="heading">Levels</h3>
+            <table style="width:100%">
+                <tr>
+                    <th>Name</th>
+                    <th>Threshold</th>
+                    <th>Action</th>
+                </tr>
+                <tr th:each="level : ${levels}">
+                    <td class="level-table">[[${level.value}]]</td>
+                    <td class="level-table">[[${level.key}]]</td>
+                    <td class="edit-icons">
+                        <ul class="nav">
+                            <li class="nav-tab"><i class="ion-edit edit-icon edit-level-button" title="Edit level"></i>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="left-bar">
+    <div class="logo">
+        <span class="icon rotate"></span> <span style="color: #5ca4cb">Quest</span><span style="color:#d9484b;">Store</span>
+    </div>
+    <ul class="options">
+        <li class="option selected" id="switch-dashboard">
+            <i class="ion-ios-home-outline option-icon"></i>
+            <p class="option-text">Dashboard</p>
+        </li>
+        <li class="option" id="switch-user-management">
+            <i class="ion-ios-person-outline option-icon"></i>
+            <p class="option-text">User management</p>
+        </li>
+
+        <li class="option" id="switch-level-management">
+            <i class="ion-ios-bookmarks-outline option-icon"></i>
+            <p class="option-text">Level management</p>
+        </li>
+    </ul>
+</div>
+
+<div id="edit-user-form" style="display: none;">
+    <span class="close">&times;</span>
+    <form method="get" action="/user/edit">
+        <h3 class="heading">Edit user</h3>
+        <input class="input-field" type="hidden" name="previousnickname" id="previousnickname" value=""/>
+        <div class="row">
+            <label class="input-label" for="newnickname">New nickname</label>
+            <input class="input-field" type="text" name="newnickname" id="newnickname" required/>
+        </div>
+        <div class="row">
+            <label class="input-label" for="newemail">New email</label>
+            <input class="input-field" type="text" name="email" id="newemail" required/>
+        </div>
+        <div class="row">
+            <label class="input-label" for="type">Type</label>
+            <select class="input-select" name="type" id="type">
+                <option selected value="student">Student</option>
+                <option value="mentor">Mentor</option>
+                <option value="administrator">Administrator</option>
+            </select>
+        </div>
+        <input type="submit" class="button submit-button" value="Update">
+    </form>
+</div>
+
+<div id="edit-level-form" style="display: none;">
+    <span class="close">&times;</span>
+    <form method="get" action="/level/edit">
+        <h3 class="heading">Edit level</h3>
+        <input class="input-field" type="hidden" name="previousname" id="previousname" value=""/>
+        <div class="row">
+            <label class="input-label" for="name">New level name</label>
+            <input class="input-field" name="name" id="name" type="text" placeholder="Enter level name.">
+        </div>
+        <div class="row">
+            <label class="input-label" for="threshold">New threshold</label>
+            <input class="input-field" name="threshold" id="threshold" type="number"
+                   placeholder="Enter level threshold.">
+        </div>
+        <input type="submit" class="button submit-button" value="Update">
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<script src="/static/resources/js/app.js"></script>
+<script>
+    let modal = document.getElementById('myModal');
+    let modal_content = document.querySelector('.modal-content');
+    let edit_user_form = document.getElementById('edit-user-form');
+    let edit_level_form = document.getElementById('edit-level-form');
+
+    let edit_user_buttons = Array.from(document.getElementsByClassName('edit-user-button'));
+    let edit_level_buttons = Array.from(document.getElementsByClassName('edit-level-button'));
+
+    edit_user_buttons.forEach(element => {
+
+        element.onclick = function(event) {
+            modal_content.innerHTML = edit_user_form.innerHTML;
+            modal.style.display = "block";
+
+            let inputElements = Array.from(modal_content.getElementsByTagName('*'));
+
+
+            let edit_user_data = Array.from(event.target.parentNode.parentNode.getElementsByTagName('TD'));
+
+            let editHeader = inputElements.filter(t => t.tagName === "H3")[0];
+            editHeader.innerText = `Edit user - ${edit_user_data[0].innerText}`;
+
+            inputElements = inputElements.filter(t => t.tagName === "INPUT");
+            inputElements[0].setAttribute('value', edit_user_data[0].innerText);
+            inputElements[1].setAttribute('value', edit_user_data[0].innerText);
+            inputElements[2].setAttribute('value', edit_user_data[1].innerText);
+        }
+    });
+
+
+    edit_level_buttons.forEach(element => {
+
+        element.onclick = function(event) {
+            modal_content.innerHTML = edit_level_form.innerHTML;
+            modal.style.display = "block";
+
+            let inputElements = Array.from(modal_content.getElementsByTagName('*'));
+
+
+            let edit_user_data = Array.from(event.target.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('TD'));
+
+            let editHeader = inputElements.filter(t => t.tagName === "H3")[0];
+            editHeader.innerText = `Edit level - ${edit_user_data[0].innerText}`;
+
+            inputElements = inputElements.filter(t => t.tagName === "INPUT");
+            inputElements[0].setAttribute('value', edit_user_data[0].innerText);
+            inputElements[1].setAttribute('value', edit_user_data[0].innerText);
+            inputElements[2].setAttribute('value', edit_user_data[1].innerText);
+        }
+    });
+
+
+    let span = document.getElementsByClassName("close")[0];
+
+
+    span.onclick = function () {
+        modal.style.display = "none";
+    };
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+<th:block th:include="fragments :: cookie-script"/>
+</body>
+</html>

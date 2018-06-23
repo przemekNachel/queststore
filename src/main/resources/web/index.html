@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments :: header (role='Main')">
+<body>
+<div class="start-panel">
+    <div class="login-panel start-panel">
+        <div class="logo">
+            <span class="icon rotate"></span> <span style="color: #5ca4cb">Quest</span><span style="color:#d9484b;">Store</span>
+        </div>
+        <form class="" action="login" method="post">
+            <div class="form-row">
+                <input name="username" type="text" placeholder="Username" required>
+            </div>
+            <div class="form-row">
+                <input name="password" type="password" placeholder="Password" required>
+            </div>
+            <input class="button submit-button" type="submit" value="Login">
+        </form>
+    </div>
+</div>
+<th:block th:include="fragments :: cookie-script"/>
+</body>
+</html>

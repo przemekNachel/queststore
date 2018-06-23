@@ -1,0 +1,25 @@
+<th:block th:fragment="top-bar">
+    <div class="top-bar">
+        <div class="welcome-box">Welcome, [[${user.nickname}]]</div>
+    </div>
+    <ul class="dropdown hidden">
+        <li class="dropdown-toggle"><a href="#" class="link">Account</a></li>
+        <li class="dropdown-toggle"><a href="/logout" class="link">Logout</a></li>
+    </ul>
+</th:block>
+
+<head th:fragment="header (role)">
+    <meta charset="UTF-8">
+    <title>QuestStore Page [[${role}]]</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato:400i,700i" rel="stylesheet">
+    <link href="/static/vendors/css/normalize.css" rel="stylesheet">
+    <link href="/static/vendors/css/ionicons.min.css" rel="stylesheet">
+    <link href="/static/resources/css/style.css" rel="stylesheet">
+    <link href="/static/resources/css/popup-form.css" rel="stylesheet">
+</head>
+
+<th:block th:fragment="cookie-script">
+    <script type="text/javascript" id="cookieinfo"
+            src="//cookieinfoscript.com/js/cookieinfo.min.js">
+    </script>
+</th:block>

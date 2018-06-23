@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments :: header (role='Mentor')">
+</head>
+<body class="cms">
+
+
+<th:block th:include="fragments :: top-bar"/>
+
+
+<div class="content">
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            test
+        </div>
+
+    </div>
+    <div class="content-header">
+        <div class="content-header-label">Dashboard</div>
+    </div>
+    <div id="dashboard" class="">
+        <div id="data-rectangles" class="data-rectangles">
+            <div class="rectangle">
+                <div class="rectangle-bar">
+                    Position
+                </div>
+                <div id="position" class="rectangle-content">
+                    Mentor
+                </div>
+            </div>
+            <div class="rectangle">
+                <div class="rectangle-bar">
+                    Classes
+                </div>
+                <div th:each="class : ${classes}" class="rectangle-content">
+                    [[${class}]]
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="user-management" class="hidden">
+        <div class="row">
+            <form method="get" action="/user/add">
+                <h3 class="heading">New user</h3>
+                <div class="row">
+                    <label class="input-label" for="type">Type</label>
+                    <select class="input-select" name="type" id="type">
+                        <option selected value="student">Student</option>
+                        <option disabled value="mentor">Mentor</option>
+                        <option disabled value="administrator">Administrator</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <label class="input-label" for="nickname">Nickname</label>
+                    <input class="input-field" type="text" name="nickname" id="nickname" required/>
+                </div>
+                <div class="row">
+                    <label class="input-label" for="email">Email</label>
+                    <input class="input-field" type="text" name="email" id="email" required/>
+                </div>
+                <input type="submit" class="button submit-button" value="Create">
+            </form>
+            <h3 class="heading">Users</h3>
+            <table style="width:100%">
+                <tr>
+                    <th>Nickname</th>
+                    <th>Email</th>
+                    <th></th>
+                </tr>
+                <tr th:each="user : ${students}">
+                    <td>[[${user.nickname}]]</td>
+                    <td>[[${user.email}]]</td>
+                    <td class="edit-icons">
+                        <i class="ion-edit edit-icon edit-user-button" title="Edit user"></i>
+                        <i class="ion-clipboard edit-icon" title="Show user"></i>
+                        <a th:href="@{'http://localhost:8000/user/remove?nickname=' + ${user.nickname}}"
+                           class="ion-trash-a edit-icon" title="Remove user"></a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+
+    <div id="artifact-management" class="hidden">
+        <div class="row">
+            <form method="post" action="/artifact/add">
+                <h3 class="heading">New artifact</h3>
+                <div class="row">
+                    <label class="input-label" for="artifact-type">Type</label>
+                    <select class="input-select" name="type" id="artifact-type">
+                        <option value="normal">Normal</option>
+                        <option value="magic">Magic</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <label class="input-label" for="name">Name</label>
+                    <input class="input-field" name="name" type="text" id="name" required/>
+                </div>
+                <div class="row">
+                    <label class="input-label" for="price">Price</label>
+                    <input class="input-field" name="price" type="number" id="price" required/>
+                </div>
+                <div class="row">
+                    <label class="input-label" for="description">Description</label>
+                    <input class="input-field" name="description" type="text" id="description" required/>
+                </div>
+                <input type="submit" class="button submit-button" value="Add">
+            </form>
+        </div>
+        <div class="row">
+            <h3 class="heading">Artifacts</h3>
+            <table style="width:100%">
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Price</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+                <tr th:each="artifact : ${artifacts_normal}">
+                    <td>[[${artifact.name}]]</td>
+                    <td>Normal</td>
+                    <td>[[${artifact.price}]]</td>
+                    <td>[[${artifact.description}]]</td>
+                    <td class="edit-icons">
+                        <ul class="nav">
+                            <li class="nav-tab">
+                                <form action="/artifact/remove" method="POST">
+                                    <input name="name" type="text" th:value="${artifact.name}" hidden>
+                                    <button type="submit" class="ion-trash-a edit-icon" style="border: none; background: none;" title="Delete artifact">
+                                </form>
+                                <!--<i class="ion-trash-a edit-icon" title="Delete arftifact"></i>-->
+                            </li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon edit-artifact-button"
+                                                   title="Edit artifact"></i></li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr th:each="artifact : ${artifacts_magic}">
+                    <td>[[${artifact.name}]]</td>
+                    <td>Magic</td>
+                    <td>[[${artifact.price}]]</td>
+                    <td>[[${artifact.description}]]</td>
+                    <td class="edit-icons">
+                        <ul class="nav">
+                            <li class="nav-tab">
+                                <form action="/artifact/remove" method="POST">
+                                    <input name="name" type="text" th:value="${artifact.name}" hidden>
+                                    <button type="submit" class="ion-trash-a edit-icon"
+                                            style="border: none; background: none;" title="Delete artifact">
+                                </form>
+                                <!--<i class="ion-trash-a edit-icon" title="Delete arftifact"></i>-->
+                            </li>
+                            <li class="nav-tab"><i class="ion-edit edit-icon edit-artifact-button"
+                                                   title="Edit artifact"></i></li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="row">
+            <h3 class="heading">User's Artifacts</h3>
+            <table style="width:100%">
+                <tr>
+                    <th>Username</th>
+                    <th>Artifact</th>
+                    <th></th>
+                </tr>
+                <tr th:each="owner : ${artifacts_owners}">
+                    <td>[[${owner.nickname}]]</td>
+                    <td>[[${owner.thing}]]</td>
+                    <td class="edit-icons">
+                        <i class="ion-checkmark edit-icon" title="Mark artifact"></i>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="quest-management" class="hidden">
+        <div class="row">
+            <form method="post" action="/quest/add">
+                <h3 class="heading">New quest</h3>
+                <div class="row">
+                    <label class="input-label" for="type">Type</label>
+                    <select class="input-select" name="type" id="type">
+                        <option value="basic">Basic</option>
+                        <option value="extra">Extra</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <label class="input-label" for="name">Name</label>
+                    <input class="input-field" name="name" type="text" id="name" required/>
+                </div>
+                <div class="row">
+                    <label class="input-label" for="reward">Reward</label>
+                    <input class="input-field" name="reward" type="number" id="reward" required/>
+                </div>
+                <div class="row">
+                    <label class="input-label" for="description">Description</label>
+                    <input class="input-field" name="description" type="text" id="description" required/>
+                </div>
+                <input type="submit" class="button submit-button" value="Create">
+            </form>
+        </div>
+        <div class="row">
+            <h3 class="heading">Quests</h3>
+            <table style="width:100%">
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Reward</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+                <tr th:each="quest : ${quests_basic}">
+                    <td>[[${quest.name}]]</td>
+                    <td>Basic</td>
+                    <td>[[${quest.reward}]]</td>
+                    <td>[[${quest.description}]]</td>
+                    <td class="edit-icons">
+                        <ul class="nav">
+                            <li class="nav-tab">
+                                <form action="/quest/remove" method="POST">
+                                    <input name="name" type="text" th:value="${quest.name}" hidden>
+                                    <button style="border: none; background: none;" type="submit"
+                                            class="ion-trash-a edit-icon" title="Delete quest"></button>
+                                </form>
+                            <li class="nav-tab"><i class="ion-edit edit-icon edit-quest-button" title="Edit quest"></i>
+                            </li>
+                        </ul>
+                    </td>
+                <tr th:each="quest : ${quests_extra}">
+                    <td>[[${quest.name}]]</td>
+                    <td>Extra</td>
+                    <td>[[${quest.reward}]]</td>
+                    <td>[[${quest.description}]]</td>
+                    <td class="edit-icons">
+                        <ul class="nav">
+                            <li class="nav-tab">
+                                <form action="/quest/remove" method="POST">
+                                    <input name="name" type="text" th:value="${quest.name}" hidden>
+                                    <button style="border: none; background: none;" type="submit"
+                                            class="ion-trash-a edit-icon" title="Delete quest"></button>
+                                </form>
+                            <li class="nav-tab"><i class="ion-edit edit-icon edit-quest-button" title="Edit quest"></i>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="row">
+            <h3 class="heading">Users Quests</h3>
+            <table style="width:100%">
+                <tr>
+                    <th>Username</th>
+                    <th>Quest</th>
+                    <th></th>
+                </tr>
+                <tr th:each="owner : ${quests_owners}">
+                    <td>[[${owner.nickname}]]</td>
+                    <td>[[${owner.thing}]]</td>
+                    <td class="edit-icons">
+                        <form action="/quest/mark" method="POST">
+                            <input name="name" type="text" th:value="${owner.thing}" hidden>
+                            <input name="nickname" type="text" th:value="${owner.nickname}" hidden>
+                            <button style="border: none; background: none;" type="submit"
+                                    class="ion-checkmark edit-icon" title="Mark quest"></button>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="left-bar">
+    <div class="logo">
+        <span class="icon rotate"></span> <span style="color: #5ca4cb">Quest</span><span
+            style="color:#d9484b;">Store</span>
+
+    </div>
+    <ul class="options">
+        <li class="option selected" id="switch-dashboard">
+            <i class="ion-ios-home-outline option-icon"></i>
+            <p class="option-text">Dashboard</p>
+        </li>
+        <li class="option" id="switch-user-management">
+            <i class="ion-ios-person-outline option-icon"></i>
+            <p class="option-text">User management</p>
+        </li>
+        <li class="option" id="switch-artifact-management">
+            <i class="ion-social-bitcoin-outline option-icon"></i>
+            <p class="option-text">Artifact management</p>
+        </li>
+        <li class="option" id="switch-quest-management">
+            <i class="ion-ios-bookmarks-outline option-icon"></i>
+            <p class="option-text">Quest management</p>
+        </li>
+    </ul>
+</div>
+
+
+<div id="edit-user-form" style="display: none;">
+    <span class="close">&times;</span>
+    <form method="get" action="/user/edit">
+        <h3 class="heading">Edit user</h3>
+        <input class="input-field" type="hidden" name="previousnickname" id="previousnickname" value=""/>
+        <div class="row">
+            <label class="input-label" for="newnickname">New nickname</label>
+            <input class="input-field" type="text" name="newnickname" id="newnickname" required/>
+        </div>
+        <div class="row">
+            <label class="input-label" for="newemail">New email</label>
+            <input class="input-field" type="text" name="email" id="newemail" required/>
+        </div>
+        <div class="row">
+            <label class="input-label" for="type">Type</label>
+            <select class="input-select" name="type" id="type">
+                <option selected value="student">Student</option>
+                <option disabled value="mentor">Mentor</option>
+                <option disabled value="administrator">Administrator</option>
+            </select>
+        </div>
+        <input type="submit" class="button submit-button" value="Update">
+    </form>
+</div>
+
+<div id="edit-artifact-form" style="display: none;">
+    <span class="close">&times;</span>
+    <form method="post" action="/artifact/edit">
+        <h3 class="heading">Edit artifact</h3>
+        <input class="input-field" type="hidden" name="previousname" id="previousname" value=""/>
+        <div class="row">
+            <label class="input-label" for="name">Name</label>
+            <input class="input-field" name="name" type="text" id="name" required/>
+        </div>
+        <div class="row">
+            <label class="input-label" for="price">Price</label>
+            <input class="input-field" name="price" type="number" id="price" required/>
+        </div>
+        <div class="row">
+            <label class="input-label" for="description">Description</label>
+            <input class="input-field" name="description" type="text" id="description" required/>
+        </div>
+        <input type="submit" class="button submit-button" value="Update">
+    </form>
+</div>
+
+<div id="edit-quest-form" style="display: none;">
+    <span class="close">&times;</span>
+    <form method="get" action="/quest/edit">
+        <h3 class="heading">Edit artifact</h3>
+        <input class="input-field" type="hidden" name="previousname" id="previousname" value=""/>
+        <div class="row">
+            <label class="input-label" for="name">Name</label>
+            <input class="input-field" name="name" type="text" id="name" required/>
+        </div>
+        <div class="row">
+            <label class="input-label" for="reward">Reward</label>
+            <input class="input-field" name="reward" type="number" id="reward" required/>
+        </div>
+        <div class="row">
+            <label class="input-label" for="description">Description</label>
+            <input class="input-field" name="description" type="text" id="description" required/>
+        </div>
+        <input type="submit" class="button submit-button" value="Update">
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<script src="/static/resources/js/app.js"></script>
+<script>
+    let modal = document.getElementById('myModal');
+    let modal_content = document.querySelector('.modal-content');
+    let edit_user_form = document.getElementById('edit-user-form');
+    let edit_artifact_form = document.getElementById('edit-artifact-form');
+    let edit_quest_form = document.getElementById('edit-quest-form');
+
+    let edit_user_buttons = Array.from(document.getElementsByClassName('edit-user-button'));
+    let edit_artifact_buttons = Array.from(document.getElementsByClassName('edit-artifact-button'));
+    let edit_quest_buttons = Array.from(document.getElementsByClassName('edit-quest-button'));
+
+    edit_user_buttons.forEach(element => {
+
+        element.onclick = function (event) {
+            modal_content.innerHTML = edit_user_form.innerHTML;
+            modal.style.display = "block";
+
+            let inputElements = Array.from(modal_content.getElementsByTagName('*'));
+
+
+            let edit_user_data = Array.from(event.target.parentNode.parentNode.getElementsByTagName('TD'));
+
+            let editHeader = inputElements.filter(t => t.tagName === "H3")[0];
+            editHeader.innerText = `Edit user - ${edit_user_data[0].innerText}`;
+
+            inputElements = inputElements.filter(t => t.tagName === "INPUT");
+            inputElements[0].setAttribute('value', edit_user_data[0].innerText);
+            inputElements[1].setAttribute('value', edit_user_data[0].innerText);
+            inputElements[2].setAttribute('value', edit_user_data[1].innerText);
+        }
+    });
+
+    edit_artifact_buttons.forEach(element => {
+
+        element.onclick = function (event) {
+            modal_content.innerHTML = edit_artifact_form.innerHTML;
+            modal.style.display = "block";
+
+            let inputElements = Array.from(modal_content.getElementsByTagName('*'));
+
+//            inputElements.forEach(t => console.log(t));
+
+            let edit_artifact_data = Array.from(event.target.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('td'));
+
+            edit_artifact_data.forEach(t => console.log(t));
+            let editHeader = inputElements.filter(t => t.tagName === "H3")[0];
+            editHeader.innerText = `Edit artifact - ${edit_artifact_data[0].innerText}`;
+
+            inputElements = inputElements.filter(t => t.tagName === "INPUT");
+            inputElements.forEach(t => console.log(t));
+            inputElements[0].setAttribute('value', edit_artifact_data[0].innerText);
+            inputElements[1].setAttribute('value', edit_artifact_data[0].innerText);
+            inputElements[2].setAttribute('value', edit_artifact_data[2].innerText);
+            inputElements[3].setAttribute('value', edit_artifact_data[3].innerText);
+        }
+    });
+
+    edit_quest_buttons.forEach(element => {
+
+        element.onclick = function (event) {
+            modal_content.innerHTML = edit_quest_form.innerHTML;
+            modal.style.display = "block";
+
+            let inputElements = Array.from(modal_content.getElementsByTagName('*'));
+
+//            inputElements.forEach(t => console.log(t));
+
+            let edit_artifact_data = Array.from(event.target.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('td'));
+
+            edit_artifact_data.forEach(t => console.log(t));
+            let editHeader = inputElements.filter(t => t.tagName === "H3")[0];
+            editHeader.innerText = `Edit quest - ${edit_artifact_data[0].innerText}`;
+
+            inputElements = inputElements.filter(t => t.tagName === "INPUT");
+            inputElements.forEach(t => console.log(t));
+            inputElements[0].setAttribute('value', edit_artifact_data[0].innerText);
+            inputElements[1].setAttribute('value', edit_artifact_data[0].innerText);
+            inputElements[2].setAttribute('value', edit_artifact_data[2].innerText);
+            inputElements[3].setAttribute('value', edit_artifact_data[3].innerText);
+        }
+    });
+
+
+    let span = document.getElementsByClassName("close")[0];
+
+
+    span.onclick = function () {
+        modal.style.display = "none";
+    };
+
+    window.onclick = function (event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+<th:block th:include="fragments :: cookie-script"/>
+</body>
+</html>
